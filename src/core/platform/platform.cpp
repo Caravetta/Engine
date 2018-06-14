@@ -1,6 +1,8 @@
 #include "platform.h"
 
-#ifdef WINDOWS
+#ifdef LINUX
+#error LINUX not yet implemented
+#else
 #include "win_32/window/window_win32.h"
 #include "win_32/window/window_win32.cpp"
 #include "win_32/utils/utils_win32.h"
@@ -11,6 +13,4 @@
 #include "win_32/opengl/shader.cpp"
 #include "win_32/opengl/vao.cpp"
 #include "win_32/opengl/vbo.cpp"
-#elif
-#error No files found for your platform
 #endif
