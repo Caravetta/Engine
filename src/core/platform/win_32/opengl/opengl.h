@@ -2,7 +2,6 @@
 
 #include <windows.h>
 #include <gl/gl.h>
-#include "../../core_common.h"
 
 typedef GLuint(APIENTRY * PFNGLCREATESHADERPROC) ( GLenum type );
 typedef void (APIENTRY * PFNGLSHADERSOURCEPROC) ( GLuint shader, GLsizei count, const char* *string, const GLint *length );

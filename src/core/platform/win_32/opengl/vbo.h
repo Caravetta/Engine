@@ -1,7 +1,5 @@
 #if !defined(VBO_H)
 
-#include "../../core_common.h"
-
 namespace core {
 
     class CORE_API vbo {
