@@ -1,7 +1,7 @@
 #include <vector>
 #include "mesh.h"
 #include "../math/math_utils.h"
-#include "platform/opengl/opengl.h"
+#include "platform/platform.h"
 
 namespace core {
 
