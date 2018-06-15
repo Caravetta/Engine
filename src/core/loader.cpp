@@ -5,7 +5,7 @@
 #include <vector>
 #include "loader.h"
 #include "math/vector.h"
-#include "platform/opengl/opengl.h"
+#include "platform/platform.h"
 
 namespace core {
 

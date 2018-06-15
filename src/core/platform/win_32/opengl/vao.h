@@ -1,6 +1,5 @@
 #if !defined(VAO_H)
 
-#include "../../core_common.h"
 #include "vbo.h"
 #include "opengl.h"
 

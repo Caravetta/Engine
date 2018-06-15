@@ -1,7 +1,5 @@
 #if !defined(UTILS_WIN32_H)
 
-#include "../../../core_common.h"
-
 namespace core {
 
 CORE_API UhRC_t platform_set_thread_affinity( uint64_t logical_cpu );

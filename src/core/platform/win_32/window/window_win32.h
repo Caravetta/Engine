@@ -1,7 +1,6 @@
 #if !defined(WINDOW_WIN32_H)
 
 #include <string>
-#include "../../../core_common.h"
 
 namespace core {
 

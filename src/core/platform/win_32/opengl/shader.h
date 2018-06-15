@@ -1,7 +1,6 @@
 #if !defined(SHADER_H)
 
 #include <string.h>
-#include "../../core_common.h"
 
 namespace core {
 
