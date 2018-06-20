@@ -36,10 +36,10 @@ CXXSRCS := $(shell find $(SOURCEDIR) -type d \( -name '.git' -o -name 'win_32' \
 CXXOBJS := $(addprefix $(BUILDDIR)/,$(CXXSRCS:%.cpp=%.o))
 
 $(BUILDDIR)/%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -I$(HEADERDIR) -I$(dir $<) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -I$(HEADERDIR) -I$(dir $<) -c $< -o $@
 
 $(ENGINE): $(CXXOBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
 
 .PHONY: all check clean dist install
 all: $(ENGINE)

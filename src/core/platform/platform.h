@@ -1,7 +1,14 @@
 #if !defined(PLATFORM_H)
 
 #ifdef LINUX
-#error LINUX is not currently implemented
+#include "../core_common.h"
+#include "linux/window/window_linux.h"
+#include "linux/utils/utils_linux.h"
+#include "linux/thread/thread_linux.h"
+#include "linux/opengl/opengl.h"
+#include "linux/opengl/shader.h"
+#include "linux/opengl/vao.h"
+#include "linux/opengl/vbo.h"
 #else
 #include "../core_common.h"
 #include "win_32/window/window_win32.h"
