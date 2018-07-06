@@ -13,6 +13,7 @@ namespace core {
     Matrix4f projection_matrix;
     Matrix4f view_matrix;
     Matrix4f transformation_matrix;
+    Matrix4f ortho_matrix;
     float pitch;
     float yaw;
     float roll;
@@ -26,9 +27,11 @@ namespace core {
     void move( float dx, float dy, float dz );
     void rotate( float dyaw, float dpitch );
     void update_projection_matrix( Vector2f frame_dimesions );
+    void update_ortho_matrix( Vector2f frame_dimesions );
 
     private:
     void set_projection_matrix( float width, float height );
+    void set_ortho_matrix( float width, float height );
     void look_at( float eyeX, float eyeY, float eyeZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ );
     };
 

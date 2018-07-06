@@ -46,6 +46,7 @@ void Matrix4f::identity()
 
 void Matrix4f::translate( Vector3f* vec )
 {
+    //m13 += m00 * vec->x + m10 * vec->y + m20 * vec->z;
     m30 += m00 * vec->x + m10 * vec->y + m20 * vec->z;
     m31 += m01 * vec->x + m11 * vec->y + m21 * vec->z;
     m32 += m02 * vec->x + m12 * vec->y + m22 * vec->z;

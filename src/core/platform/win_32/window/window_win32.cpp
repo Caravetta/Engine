@@ -18,10 +18,12 @@ struct platform_window_t {
     HDC         hDC;
     HGLRC       hglrc;
     std::string title;
+    bool        is_closed;
 };
 
 int local_width;
 int local_height;
+bool is_closed = false;
 
 void init( struct platform_window_t* window, DWORD dwStyle );
 
@@ -31,6 +33,7 @@ LRESULT CALLBACK _WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         case WM_CLOSE:
             DestroyWindow(hwnd);
+            is_closed = true;
         break;
         case WM_KEYDOWN:
             Input_Manager::get_instance()->process_key_down((uint16_t)wParam);
@@ -67,19 +70,14 @@ void platform_window_update( struct platform_window_t* platform_window )
 
     platform_window->width = local_width;
     platform_window->height = local_height;
-}
-#if 0
-int Window::is_closed( void )
-{
-	return true;//(GetMessage(&this->messages, NULL, 0, 0) > 0);
+    platform_window->is_closed = is_closed;
 }
 
-HGLRC _init_opengl(HDC window_dc)
+bool platform_window_is_closed( struct platform_window_t* platform_window )
 {
-	HGLRC OpenGLRC = 0;
-    return OpenGLRC;
+    return platform_window->is_closed;
 }
-#endif
+
 struct platform_window_t* platform_window_create( int width, int height, std::string title )
 {
     struct platform_window_t* window = new platform_window_t;
@@ -98,6 +96,7 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
 void init( struct platform_window_t* window, DWORD dwStyle )
 {
     WNDCLASSEX wc;
+    window->is_closed = false;
 
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc = (WNDPROC)_WndProc;
@@ -152,7 +151,6 @@ void init( struct platform_window_t* window, DWORD dwStyle )
         return;
     }
 
-    //TODO: Init OpenGL HERE
     init_opengl(&window->hDC, &window->hWnd, &window->hglrc);
 
     ShowWindow(window->hWnd, SW_SHOW);

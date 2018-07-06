@@ -29,6 +29,11 @@ void Camera::update_projection_matrix( Vector2f frame_dimesions )
     set_projection_matrix(frame_dimesions.x, frame_dimesions.y);
 }
 
+void Camera::update_ortho_matrix( Vector2f frame_dimesions )
+{
+    set_ortho_matrix(frame_dimesions.x, frame_dimesions.y);
+}
+
 void Camera::set_transformation( Vector3f* translation, float rx, float ry, float rz, float scale )
 {
     Vector3f vec_x(1, 0, 0);
@@ -118,6 +123,33 @@ void Camera::set_projection_matrix( float width, float height )
     projection_matrix.m23 = -1;
     projection_matrix.m32 = -((2 * near_plane * far_plane) / frustum_length);
     projection_matrix.m33 = 0;
+}
+
+#if 0
+void ortho(float left, float right, float bottom, float top, float f_, float n_, core::Matrix4f* m) {
+    m->m00 = 2 / (right - left);
+    m->m11 = 2 / (top - bottom);
+    m->m30 = -(right + left) / (right - left);
+    m->m31 = -(top + bottom) / (top - bottom);
+    m->m20 = 0;
+    m->m21 = 0;
+    m->m22 = -2 / (f_ - n_);
+    m->m32 = - (f_ + n_)/ (f_ - n_);
+    m->m33 = 1;
+}
+#endif
+
+void Camera::set_ortho_matrix( float width, float height )
+{
+    ortho_matrix.m00 = 2 / (width - 0);
+    ortho_matrix.m11 = 2 / (height - 0);
+    ortho_matrix.m30 = -(width + 0) / (width - 0);
+    ortho_matrix.m31 = -(height + 0) / (height - 0);
+    ortho_matrix.m20 = 0;
+    ortho_matrix.m21 = 0;
+    ortho_matrix.m22 = -2 / (1 - (-1));
+    ortho_matrix.m32 = - (1 + (-1))/ (1 - (-1));
+    ortho_matrix.m33 = 1;
 }
 
 void _cross_prod( float x1, float y1, float z1, float x2, float y2, float z2, float res[3] )

@@ -19,8 +19,8 @@
 #define LOG_ERROR(...) PRINT("ERROR", __VA_ARGS__);
 
 #define PRINT(level,...){ \
-    std::cout << __DATE__ << " - " << __TIME__ << " - " << __FILENAME__ << " - " << __LINE__; \
-    std::cout << " - " << level << ": " << __VA_ARGS__ << std::endl; \
+    std::cout << __DATE__ << " - " << __TIME__ << " - " << level << " - " << __FILENAME__ << " - " << __LINE__; \
+    std::cout << ": " << __VA_ARGS__ << std::endl; \
 }
 
 #define CORE_COMMON_H

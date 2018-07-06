@@ -36,7 +36,9 @@
 #include "system/system.h"
 #include "system/system_manager.h"
 #include "handle_system/handle.h"
-#include "text/font_file.h"
+#include "font/font_manager.h"
+#include "font/font.h"
+//#include FT_FREETYPE_H
 //#include "memory_system/heap.h"
 
 #define CORE_H

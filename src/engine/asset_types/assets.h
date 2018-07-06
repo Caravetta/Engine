@@ -4,6 +4,7 @@
 #include "mesh_asset.h"
 #include "vertex_shader_asset.h"
 #include "fragment_shader_asset.h"
+#include "font_asset.h"
 
 #define ASSETS_H
 #endif

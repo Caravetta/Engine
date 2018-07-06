@@ -28,4 +28,9 @@ int Window::get_height()
     return platform_window_get_height(platform_window);
 }
 
+bool Window::is_closed()
+{
+    return platform_window_is_closed(platform_window);
+}
+
 } //end namespace core

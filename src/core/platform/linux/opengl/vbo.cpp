@@ -9,6 +9,11 @@ vbo::vbo( int type )
     glGenBuffers(1, (GLuint*)&this->id);
 }
 
+vbo::~vbo()
+{
+    glDeleteBuffers(1, (GLuint*)&this->id);
+}
+
 void vbo::bind()
 {
     glBindBuffer(type, id);

@@ -18,6 +18,7 @@ namespace core {
         void swap_buffers();
         int get_width();
         int get_height();
+        bool is_closed();
 
     private:
         struct platform_window_t* platform_window;

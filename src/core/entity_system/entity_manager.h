@@ -58,11 +58,11 @@ Entity Entity_Manager::get_new_entity()
     entities[next_entity_idx].id.set_active();
     uint32_t return_index = next_entity_idx;
     next_entity_idx++;
-
+#if 0
     while ( entities[next_entity_idx].id.is_active() && next_entity_idx < entities.size() ) {
         next_entity_idx++;
     }
-
+#endif
     return entities[return_index];
 }
 
@@ -91,6 +91,7 @@ void Entity_Manager::resize_entities()
     components_set.resize(entities.size() + 1000);
 
     for ( ; max_index < entities.size(); max_index++ ) {
+        entities[max_index].id.set_inactive();
         entities[max_index].id.set_index(max_index);
         components_set[max_index] = (char*)(new std::vector<bool>(max_components, false));
     }
