@@ -10,6 +10,7 @@ namespace core {
         int type;
 
         vbo( int type );
+        ~vbo();
         void bind();
         void unbind();
         void store_data( float* data, int data_size );

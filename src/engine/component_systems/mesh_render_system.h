@@ -8,7 +8,6 @@ public:
     void init();
     void update();
     void shutdown();
-
 };
 
 #define MESH_RENDER_SYSTEM_H

@@ -29,5 +29,6 @@
 #include "time/timer.cpp"
 #include "system/system_manager.cpp"
 #include "handle_system/handle.cpp"
-#include "text/font_file.cpp"
+#include "font/font_manager.cpp"
+#include "font/font.cpp"
 //#include "memory_system/heap.cpp"

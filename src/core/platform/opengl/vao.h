@@ -1,5 +1,6 @@
 #if !defined(VAO_H)
 
+#include <vector>
 #include "../../core_common.h"
 #include "vbo.h"
 #include "opengl.h"
@@ -12,11 +13,15 @@ namespace core {
     } usage_type_t;
 
     class CORE_API vao {
+    private:
+        std::vector<vbo*> vbos;
+
     public:
         unsigned int id;
         vbo* indices_vbo;
 
         vao();
+        ~vao();
         void bind();
         void unbind();
         void bind_attributes();

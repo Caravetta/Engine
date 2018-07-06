@@ -17,6 +17,8 @@ Engine* Engine::get_instance()
     return instance;
 }
 
+core::Debug_Camera* debug_camera;
+
 void Engine::init()
 {
     //load opengl extentions (important this must be done before creating window)
@@ -43,22 +45,21 @@ void Engine::init()
     //register all components NOTE: this will need to be generated maybe
     component_manager->register_component<Position_Component>();
     component_manager->register_component<Mesh_Component>();
+    component_manager->register_component<Texture_Component>();
     component_manager->register_component<Shader_Component>();
-    //TODO: function that will call users reg components
+    component_manager->register_component<Static_Text_Component>();
+    component_manager->register_component<Dynamic_Text_Component>();
 
     //register all systems NOTE: this will need to be generated maybe
     system_manager->register_system<Mesh_Render_System>();
-    //TODO: function that will call users reg systems
-
-
-    //TODO: add function that will call users init code
+    system_manager->register_system<Text_Render_System>();
 
     system_manager->init_systems();
 }
 
+
 void Engine::update()
 {
-    //update the time
     this->frame_time.update();
 
     //update the window
@@ -67,8 +68,11 @@ void Engine::update()
     //process an event from the event queue
     core::IEMS::process_event();
 
-    //run all system updates
     system_manager->update_systems();
+
+    render();
+
+    Engine::get_instance()->window->swap_buffers();
 }
 
 void Engine::shutdown()

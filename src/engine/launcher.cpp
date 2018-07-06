@@ -13,7 +13,7 @@ int main()
 
     engine->init();
 
-    while(true) {
+    while( !engine->window->is_closed() ) {
         engine->update();
     }
 

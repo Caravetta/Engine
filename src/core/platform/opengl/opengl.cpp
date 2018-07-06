@@ -191,6 +191,12 @@ void _load_extension_list()
 		LOG_ERROR("Failed to load glGenBuffers");
 	}
 
+    glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
+	if ( !glDeleteBuffers )
+	{
+		LOG_ERROR("Failed to load glDeleteBuffers");
+	}
+
 	glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
 	if ( !glBindBuffer )
 	{
@@ -252,9 +258,21 @@ void _load_extension_list()
 	}
 
 	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");
-	if ( !glUniform3fv )
+	if ( !glUniform1f )
 	{
 		LOG_ERROR("Failed to load glUniform1f");
+	}
+
+    glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");
+	if ( !glUniform2f )
+	{
+		LOG_ERROR("Failed to load glUniform2f");
+	}
+
+    glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
+	if ( !glUniform1i )
+	{
+		LOG_ERROR("Failed to load glUniform1i");
 	}
 
 	glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
