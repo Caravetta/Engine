@@ -17,8 +17,6 @@ Engine* Engine::get_instance()
     return instance;
 }
 
-core::Debug_Camera* debug_camera;
-
 void Engine::init()
 {
     //load opengl extentions (important this must be done before creating window)

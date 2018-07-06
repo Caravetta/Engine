@@ -2,7 +2,7 @@
 #include <string>
 #include <windows.h>
 #include "window_win32.h"
-#include "opengl/opengl.h"
+#include "../opengl/opengl.h"
 #include "../../../input_system/input_manager.h"
 
 namespace core {

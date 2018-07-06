@@ -1,7 +1,7 @@
 #if !defined(MESH_H)
 
 #include "../core_common.h"
-#include "../platform/opengl/vao.h"
+#include "../platform/platform.h"
 #include "../image/image.h"
 #include "../math/vector.h"
 #include "../math/fractal_noise.h"

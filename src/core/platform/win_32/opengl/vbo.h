@@ -1,7 +1,5 @@
 #if !defined(VBO_H)
 
-#include "../../core_common.h"
-
 namespace core {
 
     class CORE_API vbo {
@@ -10,7 +8,6 @@ namespace core {
         int type;
 
         vbo( int type );
-        ~vbo();
         void bind();
         void unbind();
         void store_data( float* data, int data_size );

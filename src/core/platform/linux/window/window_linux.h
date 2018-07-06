@@ -1,4 +1,4 @@
-#if !defined(WINDOW_WIN32_H)
+#if !defined(WINDOW_LINUX_H)
 
 #include <string>
 
@@ -9,9 +9,8 @@ void platform_window_update( struct platform_window_t* platform_window );
 void platform_window_swap_buffers( struct platform_window_t* platform_window );
 int platform_window_get_width( struct platform_window_t* platform_window );
 int platform_window_get_height( struct platform_window_t* platform_window );
-bool platform_window_is_closed( struct platform_window_t* platform_window );
 
 } //end namespace core
 
-#define WINDOW_WIN32_H
+#define WINDOW_LINUX_H
 #endif
