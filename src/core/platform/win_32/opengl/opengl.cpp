@@ -63,235 +63,67 @@
 #define WGL_CONTEXT_PROFILE_MASK_ARB      0x9126
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB  0x00000001
 
+#define OPENGL_LOAD( func_name, func_define ) \
+                    func_name = (func_define)wglGetProcAddress(#func_name); \
+                    if ( !func_name ) { LOG_ERROR("Failed to load " #func_name); }
+
+
+
 void _load_extension_list()
 {
-	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-	if ( !wglChoosePixelFormatARB )
-	{
-		LOG_ERROR("Failed to load wglChoosePixelFormatARB");
-	}
 
-	wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-	if ( !wglCreateContextAttribsARB )
-	{
-		LOG_ERROR("Failed to load wglCreateContextAttribsARB");
-	}
-
-	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
-	if ( !glCreateShader )
-	{
-		LOG_ERROR("Failed to load glCreateShader");
-	}
-
-	glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
-	if ( !glShaderSource )
-	{
-		LOG_ERROR("Failed to load glShaderSource");
-	}
-
-	glCompileShader = (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
-	if ( !glCompileShader )
-	{
-		LOG_ERROR("Failed to load glCompileShader");
-	}
-
-	glGetShaderiv = (PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv");
-	if ( !glGetShaderiv )
-	{
-		LOG_ERROR("Failed to load glGetShaderiv");
-	}
-
-	glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog");
-	if ( !glGetShaderInfoLog )
-	{
-		LOG_ERROR("Failed to load glGetShaderInfoLog");
-	}
-
-	glCreateProgram = (PFNGLCREATEPROGRAMPROC)wglGetProcAddress("glCreateProgram");
-	if ( !glCreateProgram )
-	{
-		LOG_ERROR("Failed to load glCreateProgram");
-	}
-
-	glCreateProgram = (PFNGLCREATEPROGRAMPROC)wglGetProcAddress("glCreateProgram");
-	if ( !glCreateProgram )
-	{
-		LOG_ERROR("Failed to load glCreateProgram");
-	}
-
-	glAttachShader = (PFNGLATTACHSHADERPROC)wglGetProcAddress("glAttachShader");
-	if ( !glAttachShader )
-	{
-		LOG_ERROR("Failed to load glAttachShader");
-	}
-
-	glLinkProgram = (PFNGLLINKPROGRAMPROC)wglGetProcAddress("glLinkProgram");
-	if ( !glLinkProgram )
-	{
-		LOG_ERROR("Failed to load glLinkProgram");
-	}
-
-	glGetProgramiv = (PFNGLGETPROGRAMIVPROC)wglGetProcAddress("glGetProgramiv");
-	if ( !glGetProgramiv )
-	{
-		LOG_ERROR("Failed to load glGetProgramiv");
-	}
-
-	glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)wglGetProcAddress("glGetProgramInfoLog");
-	if ( !glGetProgramInfoLog )
-	{
-		LOG_ERROR("Failed to load glGetProgramInfoLog");
-	}
-
-	glDeleteShader = (PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader");
-	if ( !glDeleteShader )
-	{
-		LOG_ERROR("Failed to load glDeleteShader");
-	}
-
-	glDeleteProgram = (PFNGLDELETEPROGRAMPROC)wglGetProcAddress("glDeleteProgram");
-	if ( !glDeleteProgram )
-	{
-		LOG_ERROR("Failed to load glDeleteProgram");
-	}
-
-	glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)wglGetProcAddress("glGenVertexArrays");
-	if ( !glGenVertexArrays )
-	{
-		LOG_ERROR("Failed to load glGenVertexArrays");
-	}
-
-	glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)wglGetProcAddress("glBindVertexArray");
-	if ( !glBindVertexArray )
-	{
-		LOG_ERROR("Failed to load glBindVertexArray");
-	}
-
-	glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress("glEnableVertexAttribArray");
-	if ( !glEnableVertexAttribArray )
-	{
-		LOG_ERROR("Failed to load glEnableVertexAttribArray");
-	}
-
-	glDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress("glDisableVertexAttribArray");
-	if ( !glDisableVertexAttribArray )
-	{
-		LOG_ERROR("Failed to load glDisableVertexAttribArray");
-	}
-
-	glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)wglGetProcAddress("glVertexAttribPointer");
-	if ( !glVertexAttribPointer )
-	{
-		LOG_ERROR("Failed to load glVertexAttribPointer");
-	}
-
-	glGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
-	if ( !glGenBuffers )
-	{
-		LOG_ERROR("Failed to load glGenBuffers");
-	}
-
-    glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
-	if ( !glDeleteBuffers )
-	{
-		LOG_ERROR("Failed to load glDeleteBuffers");
-	}
-
-	glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
-	if ( !glBindBuffer )
-	{
-		LOG_ERROR("Failed to load glBindBuffer");
-	}
-
-	glBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
-	if ( !glBufferData )
-	{
-		LOG_ERROR("Failed to load glBufferData");
-	}
-
-	glGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
-	if ( !glGenBuffers )
-	{
-		LOG_ERROR("Failed to load glGenBuffers");
-	}
-
-	glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
-	if ( !glBindBuffer )
-	{
-		LOG_ERROR("Failed to load glBindBuffer");
-	}
-
-	glBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
-	if ( !glBufferData )
-	{
-		LOG_ERROR("Failed to load glBufferData");
-	}
-
-	glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)wglGetProcAddress("glGetUniformLocation");
-	if ( !glGetUniformLocation )
-	{
-		LOG_ERROR("Failed to load glGetUniformLocation");
-	}
-
-	glActiveTexture = (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
-	if ( !glActiveTexture )
-	{
-		LOG_ERROR("Failed to load glActiveTexture");
-	}
-
-	glUseProgram = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
-	if ( !glUseProgram )
-	{
-		LOG_ERROR("Failed to load glUseProgram");
-	}
-
-	glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)wglGetProcAddress("glUniformMatrix4fv");
-	if ( !glUniformMatrix4fv )
-	{
-		LOG_ERROR("Failed to load glUniformMatrix4fv");
-	}
-
-	glUniform3fv = (PFNGLUNIFORM3FVPROC)wglGetProcAddress("glUniform3fv");
-	if ( !glUniform3fv )
-	{
-		LOG_ERROR("Failed to load glUniform3fv");
-	}
-
-	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");
-	if ( !glUniform1f )
-	{
-		LOG_ERROR("Failed to load glUniform1f");
-	}
-
-    glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");
-	if ( !glUniform2f )
-	{
-		LOG_ERROR("Failed to load glUniform2f");
-	}
-
-    glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
-	if ( !glUniform1i )
-	{
-		LOG_ERROR("Failed to load glUniform1i");
-	}
-
-	glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
-    if ( !glGenerateMipmap )
-	{
-		LOG_ERROR("Failed to load glGenerateMipmap");
-	}
-
-	glGetStringi = (PFNGLGETSTRINGIPROC)wglGetProcAddress("glGetStringi");
-    if ( !glGetStringi )
-	{
-		LOG_ERROR("Failed to load glGetStringi");
-	}
+    OPENGL_LOAD(glCreateShader, PFNGLCREATESHADERPROC);
+    OPENGL_LOAD(glShaderSource, PFNGLSHADERSOURCEPROC);
+    OPENGL_LOAD(glCompileShader, PFNGLCOMPILESHADERPROC);
+    OPENGL_LOAD(glGetShaderiv, PFNGLGETSHADERIVPROC);
+    OPENGL_LOAD(glGetShaderInfoLog, PFNGLGETSHADERINFOLOGPROC);
+    OPENGL_LOAD(glCreateProgram, PFNGLCREATEPROGRAMPROC);
+    OPENGL_LOAD(glAttachShader, PFNGLATTACHSHADERPROC);
+    OPENGL_LOAD(glLinkProgram, PFNGLLINKPROGRAMPROC);
+    OPENGL_LOAD(glGetProgramiv, PFNGLGETPROGRAMIVPROC);
+    OPENGL_LOAD(glGetProgramInfoLog, PFNGLGETPROGRAMINFOLOGPROC);
+    OPENGL_LOAD(glDeleteShader, PFNGLDELETESHADERPROC);
+    OPENGL_LOAD(glDeleteProgram, PFNGLDELETEPROGRAMPROC);
+    OPENGL_LOAD(glGenVertexArrays, PFNGLGENVERTEXARRAYSPROC);
+    OPENGL_LOAD(glBindVertexArray, PFNGLBINDVERTEXARRAYPROC);
+    OPENGL_LOAD(glEnableVertexAttribArray, PFNGLENABLEVERTEXATTRIBARRAYPROC);
+    OPENGL_LOAD(glDisableVertexAttribArray, PFNGLDISABLEVERTEXATTRIBARRAYPROC);
+    OPENGL_LOAD(glVertexAttribPointer, PFNGLVERTEXATTRIBPOINTERPROC);
+    OPENGL_LOAD(glGenBuffers, PFNGLGENBUFFERSPROC);
+    OPENGL_LOAD(glDeleteBuffers, PFNGLDELETEBUFFERSPROC);
+    OPENGL_LOAD(glBindBuffer, PFNGLBINDBUFFERPROC);
+    OPENGL_LOAD(glBufferData, PFNGLBUFFERDATAPROC);
+    OPENGL_LOAD(glGenBuffers, PFNGLGENBUFFERSPROC);
+    OPENGL_LOAD(glBindBuffer, PFNGLBINDBUFFERPROC);
+    OPENGL_LOAD(glBufferData, PFNGLBUFFERDATAPROC);
+    OPENGL_LOAD(glGetUniformLocation, PFNGLGETUNIFORMLOCATIONPROC);
+    OPENGL_LOAD(glActiveTexture, PFNGLACTIVETEXTUREPROC);
+    OPENGL_LOAD(glUseProgram, PFNGLUSEPROGRAMPROC);
+    OPENGL_LOAD(glUniformMatrix4fv, PFNGLUNIFORMMATRIX4FVPROC);
+    OPENGL_LOAD(glUniform3fv, PFNGLUNIFORM3FVPROC);
+    OPENGL_LOAD(glUniform1f, PFNGLUNIFORM1FPROC);
+    OPENGL_LOAD(glUniform2f, PFNGLUNIFORM2FPROC);
+    OPENGL_LOAD(glUniform1i, PFNGLUNIFORM1IPROC);
+    OPENGL_LOAD(glGenerateMipmap, PFNGLGENERATEMIPMAPPROC);
+    OPENGL_LOAD(glGetStringi, PFNGLGETSTRINGIPROC);
+    OPENGL_LOAD(glGenFramebuffers, PFNGLGENFRAMEBUFFERSPROC);
+    OPENGL_LOAD(glBindFramebuffer, PFNGLBINDFRAMEBUFFERPROC);
+    OPENGL_LOAD(glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DPROC);
+    OPENGL_LOAD(glDrawBuffers, PFNGLDRAWBUFFERSPROC);
+    OPENGL_LOAD(glGenRenderbuffers, PFNGLGENRENDERBUFFERSPROC);
+    OPENGL_LOAD(glBindRenderbuffer, PFNGLBINDRENDERBUFFERPROC);
+    OPENGL_LOAD(glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEPROC);
+    OPENGL_LOAD(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFERPROC);
+    OPENGL_LOAD(glBlitFramebuffer, PFNGLBLITFRAMEBUFFERPROC);
 
     glSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-    if ( !glSwapIntervalEXT )
-    {
-        LOG_ERROR("Failed to load wglSwapIntervalEXT");
-    }
+    if ( !glSwapIntervalEXT ) { LOG_ERROR("Failed to load wglSwapIntervalEXT"); }
+
+    wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+	if ( !wglChoosePixelFormatARB ) { LOG_ERROR("Failed to load wglChoosePixelFormatARB"); }
+
+	wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	if ( !wglCreateContextAttribsARB ) { LOG_ERROR("Failed to load wglCreateContextAttribsARB"); }
 }
 
 LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )

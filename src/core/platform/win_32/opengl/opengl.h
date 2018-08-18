@@ -42,6 +42,16 @@ typedef void (APIENTRY * PFNGLGENERATEMIPMAPPROC) ( GLenum target );
 typedef GLubyte*(APIENTRY * PFNGLGETSTRINGIPROC) ( GLenum name, GLuint index );
 typedef void (APIENTRY * PFNWGLSWAPINTERVALEXTPROC) ( GLint value );
 
+typedef void (APIENTRY * PFNGLGENFRAMEBUFFERSPROC) ( GLsizei n, GLuint *ids );
+typedef void (APIENTRY * PFNGLBINDFRAMEBUFFERPROC) ( GLenum target, GLuint framebuffer );
+typedef void (APIENTRY * PFNGLFRAMEBUFFERTEXTURE2DPROC) ( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
+typedef void (APIENTRY * PFNGLDRAWBUFFERSPROC) ( GLsizei n, const GLenum *bufs );
+typedef void (APIENTRY * PFNGLGENRENDERBUFFERSPROC) ( GLsizei n, GLuint *renderbuffers );
+typedef void (APIENTRY * PFNGLBINDRENDERBUFFERPROC) ( GLenum target, GLuint renderbuffer );
+typedef void (APIENTRY * PFNGLRENDERBUFFERSTORAGEPROC) ( GLenum target, GLenum internalformat, GLsizei width, GLsizei height );
+typedef void (APIENTRY * PFNGLFRAMEBUFFERRENDERBUFFERPROC) ( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer );
+typedef void (APIENTRY * PFNGLBLITFRAMEBUFFERPROC) ( GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+
 typedef short GLshort;
 typedef unsigned short GLushort;
 typedef void GLvoid;
@@ -358,6 +368,11 @@ typedef int GLsizei;
 #define GL_MAJOR_VERSION                                0x821B
 #define GL_MINOR_VERSION                                0x821C
 #define GL_NUM_EXTENSIONS                               0x821D
+#define GL_COLOR_ATTACHMENT1                            0x8CE1
+#define GL_COLOR_ATTACHMENT2                            0x8CE2
+#define GL_RGB16F                                       0x881B
+#define GL_READ_FRAMEBUFFER                             0x8CA8
+#define GL_DRAW_FRAMEBUFFER                             0x8CA9
 
 CORE_API PFNGLCREATESHADERPROC  			glCreateShader;
 CORE_API PFNGLSHADERSOURCEPROC  			glShaderSource;
@@ -393,6 +408,16 @@ CORE_API PFNGLUNIFORM1IPROC                 glUniform1i;
 CORE_API PFNGLGENERATEMIPMAPPROC 			glGenerateMipmap;
 CORE_API PFNGLGETSTRINGIPROC 				glGetStringi;
 CORE_API PFNWGLSWAPINTERVALEXTPROC          glSwapIntervalEXT;
+
+CORE_API PFNGLGENFRAMEBUFFERSPROC           glGenFramebuffers;
+CORE_API PFNGLBINDFRAMEBUFFERPROC           glBindFramebuffer;
+CORE_API PFNGLFRAMEBUFFERTEXTURE2DPROC      glFramebufferTexture2D;
+CORE_API PFNGLDRAWBUFFERSPROC               glDrawBuffers;
+CORE_API PFNGLGENRENDERBUFFERSPROC          glGenRenderbuffers;
+CORE_API PFNGLBINDRENDERBUFFERPROC          glBindRenderbuffer;
+CORE_API PFNGLRENDERBUFFERSTORAGEPROC       glRenderbufferStorage;
+CORE_API PFNGLFRAMEBUFFERRENDERBUFFERPROC   glFramebufferRenderbuffer;
+CORE_API PFNGLBLITFRAMEBUFFERPROC           glBlitFramebuffer;
 
 typedef enum {
 	OPENGL_SUCCESS 	= 0,

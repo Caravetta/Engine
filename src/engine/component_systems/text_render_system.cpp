@@ -11,7 +11,7 @@ Text_Render_System::Text_Render_System()
 
 void Text_Render_System::init()
 {
-glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Text_Render_System::update()
