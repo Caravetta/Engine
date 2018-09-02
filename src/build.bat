@@ -4,12 +4,18 @@ set CommonCompilerFlags= -fp:fast -fp:except- -Gm- -MD -GR- -Zo -Oi -W4 -wd4251 
 
 mkdir ..\build
 pushd ..\build
-REM cl %CommonCompilerFlags% -Zi /EHsc /FeCore /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib
+REM cl %CommonCompilerFlags% -Zi /EHsc /FeCore /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib
 REM cl %CommonCompilerFlags% -Zi /EHsc ..\src\test.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib
 
 copy ..\src\libs\free_type\freetype.dll .
 
-cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
-cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc ..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+IF "%1" == "core" (
+    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+) ELSE IF "%1" == "launcher" (
+    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /DDEBUG_BUILD /EHsc ..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+) ELSE (
+    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /DDEBUG_BUILD /EHsc ..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+)
 
 popd
