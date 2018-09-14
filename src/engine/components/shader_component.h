@@ -2,15 +2,15 @@
 
 #include "../core/core.h"
 
-class Shader_Component : public core::Component {
-public:
-    unsigned int vertex_id;
-    unsigned int fragment_id;
-    unsigned int program_id;
+COMPONENT(
+          // Name of Component
+          Shader_Component,
 
-    Shader_Component();
-
-};
+          // Start of Component Data
+          uint32_t vertex_id;
+          uint32_t fragment_id;
+          uint32_t program_id;
+         )
 
 #define SHADER_COMPONENT_H
 #endif

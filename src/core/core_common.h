@@ -33,7 +33,7 @@
 }
 #else
 #define DEBUG_LOG(...) while(false){}
-
+#define CHECK_INFO( expr, ... ) while(false){}
 #define CHECK( expr ) while(false){}
 #endif
 

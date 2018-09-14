@@ -13,6 +13,7 @@
         core::System_Manager* system_manager;
         core::Asset_Manager* asset_manager;
         core::Debug_Camera* debug_camera;
+        core::Entity_Archetype_Manager* archetype_manager;
 
         static Engine* get_instance();
         void init();

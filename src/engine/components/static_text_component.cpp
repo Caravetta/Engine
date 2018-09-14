@@ -1,20 +1,18 @@
 #include "static_text_component.h"
 
-Static_Text_Component::Static_Text_Component()
-{
-    size = 0;
-    vao = NULL;
-}
-
 void Static_Text_Component::generate_static_text( std::string user_text, uint16_t font_size, core::Font* font, uint16_t new_line_pad )
 {
     text = user_text;
     size = font_size;
 
+    vertices = new std::vector<float>();
+    indices = new std::vector<uint32_t>();
+    textures = new std::vector<float>();
+
     vao = NULL;
-    vertices.clear();
-    indices.clear();
-    textures.clear();
+    vertices->clear();
+    indices->clear();
+    textures->clear();
 
     int idc_offset = 0;
 
@@ -30,6 +28,7 @@ void Static_Text_Component::generate_static_text( std::string user_text, uint16_
     uint16_t text_width = 0;
     uint16_t text_height = 0;
 
+    LOG("");
     for (int i = 0; i < text.size(); i++) {
          if ( text[i] == '\n' ) {
             text_y -= font_size + new_line_pad;
@@ -46,55 +45,55 @@ void Static_Text_Component::generate_static_text( std::string user_text, uint16_
          text_width = font->get_font_width(font_size);
          text_height = font->get_font_height(font_size);
 
-         vertices.push_back(x2);
-         vertices.push_back(-y2);
-         vertices.push_back(0);
-         textures.push_back(x_offset);
-         textures.push_back(y_offset);
+         vertices->push_back(x2);
+         vertices->push_back(-y2);
+         vertices->push_back(0);
+         textures->push_back(x_offset);
+         textures->push_back(y_offset);
 
-         vertices.push_back(x2 + w);
-         vertices.push_back(-y2);
-         vertices.push_back(0);
-         textures.push_back(x_offset + w / text_width);
-         textures.push_back(y_offset);
+         vertices->push_back(x2 + w);
+         vertices->push_back(-y2);
+         vertices->push_back(0);
+         textures->push_back(x_offset + w / text_width);
+         textures->push_back(y_offset);
 
-         vertices.push_back(x2);
-         vertices.push_back(-y2 - h);
-         vertices.push_back(0);
-         textures.push_back(x_offset);
-         textures.push_back(y_offset + h / text_height);
+         vertices->push_back(x2);
+         vertices->push_back(-y2 - h);
+         vertices->push_back(0);
+         textures->push_back(x_offset);
+         textures->push_back(y_offset + h / text_height);
 
-         vertices.push_back(x2 + w);
-         vertices.push_back(-y2);
-         vertices.push_back(0);
-         textures.push_back(x_offset + w / text_width);
-         textures.push_back(y_offset);
+         vertices->push_back(x2 + w);
+         vertices->push_back(-y2);
+         vertices->push_back(0);
+         textures->push_back(x_offset + w / text_width);
+         textures->push_back(y_offset);
 
-         vertices.push_back(x2);
-         vertices.push_back(-y2 - h);
-         vertices.push_back(0);
-         textures.push_back(x_offset);
-         textures.push_back(y_offset + h / text_height);
+         vertices->push_back(x2);
+         vertices->push_back(-y2 - h);
+         vertices->push_back(0);
+         textures->push_back(x_offset);
+         textures->push_back(y_offset + h / text_height);
 
-         vertices.push_back(x2 + w);
-         vertices.push_back(-y2 - h);
-         vertices.push_back(0);
-         textures.push_back(x_offset + w / text_width);
-         textures.push_back(y_offset + h / text_height);
+         vertices->push_back(x2 + w);
+         vertices->push_back(-y2 - h);
+         vertices->push_back(0);
+         textures->push_back(x_offset + w / text_width);
+         textures->push_back(y_offset + h / text_height);
 
          text_x += font->generate_char_data(text[i], size)->advance_x;
          text_y -= font->generate_char_data(text[i], size)->advance_y;
 
          for (int j = 0; j < 6; j++) {
-            indices.push_back(idc_offset);
+            indices->push_back(idc_offset);
             idc_offset++;
          }
     }
 
     vao = new core::vao;
     vao->bind();
-    vao->create_index_buffer((int*)indices.data(), (int)indices.size());
-    vao->create_attribute(0, vertices.data(), (int)vertices.size() * sizeof(float), 3);
-    vao->create_attribute(2, textures.data(), (int)textures.size() * sizeof(float), 2);
+    vao->create_index_buffer((int*)indices->data(), (int)indices->size());
+    vao->create_attribute(0, vertices->data(), (int)vertices->size() * sizeof(float), 3);
+    vao->create_attribute(2, textures->data(), (int)textures->size() * sizeof(float), 2);
     vao->unbind();
 }

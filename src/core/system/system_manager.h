@@ -17,16 +17,14 @@ namespace core {
             std::unordered_map<uint64_t, uint64_t> entity_map;
         };
 
-        std::vector<System*> systems;
         std::vector<system_info_t> systems_info;
 
-        void init();
-
     public:
+        std::vector<System*> systems;
+
+
         static System_Manager* get_instance();
         template<typename T> void register_system();
-        void register_entity( Entity entity );
-        void deregister_entity( Entity entity );
         void init_systems();
         void update_systems();
         void shutdown_systems();

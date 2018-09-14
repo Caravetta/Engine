@@ -7,6 +7,7 @@
 #include "static_text_component.h"
 #include "dynamic_text_component.h"
 #include "texture_component.h"
+#include "cube_orbit_component.h"
 
 #define COMPONENTS_H
 #endif

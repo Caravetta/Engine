@@ -19,7 +19,7 @@ namespace core {
     CORE_API Mesh* load_model( std::string file_path, file_type_t model_type );
     CORE_API Texture* load_texture( std::string file_path, file_type_t texture_type );
 
-    void load_obj_file( std::string file_path, Mesh* mesh );
+    CORE_API void load_obj_file( std::string file_path, Mesh* mesh );
 
 } //end namespace core
 

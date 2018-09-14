@@ -2,13 +2,11 @@
 
 #include "../core/core.h"
 
-class Position_Component : public core::Component {
-public:
-    core::Vector3f position;
-
-    Position_Component();
-
-};
+COMPONENT(
+          Position_Component,       //name of component
+          core::Vector3f position;  //start of component data
+          std::string test_string = "awdawd";
+         )
 
 #define POSITION_COMPONENT_H
 #endif

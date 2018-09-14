@@ -27,4 +27,6 @@
 #include "handle_system/handle.cpp"
 #include "font/font_manager.cpp"
 #include "font/font.cpp"
+#include "entity_system/entity_archetype.cpp"
+#include "entity_system/entity_archetype_manager.cpp"
 //#include "memory_system/heap.cpp"

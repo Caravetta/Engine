@@ -2,11 +2,23 @@
 
 #include "../core_common.h"
 
+#define COMPONENT(name,...)         \
+                                    \
+    typedef struct                  \
+    {                               \
+        union                       \
+        {                           \
+            struct core::Component; \
+            core::Component parent; \
+        };                          \
+        __VA_ARGS__                 \
+    } name;
+
 namespace core {
 
-    class CORE_API Component {
+    struct CORE_API Component {
     public:
-        Component(){};
+        //Component(){};
     };
 
 } // end namespace core

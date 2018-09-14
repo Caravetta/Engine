@@ -17,17 +17,13 @@ Asset_Manager* Asset_Manager::get_instance()
 
 UhRC_t Asset_Manager::get_asset_handle( std::string asset_name, Handle* handle )
 {
-    Handle tmp_handle;
-
     std::unordered_map<std::string, uint64_t>::const_iterator ele = asset_handle_map.find(asset_name);
     if ( ele == asset_handle_map.end() ) {
         LOG("Not a valid asset name");
         return ENGINE_ERROR;
     }
 
-    tmp_handle = ele->second;
-
-    *handle = tmp_handle;
+    *handle = ele->second;
 
     return SUCCESS;
 }

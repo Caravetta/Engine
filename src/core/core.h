@@ -38,6 +38,9 @@
 #include "handle_system/handle.h"
 #include "font/font_manager.h"
 #include "font/font.h"
+#include "vector/void_vector.h"
+#include "entity_system/entity_archetype.h"
+#include "entity_system/entity_archetype_manager.h"
 //#include FT_FREETYPE_H
 //#include "memory_system/heap.h"
 
