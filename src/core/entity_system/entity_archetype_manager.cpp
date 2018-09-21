@@ -217,4 +217,12 @@ uint8_t* Entity_Archetype_Manager::get_component_data( Entity entity, uint64_t c
     return NULL;
 }
 
+UhRC_t remove_entity( Entity entity )
+{
+    CHECK( entity_archetype_manager != NULL );
+    CHECK_INFO( 0, "Need to implement remove_entity" );
+
+    return ENGINE_ERROR;
+}
+
 } // end namespace core

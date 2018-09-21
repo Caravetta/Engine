@@ -57,7 +57,7 @@ public:
 
     template<typename T> T* get_component_data( Entity entity );
 
-    //UhRC_t remove_entity( Entity entity );
+    UhRC_t remove_entity( Entity entity );
 };
 
 template<typename T>
