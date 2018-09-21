@@ -6,8 +6,8 @@
 #include "asset_types/assets.h"
 #include "asset_types/assets.cpp"
 #include "renderer.h"
-#include "user_init.h"
-#include "user_init.cpp"
+//#include "user_init.h"
+//#include "user_init.cpp"
 
 Engine* Engine::instance = NULL;
 
@@ -60,7 +60,7 @@ void Engine::init()
     //system_manager->register_system<Cube_Orbit_System>();
 
     /************* START TEST CODE ***************/
-    user_init();
+    //user_init();
 
     debug_camera = new core::Debug_Camera(core::Vector3f(0, 55, -34), core::Vector2f(1000, 800));
     debug_camera->rotate(35.89, -0.2);
@@ -74,13 +74,6 @@ static int count = 0;
 
 void Engine::update()
 {
-    LOG("START UPDATE");
-    if (count == 0) {
-        core::Entity entity;
-        entity.id = 2147483648;
-        Position_Component* test = core::Entity_Archetype_Manager::get_instance()->get_component_data<Position_Component>( entity);
-        LOG("TEST " << test);
-    }
 
     this->frame_time.update();
 
@@ -92,14 +85,6 @@ void Engine::update()
 
     system_manager->update_systems();
 
-    if (count == 0) {
-        count = 1;
-        core::Entity entity;
-        entity.id = 2147483648;
-        Position_Component* test = core::Entity_Archetype_Manager::get_instance()->get_component_data<Position_Component>( entity);
-        LOG("TEST " << test);
-    }
-
     /************* START TEST CODE ***************/
     this->debug_camera->update_projection_matrix(core::Vector2f((float)this->window->get_width(), (float)this->window->get_height()));
     this->debug_camera->update_ortho_matrix(core::Vector2f((float)this->window->get_width(), (float)this->window->get_height()));
@@ -110,7 +95,6 @@ void Engine::update()
     render();
 
     Engine::get_instance()->window->swap_buffers();
-    LOG("END UPDATE");
 }
 
 void Engine::shutdown()

@@ -42,6 +42,19 @@
     std::cout << ": " << __VA_ARGS__ << std::endl; \
 }
 
+#define ALLOC_RETURN_FAILURE( var, ... ) {  \
+    var = new (std::nothrow) __VA_ARGS__;   \
+    CHECK( var != NULL );                   \
+    if ( var == NULL ) {                    \
+        return MEMORY_ALLOC_FAILED;         \
+    }                                       \
+}
+
+#define U8_MAX  255
+#define U16_MAX 65535
+#define U32_MAX 4294967295
+#define U64_MAX 18446744073709551615
+
 template<typename T>
 struct BaseType { typedef T type; };
 template<typename T>

@@ -18,10 +18,10 @@ typedef struct {
 
 typedef struct {
     uint64_t total_components;
-    std::vector<arche_comp_node_t>          comp_nodes_vec;
-    std::unordered_map<uint64_t, uint64_t>  comp_map;       //map comp id to vector pos
-    std::unordered_map<uint64_t, uint64_t>  idx_map;        //map location to entity
-    std::unordered_map<uint64_t, uint64_t>  entity_map;     //map entity to vector location
+    std::vector<arche_comp_node_t*>*         comp_nodes_vec;
+    std::unordered_map<uint64_t, uint64_t>*  comp_map;       //map comp id to vector pos
+    std::unordered_map<uint64_t, uint64_t>*  idx_map;        //map location to entity
+    std::unordered_map<uint64_t, uint64_t>*  entity_map;     //map entity to vector location
 } archetype_node_t;
 
 typedef struct {
@@ -30,26 +30,14 @@ typedef struct {
     std::unordered_map<uint64_t, uint64_t>*     entity_map;
 } entity_archetype_manager_t;
 
-CORE_API UhRC_t init_entity_archetype_manager( entity_archetype_manager_t* entity_archetype_manager );
-CORE_API UhRC_t register_archetype( entity_archetype_manager_t* entity_archetype_manager, Entity_Archetype archetype, std::string archetype_name );
-CORE_API UhRC_t register_entity( entity_archetype_manager_t* entity_archetype_manager, Entity entity, std::string archetype_name );
-CORE_API uint8_t* get_component_data( entity_archetype_manager_t* entity_archetype_manager, Entity entity, uint64_t component_id );
-CORE_API UhRC_t remove_entity( entity_archetype_manager_t* entity_archetype_manager, Entity entity );
-
-template<typename T>
-T* get_component_data( entity_archetype_manager_t* entity_archetype_manager, Entity entity )
-{
-    return NULL;
-}
-
 class CORE_API Entity_Archetype_Manager {
 private:
-    static Entity_Archetype_Manager*            instance;
-    std::vector<archetype_node_t>               archetype_nodes;
-    std::unordered_map<std::string, uint64_t>   archetype_map;    //map arche name to idx
-    std::unordered_map<uint64_t, uint64_t>      entity_map;       //map entity to archetype_node_t
+    entity_archetype_manager_t*         entity_archetype_manager;
+    static Entity_Archetype_Manager*    instance;
 
     void expand_comp_node( arche_comp_node_t* component_node );
+
+    UhRC_t init( void );
 public:
     static Entity_Archetype_Manager* get_instance();
 
@@ -63,20 +51,13 @@ public:
     */
     UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_name );
 
-    /**
-        Cleans up any archetype that is marked as empty.
-
-        @return none.
-    */
-    void cleanup_archetypes();
-
-    UhRC_t add_entity( Entity entity, std::string archetype_name );
+    UhRC_t register_entity( Entity entity, std::string archetype_name );
 
     uint8_t* get_component_data( Entity entity, uint64_t component_id );
 
     template<typename T> T* get_component_data( Entity entity );
 
-    UhRC_t remove_entity( Entity entity );
+    //UhRC_t remove_entity( Entity entity );
 };
 
 template<typename T>

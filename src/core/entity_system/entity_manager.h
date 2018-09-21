@@ -63,7 +63,7 @@ Entity Entity_Manager::get_new_entity( std::string archetype_name )
     entities[next_entity_idx].id.set_active();
     uint32_t return_index = next_entity_idx;
     next_entity_idx++;
-    Entity_Archetype_Manager::get_instance()->add_entity( entities[return_index], archetype_name );
+    Entity_Archetype_Manager::get_instance()->register_entity( entities[return_index], archetype_name );
     return entities[return_index];
 }
 
