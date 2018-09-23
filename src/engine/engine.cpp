@@ -6,8 +6,6 @@
 #include "asset_types/assets.h"
 #include "asset_types/assets.cpp"
 #include "renderer.h"
-//#include "user_init.h"
-//#include "user_init.cpp"
 
 Engine* Engine::instance = NULL;
 
@@ -50,17 +48,16 @@ void Engine::init()
     component_manager->register_component<Texture_Component>();
     component_manager->register_component<Shader_Component>();
     component_manager->register_component<Static_Text_Component>();
-    component_manager->register_component<Dynamic_Text_Component>();
-    component_manager->register_component<Cube_Orbit_Component>();
+    //component_manager->register_component<Dynamic_Text_Component>();
+    //component_manager->register_component<Cube_Orbit_Component>();
 
     //register all systems NOTE: this will need to be generated maybe
     system_manager->register_system<Mesh_Render_System>();
     system_manager->register_system<Text_Render_System>();
-    system_manager->register_system<Test_System>();
+    //system_manager->register_system<Test_System>();
     //system_manager->register_system<Cube_Orbit_System>();
 
     /************* START TEST CODE ***************/
-    //user_init();
 
     debug_camera = new core::Debug_Camera(core::Vector3f(0, 55, -34), core::Vector2f(1000, 800));
     debug_camera->rotate(35.89, -0.2);

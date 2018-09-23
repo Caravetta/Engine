@@ -115,7 +115,7 @@ void CEMS::post_event( std::string event, void* data, size_t data_size )
 {
     std::unordered_map<std::string, uint64_t>::const_iterator ele = event_map.find(event);
     if (ele == event_map.end()) {
-        LOG_ERROR("Event " << event << " does not exist");
+        //LOG_ERROR("Event " << event << " does not exist");
         return;
     }
 #if 0

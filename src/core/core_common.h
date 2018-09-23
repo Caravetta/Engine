@@ -5,6 +5,7 @@
 #include<typeinfo>
 //#include<cxxabi.h>
 #include "core_return.h"
+#include <vector>
 
 #define USE_BASE_MALLOC 0
 
@@ -28,7 +29,7 @@
 #define CHECK_INFO( expr, ... ){ \
     if ( !(expr) ) { \
         std::cout << __DATE__ << " - " << __TIME__ << " - " << "ERROR" << " - " << __FILENAME__ << " - " << __LINE__ << ": "; \
-        std::cout << "Assertion error [" << #expr << "] in " << __FUNCTION__ << "() at line " << __LINE__ << " in file " << __FILENAME__ << __VA_ARGS__ << std::endl; \
+        std::cout << "Assertion error [" << #expr << "] in " << __FUNCTION__ << "() at line " << __LINE__ << " in file " << __FILENAME__ << " " << __VA_ARGS__ << std::endl; \
     } \
 }
 #else
@@ -54,6 +55,8 @@
 #define U16_MAX 65535
 #define U32_MAX 4294967295
 #define U64_MAX 18446744073709551615
+
+typedef std::vector<uint8_t> Array;
 
 template<typename T>
 struct BaseType { typedef T type; };

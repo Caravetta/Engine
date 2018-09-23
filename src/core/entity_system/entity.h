@@ -5,6 +5,8 @@
 
 namespace core {
 
+typedef base_handle_t Entity;
+#if 0
     struct Entity {
         Handle id;
 
@@ -12,7 +14,7 @@ namespace core {
             id = 0;
         };
     };
-
+#endif
 } // end namespace core
 
 #define ENTITY_H

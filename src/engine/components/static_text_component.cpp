@@ -28,7 +28,6 @@ void Static_Text_Component::generate_static_text( std::string user_text, uint16_
     uint16_t text_width = 0;
     uint16_t text_height = 0;
 
-    LOG("");
     for (int i = 0; i < text.size(); i++) {
          if ( text[i] == '\n' ) {
             text_y -= font_size + new_line_pad;

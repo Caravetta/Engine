@@ -4,7 +4,7 @@
 
 COMPONENT(
           Mesh_Component,
-          core::Handle mesh_handle;
+          core::base_handle_t mesh_handle;
          )
 
 #define MESH_COMPONENT_H

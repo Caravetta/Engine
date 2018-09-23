@@ -12,8 +12,7 @@ typedef struct {
     uint64_t    empty_idx;
     uint64_t*   empty_idx_p;
     uint64_t    component_id;
-    uint8_t*    data;
-    uint8_t**   data_p;
+    Array*      data_array;
 } arche_comp_node_t;
 
 typedef struct {

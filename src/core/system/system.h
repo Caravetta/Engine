@@ -15,7 +15,7 @@ typedef struct {
     uint64_t                component_id;
     component_usage_t       usage;
     size_t                  size;
-    std::vector<uint8_t**>  comp_data_vec;
+    std::vector<Array*>     array_data_vec;
     std::vector<uint64_t*>  entity_count_vec;
 } component_node_t;
 
@@ -38,7 +38,7 @@ public:
     std::vector<uint64_t>   component_list;
 
     System(){};
-    void add_component_data( uint8_t*** component_data, uint64_t** enitiy_count, uint64_t comp_id );
+    void add_component_data( uint64_t** enitiy_count, uint64_t comp_id, Array** data_array );
     bool has_component( uint64_t component_id );
     template<typename T> bool has_component();
 
@@ -81,7 +81,8 @@ T* System::get_data_at( uint64_t idx )
             // if idx is less than comp_total then the data must be in this current comp_data node
 
             if ( idx < comp_total ) {
-                return (T*)(*(component_nodes[comp_idx->second].comp_data_vec[i]) + (component_nodes[comp_idx->second].size * idx));
+                //return (T*)(*(component_nodes[comp_idx->second].comp_data_vec[i]) + (component_nodes[comp_idx->second].size * idx));
+                return (T*)&(component_nodes[comp_idx->second].array_data_vec[i]->at(component_nodes[comp_idx->second].size * idx));
             }
             //return_data = (idx < comp_total ? ((T*)(*(component_nodes[comp_idx->second].comp_data_vec[i]) + (component_nodes[comp_idx->second].size * idx))) : NULL);
         }
@@ -104,7 +105,6 @@ bool System::pre_update()
         // loop through the first comp (all comps have the same size) to see how many entities there are.
         for ( int i = 0; i < component_nodes[0].entity_count_vec.size(); i++ ) {
             entity_count += *(component_nodes[0].entity_count_vec[i]);
-            LOG(name << " " << *(component_nodes[0].entity_count_vec[i]));
         }
 
         if ( entity_count > 0 ) {
@@ -115,19 +115,17 @@ bool System::pre_update()
     return false;
 }
 
-void System::add_component_data( uint8_t*** component_data, uint64_t** enitiy_count, uint64_t component_id )
+void System::add_component_data( uint64_t** enitiy_count, uint64_t component_id, Array** data_array )
 {
     std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(component_id);
     if ( comp_idx != comp_map.end() ) {
         CHECK_INFO( component_id == component_nodes[comp_idx->second].component_id,
                     "comp_id:" << component_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
-        component_nodes[comp_idx->second].comp_data_vec.reserve(100);
-        component_nodes[comp_idx->second].comp_data_vec.push_back((*component_data));
-        component_nodes[comp_idx->second].entity_count_vec.reserve(100);
         component_nodes[comp_idx->second].entity_count_vec.push_back(*enitiy_count);
+        component_nodes[comp_idx->second].array_data_vec.push_back(*data_array);
     }
 
-    CHECK_INFO( comp_idx == comp_map.end(), "This comp ID:" << component_id << " is not tracked by " << name );
+    CHECK_INFO( comp_idx != comp_map.end(), "This comp ID:" << component_id << " is not tracked by " << name );
 }
 
 void System::add_component( uint64_t component_id )

@@ -1,7 +1,7 @@
 #include "handle.h"
 
 namespace core {
-
+#if 0
 Handle::Handle()
 {
     this->handle.data.index = 0;
@@ -65,5 +65,5 @@ void Handle::operator = ( const uint64_t &value )
 {
     this->handle.value = value;
 }
-
+#endif
 } // end namespace core

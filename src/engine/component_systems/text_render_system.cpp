@@ -14,7 +14,6 @@ void Text_Render_System::init()
 {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
-static int bb = 0;
 
 void Text_Render_System::update()
 {
@@ -33,10 +32,6 @@ void Text_Render_System::update()
 
     render_command.command_type = DISABLE_CULL_FACE;
     render_command_queue.push_back(render_command);
-
-    if ( bb == 0 ) {
-        LOG("NUM ENTS " << entity_count);
-    }
 
     for(int i = 0; i < entity_count; i++) {
 

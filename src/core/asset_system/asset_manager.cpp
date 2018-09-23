@@ -15,7 +15,7 @@ Asset_Manager* Asset_Manager::get_instance()
     return instance;
 }
 
-UhRC_t Asset_Manager::get_asset_handle( std::string asset_name, Handle* handle )
+UhRC_t Asset_Manager::get_asset_handle( std::string asset_name, Asset_Handle* handle )
 {
     std::unordered_map<std::string, uint64_t>::const_iterator ele = asset_handle_map.find(asset_name);
     if ( ele == asset_handle_map.end() ) {
@@ -23,7 +23,7 @@ UhRC_t Asset_Manager::get_asset_handle( std::string asset_name, Handle* handle )
         return ENGINE_ERROR;
     }
 
-    *handle = ele->second;
+    handle->id = ele->second;
 
     return SUCCESS;
 }

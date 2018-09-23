@@ -17,8 +17,6 @@ void Mesh_Render_System::init()
     glSwapIntervalEXT(0);
 }
 
-static int aa = 0;
-
 void Mesh_Render_System::update()
 {
      render_command_t render_command;
@@ -37,10 +35,6 @@ void Mesh_Render_System::update()
      Mesh_Component*     mesh_component;
 
      Mesh_Asset* mesh_asset = NULL;
-
-    if ( aa == 0 ) {
-        LOG("NUM ENTS " << entity_count);
-    }
 
      for(int i = 0; i < entity_count; i++) {
 
