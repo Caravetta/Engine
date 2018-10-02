@@ -1,5 +1,5 @@
-#ifndef _FRACTALNOISE_H_
-#define _FRACTALNOISE_H_
+#ifndef __FRACTALNOISE_H__
+#define __FRACTALNOISE_H__
 
  #include "perlin.h"
 
@@ -31,4 +31,4 @@ private:
     float m_baseAmplitude; // Initial starting amplitude. Default is 1.0.
 };
 
-#endif
+#endif //__FRACTALNOISE_H__

@@ -1,4 +1,5 @@
-#if !defined(THREAD_WIN32_H)
+#ifndef __THREAD_WIN32_H__
+#define __THREAD_WIN32_H__
 
 namespace core {
 
@@ -13,5 +14,4 @@ void platform_create_thread( thread_data_window_t* thread_data );
 
 } // end namespace core
 
-#define THREAD_WIN32_H
-#endif
+#endif //__THREAD_WIN32_H__

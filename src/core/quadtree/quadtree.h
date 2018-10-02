@@ -1,4 +1,5 @@
-#if !defined(QUADTREE_H)
+#ifndef __QUADTREE_H__
+#define __QUADTREE_H__
 
 #include <vector>
 #include "../core_common.h"
@@ -239,5 +240,4 @@ void QuadTree<T>::retrieve_all_nodes( quadtree_node_t* node, std::vector<T*>* ob
 
 } //end namespace core
 
-#define QUADTREE_H
-#endif
+#endif //__QUADTREE_H__

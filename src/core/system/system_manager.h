@@ -1,4 +1,5 @@
-#if !defined(SYSTEM_MANAGER_H)
+#ifndef __SYSTEM_MANAGER_H__
+#define __SYSTEM_MANAGER_H__
 
 #include <vector>
 #include <unordered_map>
@@ -17,16 +18,14 @@ namespace core {
             std::unordered_map<uint64_t, uint64_t> entity_map;
         };
 
-        std::vector<System*> systems;
         std::vector<system_info_t> systems_info;
 
-        void init();
-
     public:
+        std::vector<System*> systems;
+
+
         static System_Manager* get_instance();
         template<typename T> void register_system();
-        void register_entity( Entity entity );
-        void deregister_entity( Entity entity );
         void init_systems();
         void update_systems();
         void shutdown_systems();
@@ -41,5 +40,4 @@ void System_Manager::register_system()
 
 } // end namespace core
 
-#define SYSTEM_MANAGER_H
-#endif
+#endif //__SYSTEM_MANAGER_H__

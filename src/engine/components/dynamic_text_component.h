@@ -1,4 +1,5 @@
-#if !defined(DYNAMIC_TEXT_COMPONENT_H)
+#ifndef __DYNAMIC_TEXT_COMPONENT_H__
+#define __DYNAMIC_TEXT_COMPONENT_H__
 
 #include <vector>
 #include <string>
@@ -19,5 +20,4 @@ public:
     void regenerate_text();
 };
 
-#define DYNAMIC_TEXT_COMPONENT_H
-#endif
+#endif //__DYNAMIC_TEXT_COMPONENT_H__

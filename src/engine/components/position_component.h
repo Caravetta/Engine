@@ -1,14 +1,12 @@
-#if !defined(POSITION_COMPONENT_H)
+#ifndef __POSITION_COMPONENT_H__
+#define __POSITION_COMPONENT_H__
 
 #include "../core/core.h"
 
-class Position_Component : public core::Component {
-public:
-    core::Vector3f position;
+COMPONENT(
+          Position_Component,       //name of component
+          core::Vector3f position;  //start of component data
+          std::string test_string = "awdawd";
+         )
 
-    Position_Component();
-
-};
-
-#define POSITION_COMPONENT_H
-#endif
+#endif //__POSITION_COMPONENT_H__

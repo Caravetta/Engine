@@ -1,4 +1,5 @@
-#if !defined(CORE_H)
+#ifndef __CORE_H__
+#define __CORE_H__
 
 #ifdef CORE_EXPORT
 #define CORE_API __declspec(dllexport)
@@ -32,14 +33,14 @@
 #include "quadtree/quadtree.h"
 #include "loader.h"
 #include "time/timer.h"
+#include "time/function_perf.h"
 #include "core_return.h"
 #include "system/system.h"
 #include "system/system_manager.h"
 #include "handle_system/handle.h"
 #include "font/font_manager.h"
 #include "font/font.h"
-//#include FT_FREETYPE_H
-//#include "memory_system/heap.h"
+#include "entity_system/entity_archetype.h"
+#include "entity_system/entity_archetype_manager.h"
 
-#define CORE_H
-#endif
+#endif //__CORE_H__

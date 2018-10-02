@@ -1,4 +1,5 @@
-#if !defined(VBO_H)
+#ifndef __VBO_H__
+#define __VBO_H__
 
 namespace core {
 
@@ -16,5 +17,4 @@ namespace core {
 
 } //end namespace core
 
-#define VBO_H
-#endif
+#endif //__VBO_H__

@@ -1,13 +1,11 @@
-#if !defined(MESH_COMPONENT_H)
+#ifndef __MESH_COMPONENT_H__
+#define __MESH_COMPONENT_H__
 
 #include "../core/core.h"
 
-class Mesh_Component : public core::Component {
-public:
-    core::Handle mesh_handle;
+COMPONENT(
+          Mesh_Component,
+          core::base_handle_t mesh_handle;
+         )
 
-    Mesh_Component();
-};
-
-#define MESH_COMPONENT_H
-#endif
+#endif //__MESH_COMPONENT_H__

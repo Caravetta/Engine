@@ -1,4 +1,5 @@
-#if !defined(UNHINGED_LOADER_H)
+#ifndef __LOADER_H__
+#define __LOADER_H__
 
 #include <vector>
 #include <string.h>
@@ -19,9 +20,8 @@ namespace core {
     CORE_API Mesh* load_model( std::string file_path, file_type_t model_type );
     CORE_API Texture* load_texture( std::string file_path, file_type_t texture_type );
 
-    void load_obj_file( std::string file_path, Mesh* mesh );
+    CORE_API void load_obj_file( std::string file_path, Mesh* mesh );
 
 } //end namespace core
 
-#define UNHINGED_LOADER_H
-#endif
+#endif //__LOADER_H__

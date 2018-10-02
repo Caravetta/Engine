@@ -252,6 +252,8 @@ void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc )
 		return;
 	}
 
+#define WGL_SAMPLE_BUFFERS_ARB               0x2041
+#define WGL_SAMPLES_ARB                      0x2042
 	// Support for OpenGL rendering.
 	attributeListInt[0] = WGL_SUPPORT_OPENGL_ARB;
 	attributeListInt[1] = TRUE;
@@ -291,8 +293,14 @@ void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc )
     //attributeList[18] = WGL_CONTEXT_PROFILE_MASK_ARB;
     //attributeList[19] = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
 
+    attributeListInt[18] = WGL_SAMPLE_BUFFERS_ARB;
+    attributeListInt[19] = 1;
+
+    attributeListInt[20] = WGL_SAMPLES_ARB;
+    attributeListInt[21] = 4;
+
 	// Null terminate the attribute list.
-	attributeListInt[18] = 0;
+	attributeListInt[22] = 0;
 
 	result = wglChoosePixelFormatARB(*hDC, attributeListInt, NULL, 1, pixelFormat, &formatCount);
 	if ( result != 1 ) {
@@ -306,7 +314,6 @@ void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc )
 		LOG_ERROR("Failed to set pixel format");
 		return;
 	}
-
 	// Set the 4.0 version of OpenGL in the attribute list.
 	attributeList[0] = WGL_CONTEXT_MAJOR_VERSION_ARB;
     attributeList[1] = 3;
@@ -318,6 +325,8 @@ void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc )
             WGL_CONTEXT_MINOR_VERSION_ARB, 2,
             WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
             WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+           //WGL_SAMPLE_BUFFERS_ARB, 1, // Number of buffers (must be 1 at time of writing)
+           //WGL_SAMPLES_ARB, 4,
             0
        };
 

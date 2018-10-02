@@ -1,4 +1,5 @@
-#if !defined(FONT_H)
+#ifndef __FONT_H__
+#define __FONT_H__
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -43,5 +44,4 @@ namespace core {
 
 } // end namespace core
 
-#define FONT_H
-#endif
+#endif //__FONT_H__

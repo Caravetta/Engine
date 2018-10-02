@@ -1,4 +1,5 @@
-#if !defined(FONT_MANAGER_H)
+#ifndef __FONT_MANAGER_H__
+#define __FONT_MANAGER_H__
 
 #include <string>
 #include <ft2build.h>
@@ -21,5 +22,4 @@ namespace core {
 
 } // end namespace core
 
-#define FONT_MANAGER_H
-#endif
+#endif //__FONT_MANAGER_H__

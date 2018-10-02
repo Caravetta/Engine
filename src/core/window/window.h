@@ -1,4 +1,5 @@
-#if !defined(WINDOW_H)
+#ifndef __WINDOW_H__
+#define __WINDOW_H__
 
 #include <string>
 #include "../core_common.h"
@@ -26,5 +27,4 @@ namespace core {
 
 } //end namesapce core
 
-#define WINDOW_H
-#endif
+#endif //__WINDOW_H__

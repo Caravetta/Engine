@@ -16,6 +16,7 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 void Dynamic_Text_Render_System::update()
 {
+    #if 0
     if ( entities->size() > 0 ) {
          core::Entity_Manager* enitiy_manager = Engine::get_instance()->enitiy_manager;
          core::Entity entity;
@@ -54,6 +55,7 @@ void Dynamic_Text_Render_System::update()
               render_command_queue.push_back(render_command);
          }
     }
+    #endif
 }
 
 void Dynamic_Text_Render_System::shutdown()

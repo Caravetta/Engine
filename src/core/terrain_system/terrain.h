@@ -1,4 +1,5 @@
-#if !defined(TERRAIN_H)
+#ifndef __TERRAIN_H__
+#define __TERRAIN_H__
 
 #include "../core_common.h"
 #include "../math/vector.h"
@@ -33,5 +34,4 @@ namespace core {
 
 } //end namespace core
 
-#define TERRAIN_H
-#endif
+#endif //__TERRAIN_H__

@@ -13,7 +13,9 @@ int main()
 
     engine->init();
 
+        START_TIME_BLOCK(engine_update);
     while( !engine->window->is_closed() ) {
+        //START_TIME_BLOCK(engine_update);
         engine->update();
     }
 

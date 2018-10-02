@@ -1,13 +1,14 @@
-#if !defined(TEXTURE_COMPONENT_H)
+#ifndef __TEXTURE_COMPONENT_H__
+#define __TEXTURE_COMPONENT_H__
 
 #include "../core/core.h"
 
-class Texture_Component : public core::Component {
-public:
-    uint32_t texture_id;
+COMPONENT(
+          // Name of Component
+          Texture_Component,
 
-    Texture_Component();
-};
+          // Start of Component Data
+          uint32_t texture_id;
+         )
 
-#define TEXTURE_COMPONENT_H
-#endif
+#endif //__TEXTURE_COMPONENT_H__

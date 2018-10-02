@@ -1,4 +1,5 @@
-#if !defined(WINDOW_WIN32_H)
+#ifndef __WINDOW_WIN32_H__
+#define __WINDOW_WIN32_H__
 
 #include <string>
 
@@ -13,5 +14,4 @@ bool platform_window_is_closed( struct platform_window_t* platform_window );
 
 } //end namespace core
 
-#define WINDOW_WIN32_H
-#endif
+#endif //__WINDOW_WIN32_H__

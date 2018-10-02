@@ -6,6 +6,12 @@
 #include "asset_types/assets.h"
 #include "asset_types/assets.cpp"
 #include "renderer.h"
+//#include "user_init.h"
+//#include "user_init.cpp"
+
+#include <ctime>
+#include <ratio>
+#include <chrono>
 
 Engine* Engine::instance = NULL;
 
@@ -37,6 +43,8 @@ void Engine::init()
     //setup asset manager
     asset_manager = core::Asset_Manager::get_instance();
 
+    archetype_manager = core::Entity_Archetype_Manager::get_instance();
+
     //setup event manager
     //uh::CEMS::get_instance();
 
@@ -46,18 +54,35 @@ void Engine::init()
     component_manager->register_component<Texture_Component>();
     component_manager->register_component<Shader_Component>();
     component_manager->register_component<Static_Text_Component>();
-    component_manager->register_component<Dynamic_Text_Component>();
+    component_manager->register_component<Motion_Component>();
+    //component_manager->register_component<Dynamic_Text_Component>();
+    //component_manager->register_component<Cube_Orbit_Component>();
 
     //register all systems NOTE: this will need to be generated maybe
     system_manager->register_system<Mesh_Render_System>();
     system_manager->register_system<Text_Render_System>();
+    system_manager->register_system<Motion_System>();
+    //system_manager->register_system<Test_System>();
+    //system_manager->register_system<Cube_Orbit_System>();
+
+    /************* START TEST CODE ***************/
+    //user_init();
+
+    debug_camera = new core::Debug_Camera(core::Vector3f(67, 8, 32), core::Vector2f(1000, 800));
+    debug_camera->rotate(30.29, -0.2);
+
+    /************* END TEST CODE *****************/
 
     system_manager->init_systems();
 }
 
+static int count = 0;
+float up_min = 1.0f;
+float up_max = -1.0f;
 
 void Engine::update()
 {
+
     this->frame_time.update();
 
     //update the window
@@ -68,7 +93,16 @@ void Engine::update()
 
     system_manager->update_systems();
 
+    /************* START TEST CODE ***************/
+    this->debug_camera->update_projection_matrix(core::Vector2f((float)this->window->get_width(), (float)this->window->get_height()));
+    this->debug_camera->update_ortho_matrix(core::Vector2f((float)this->window->get_width(), (float)this->window->get_height()));
+    this->debug_camera->set_view_matrix();
+    this->debug_camera->update(this->frame_time.get_delta());
+    /************* END TEST CODE *****************/
+
     render();
+
+    Function_Perf::get_instance()->print();
 
     Engine::get_instance()->window->swap_buffers();
 }

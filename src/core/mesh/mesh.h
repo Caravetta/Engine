@@ -1,4 +1,5 @@
-#if !defined(MESH_H)
+#ifndef __MESH_H__
+#define __MESH_H__
 
 #include "../core_common.h"
 #include "../platform/platform.h"
@@ -74,5 +75,4 @@ namespace core {
 
 } //end namespace core
 
-#define MESH_H
-#endif
+#endif //__MESH_H__

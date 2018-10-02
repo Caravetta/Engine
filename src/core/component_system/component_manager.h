@@ -1,119 +1,98 @@
-#if !defined(COMPONENT_MANAGER_H)
+#ifndef __COMPONENT_MANAGER_H__
+#define __COMPONENT_MANAGER_H__
 
 #include <vector>
 #include <utility>
 #include <type_traits>
 #include <bitset>
+#include <limits>
 #include "../core_common.h"
 #include "component.h"
 
+#define NON_VALID_ID 18446744073709551615
+
 namespace core {
 
-#define COMP_VEC_SIZE 50
+    typedef UhRC_t (*component_create_function)( uint8_t* memory );
 
-    static uint64_t current_type_idx = 0;
+    struct component_info {
+        component_create_function create_function;
+        size_t size;
+    };
 
     template <typename T>
     struct type_idx_info
     {
-        static uint64_t idx;
+        static uint64_t id;
     };
     template <typename T>
-    uint64_t type_idx_info<T>::idx{current_type_idx++};
-
-    template <typename TBase, typename T>
-    inline constexpr auto isBaseOf() noexcept
-    {
-        return std::is_base_of<TBase, T>();
-    }
+    uint64_t type_idx_info<T>::id{NON_VALID_ID};
 
     class Component_Manager {
     private:
         CORE_API static Component_Manager* instance;
-        std::vector<char*> components;
-        void init();
+        std::vector<component_info> component_info_vec;
+
     public:
         static Component_Manager* get_instance();
         uint64_t get_max_components();
+        uint64_t get_component_size( uint64_t component_id );
+        component_create_function get_component_create( uint64_t component_id );
         template<typename T> void register_component();
-        template<typename T> void set_component( uint64_t entity_index, T component );
-        template<typename T> T get_component( uint64_t entity_index ); //TODO: need to change from using entity index to using entity handle
-        template<typename T> uint64_t get_component_index();
         template<typename T> uint64_t id();
-        template<typename T> bool valid_component();
     };
-
-
-void Component_Manager::init()
-{
-    components.resize(current_type_idx);
-}
 
 Component_Manager* Component_Manager::get_instance()
 {
     if ( instance == NULL ) {
         LOG("Initializing Component_Manager");
         instance = new Component_Manager;
-        instance->init();
     }
     return instance;
 }
 
 uint64_t Component_Manager::get_max_components()
 {
-    return current_type_idx;
+    return component_info_vec.size();
 }
 
-template<typename T>
-uint64_t Component_Manager::get_component_index()
+uint64_t Component_Manager::get_component_size( uint64_t component_id )
 {
-    return type_idx_info<T>::idx;
+    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
+    return component_info_vec[component_id].size;
+}
+
+component_create_function Component_Manager::get_component_create( uint64_t component_id )
+{
+    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
+    return component_info_vec[component_id].create_function;
 }
 
 template<typename T>
 uint64_t Component_Manager::id()
 {
-    return type_idx_info<T>::idx;
-}
-
-template<typename T>
-bool Component_Manager::valid_component()
-{
-    if ( components[type_idx_info<T>::idx] != NULL ) {
-        return true;
-    } else {
-        return false;
-    }
+    CHECK_INFO( type_idx_info<T>::id != NON_VALID_ID, "This component (" << typeid(T).name() << ") has not been registered" );
+    return type_idx_info<T>::id;
 }
 
 template<typename T>
 void Component_Manager::register_component()
 {
-    if ( components[type_idx_info<T>::idx] == NULL ) {
-        components[type_idx_info<T>::idx] = (char*)(new std::vector<T>(COMP_VEC_SIZE));
-    }
-    LOG("Registered Component: " << typeid(T).name() << " with ID: " << type_idx_info<T>::idx);
-}
-
-template<typename T>
-void Component_Manager::set_component( uint64_t entity_index, T new_component )
-{
-    if (components[type_idx_info<T>::idx] != NULL) {
-        std::vector<T>* component = (std::vector<T>*)components[type_idx_info<T>::idx];
-        component->at(entity_index) = new_component;
-    } else {
-        LOG_ERROR("Component has not been enabled");
-    }
-}
-
-template<typename T>
-T Component_Manager::get_component( uint64_t entity_index )
-{
-    std::vector<T>* component = (std::vector<T>*)components[type_idx_info<T>::idx];
-    return component->at(entity_index);
+    component_info temp_comp;
+    temp_comp.create_function = component_create<T>;
+    temp_comp.size = sizeof(T);
+    type_idx_info<T>::id = component_info_vec.size();
+    component_info_vec.push_back(temp_comp);
+    LOG("Registered Component: " << typeid(T).name() << " with ID: " << type_idx_info<T>::id << " sizeof " << temp_comp.size);
 }
 
 } // end namespace core
 
-#define COMPONENT_MANAGER_H
-#endif
+template<typename T>
+UhRC_t component_create( uint8_t* memory )
+{
+    new (memory) T;
+    return SUCCESS;
+}
+
+#endif __COMPONENT_MANAGER_H__

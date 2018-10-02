@@ -1,4 +1,5 @@
-#if !defined(ENGINE_H)
+#ifndef __ENGINE_H__
+#define __ENGINE_H__
 
 #include "../core/core.h"
 
@@ -13,6 +14,7 @@
         core::System_Manager* system_manager;
         core::Asset_Manager* asset_manager;
         core::Debug_Camera* debug_camera;
+        core::Entity_Archetype_Manager* archetype_manager;
 
         static Engine* get_instance();
         void init();
@@ -20,5 +22,4 @@
         void shutdown();
     };
 
-#define ENGINE_H
-#endif
+#endif //__ENGINE_H__

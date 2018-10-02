@@ -62,7 +62,7 @@ struct render_command_t {
     render_command_type_t command_type;
     unsigned int shader_id;
     core::vao*   vao;
-    uint64_t     indices_count;
+    uint32_t     indices_count;
     unsigned int texture_id;
     core::Vector3f position;
     union {
@@ -78,16 +78,16 @@ struct opengl_command_t {
     opengl_command_type_t command_type;
     union {
         opengl_type type;
-        unsigned int shader_id;
+        uint32_t shader_id;
         struct {
             core::vao*   vao;
         } vao_info;
-        unsigned int texture_id;
+        uint32_t texture_id;
         core::Matrix4f projection_matrix;
         core::Matrix4f view_matrix;
         struct {
             core::Matrix4f transformation_matrix;
-            uint64_t       indices_count;
+            uint32_t       indices_count;
             vao_D_type_t   d_type;
             core::Vector3f position;
         } draw_data;
@@ -97,7 +97,7 @@ struct opengl_command_t {
 };
 
 typedef struct {
-    unsigned int shader_id;
+    uint32_t shader_id;
     core::Matrix4f projection_matrix;
     core::Matrix4f view_matrix;
     Mesh_Asset* mesh_asset;
@@ -116,19 +116,19 @@ uint64_t internal_command_count;
 typedef struct {
     core::vao* vao;
     vao_D_type_t d_type;
-    uint64_t   indices_count;
+    uint32_t   indices_count;
     std::vector<core::Matrix4f> vao_pos;
     std::vector<core::Vector3f> vao_pos_3f;
 } vao_info_t;
 
 typedef struct {
-    uint64_t texture_id;
+    uint32_t texture_id;
     std::unordered_map<uint64_t, uint64_t> vao_map;
     std::vector<vao_info_t> vao_info;
 } texture_info_t;
 
 typedef struct {
-    uint64_t shader_id;
+    uint32_t shader_id;
     std::unordered_map<uint64_t, uint64_t> texture_map;
     std::vector<texture_info_t> texture_info;
 } shader_info_t;
@@ -378,9 +378,10 @@ void generate_commands(std::vector<opengl_command_t>* opengl_commands)
     }
 
 }
-
+#define GL_MULTISAMPLE                    0x809D
 void render()
 {
+    glEnable( GL_MULTISAMPLE );
     glViewport(0, 0, Engine::get_instance()->window->get_width(), Engine::get_instance()->window->get_height());
     glClearColor(0.16f, 0.29f, 0.48f, 0.54f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

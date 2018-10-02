@@ -1,4 +1,5 @@
-#if !defined(TIMER_H)
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
 #include "../core_common.h"
 
@@ -17,5 +18,4 @@ namespace core {
 
 } //end namespace core
 
-#define TIMER_H
-#endif
+#endif //__TIMER_H__

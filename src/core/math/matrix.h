@@ -1,4 +1,5 @@
-#if !defined(MATRIX_H)
+#ifndef __MATRIX_H__
+#define __MATRIX_H__
 
 #include "../core_common.h"
 #include "vector.h"
@@ -23,5 +24,4 @@ namespace core {
 
 } //end namespace core
 
-#define MATRIX_H
-#endif
+#endif //__MATRIX_H__
