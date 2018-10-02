@@ -64,6 +64,7 @@ bool System::has_component()
 template<typename T>
 T* System::get_data_at( uint64_t idx )
 {
+    START_TIME_BLOCK(system_get_data_at);
     uint64_t comp_id = Component_Manager::get_instance()->id<T>();
     uint64_t comp_total = 0;
     T* return_data = NULL;
@@ -74,17 +75,15 @@ T* System::get_data_at( uint64_t idx )
 
         CHECK_INFO( comp_id == component_nodes[comp_idx->second].component_id,
                     "comp_id:" << comp_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
-
         for ( int i = 0; i < component_nodes[comp_idx->second].entity_count_vec.size(); i++ ) {
             comp_total += *(component_nodes[comp_idx->second].entity_count_vec[i]);
 
             // if idx is less than comp_total then the data must be in this current comp_data node
 
             if ( idx < comp_total ) {
-                //return (T*)(*(component_nodes[comp_idx->second].comp_data_vec[i]) + (component_nodes[comp_idx->second].size * idx));
+                END_TIME_BLOCK(system_get_data_at);
                 return (T*)&(component_nodes[comp_idx->second].array_data_vec[i]->at(component_nodes[comp_idx->second].size * idx));
             }
-            //return_data = (idx < comp_total ? ((T*)(*(component_nodes[comp_idx->second].comp_data_vec[i]) + (component_nodes[comp_idx->second].size * idx))) : NULL);
         }
 
         CHECK_INFO( idx > comp_total, "idx:" << idx << " comp_total:" << comp_total);
@@ -92,6 +91,7 @@ T* System::get_data_at( uint64_t idx )
 
     CHECK_INFO( comp_idx == comp_map.end(), "This comp ID:" << comp_id << " is not tracked by " << name );
 
+    END_TIME_BLOCK(system_get_data_at);
     return return_data;
 }
 

@@ -1,4 +1,5 @@
-#if !defined(UH_INPUT_MANAGER_H)
+#ifndef __INPUT_MANAGER_H__
+#define __INPUT_MANAGER_H__
 
 #include <string>
 #include <unordered_map>
@@ -174,5 +175,4 @@ namespace core {
 
 } //end namespace core
 
-#define UH_INPUT_MANAGER_H
-#endif
+#endif //__INPUT_MANAGER_H__

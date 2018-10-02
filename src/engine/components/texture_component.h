@@ -1,4 +1,5 @@
-#if !defined(TEXTURE_COMPONENT_H)
+#ifndef __TEXTURE_COMPONENT_H__
+#define __TEXTURE_COMPONENT_H__
 
 #include "../core/core.h"
 
@@ -10,5 +11,4 @@ COMPONENT(
           uint32_t texture_id;
          )
 
-#define TEXTURE_COMPONENT_H
-#endif
+#endif //__TEXTURE_COMPONENT_H__

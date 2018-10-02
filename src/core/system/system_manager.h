@@ -1,4 +1,5 @@
-#if !defined(SYSTEM_MANAGER_H)
+#ifndef __SYSTEM_MANAGER_H__
+#define __SYSTEM_MANAGER_H__
 
 #include <vector>
 #include <unordered_map>
@@ -39,5 +40,4 @@ void System_Manager::register_system()
 
 } // end namespace core
 
-#define SYSTEM_MANAGER_H
-#endif
+#endif //__SYSTEM_MANAGER_H__

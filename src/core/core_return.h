@@ -1,4 +1,5 @@
-#if !defined(CORE_RETURN_H)
+#ifndef __CORE_RETURN_H__
+#define __CORE_RETURN_H__
 
 typedef enum {
     SUCCESS               = 0,
@@ -11,5 +12,4 @@ typedef enum {
     ENTITY_NOT_VALID
 } UhRC_t;
 
-#define CORE_RETURN_H
-#endif
+#endif //__CORE_RETURN_H__

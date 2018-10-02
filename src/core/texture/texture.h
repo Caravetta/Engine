@@ -1,4 +1,5 @@
-#if !defined(TEXTURE_H)
+#ifndef __TEXTURE_H__
+#define __TEXTURE_H__
 
 #include "../core_common.h"
 
@@ -17,5 +18,4 @@ namespace core {
     };
 } //end namespace core
 
-#define TEXTURE_H
-#endif
+#endif //__TEXTURE_H__

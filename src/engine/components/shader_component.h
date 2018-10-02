@@ -1,4 +1,5 @@
-#if !defined(SHADER_COMPONENT_H)
+#ifndef __SHADER_COMPONENT_H__
+#define __SHADER_COMPONENT_H__
 
 #include "../core/core.h"
 
@@ -12,5 +13,4 @@ COMPONENT(
           uint32_t program_id;
          )
 
-#define SHADER_COMPONENT_H
-#endif
+#endif //__SHADER_COMPONENT_H__

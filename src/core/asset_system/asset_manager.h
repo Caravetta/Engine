@@ -1,4 +1,5 @@
-#if !defined(ASSET_MANAGER_H)
+#ifndef __ASSET_MANAGER_H__
+#define __ASSET_MANAGER_H__
 
 #include <vector>
 #include <unordered_map>
@@ -88,5 +89,4 @@ UhRC_t Asset_Manager::get_asset( std::string asset_name, T** asset )
 
 } // end namespace core
 
-#define ASSET_MANAGER_H
-#endif
+#endif //__ASSET_MANAGER_H__

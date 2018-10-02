@@ -1,4 +1,5 @@
-#if !defined(TGA_H)
+#ifndef __TGA_H__
+#define __TGA_H__
 
 #include <string>
 #include "../core_common.h"
@@ -9,5 +10,4 @@ void load_tga( Image* image_data, std::string path );
 
 } //end namespace core
 
-#define TGA_H
-#endif
+#endif //__TGA_H__

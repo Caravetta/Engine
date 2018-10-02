@@ -1,4 +1,5 @@
-#if !defined(ASSET_H)
+#ifndef __ASSET_H__
+#define __ASSET_H__
 
 #include <string>
 #include "../core_common.h"
@@ -20,5 +21,4 @@ public:
 
 } // end namespace core
 
-#define ASSET_H
-#endif
+#endif //__ASSET_H__

@@ -1,4 +1,5 @@
-#if !defined(UTILS_WIN32_H)
+#ifndef __UTILS_WIN32_H__
+#define __UTILS_WIN32_H__
 
 namespace core {
 
@@ -11,5 +12,4 @@ void* platform_get_current_process();
 
 } //end namespace core
 
-#define UTILS_WIN32_H
-#endif
+#endif //__UTILS_WIN32_H__

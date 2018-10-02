@@ -1,4 +1,5 @@
-#if !defined(ENTITY_ARCHETYPE_H)
+#ifndef __ENTITY_ARCHETYPE_H__
+#define __ENTITY_ARCHETYPE_H__
 
 #include "../core_common.h"
 
@@ -33,5 +34,4 @@ bool Entity_Archetype::has_component()
 
 } // end namespace core
 
-#define ENTITY_ARCHETYPE_H
-#endif
+#endif //__ENTITY_ARCHETYPE_H__

@@ -23,6 +23,7 @@
 #include "math/fractal_noise.cpp"
 #include "loader.cpp"
 #include "time/timer.cpp"
+#include "time/function_perf.cpp"
 #include "system/system_manager.cpp"
 #include "handle_system/handle.cpp"
 #include "font/font_manager.cpp"

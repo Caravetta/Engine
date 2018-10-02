@@ -1,4 +1,5 @@
-#if !defined(ENGINE_H)
+#ifndef __ENGINE_H__
+#define __ENGINE_H__
 
 #include "../core/core.h"
 
@@ -21,5 +22,4 @@
         void shutdown();
     };
 
-#define ENGINE_H
-#endif
+#endif //__ENGINE_H__

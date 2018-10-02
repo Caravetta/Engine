@@ -50,6 +50,14 @@ public:
     */
     UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_name );
 
+    /**
+        Register and entity with the archetype system.
+
+        @param entity           the entity handle
+        @param archetype_name   archetype to register the entity with
+
+        @return UhRC_t returns a return code.
+    */
     UhRC_t register_entity( Entity entity, std::string archetype_name );
 
     uint8_t* get_component_data( Entity entity, uint64_t component_id );

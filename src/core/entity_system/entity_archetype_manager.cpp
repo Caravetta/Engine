@@ -174,8 +174,8 @@ UhRC_t Entity_Archetype_Manager::register_entity( Entity entity, std::string arc
 
             // check to see if we need to resize data
             if ( tmp_archetype_node->comp_nodes_vec->at(i)->empty_idx == tmp_archetype_node->comp_nodes_vec->at(i)->total_elements ) {
-                DEBUG_LOG("Archetype " << archetype_name << " expanding Comp ID " << tmp_archetype_node->comp_nodes_vec->at(i)->component_id << " from " <<
-                          tmp_archetype_node->comp_nodes_vec->at(i)->total_elements << " to " << tmp_archetype_node->comp_nodes_vec->at(i)->total_elements + COMP_RESIZE_SIZE);
+                //DEBUG_LOG("Archetype " << archetype_name << " expanding Comp ID " << tmp_archetype_node->comp_nodes_vec->at(i)->component_id << " from " <<
+                //          tmp_archetype_node->comp_nodes_vec->at(i)->total_elements << " to " << tmp_archetype_node->comp_nodes_vec->at(i)->total_elements + COMP_RESIZE_SIZE);
 
                 tmp_archetype_node->comp_nodes_vec->at(i)->data_array->resize(comp_size * (tmp_archetype_node->comp_nodes_vec->at(i)->total_elements + COMP_RESIZE_SIZE));
                 tmp_archetype_node->comp_nodes_vec->at(i)->total_elements = tmp_archetype_node->comp_nodes_vec->at(i)->total_elements + COMP_RESIZE_SIZE;

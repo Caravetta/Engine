@@ -1,4 +1,5 @@
-#if !defined(IMAGE_H)
+#ifndef __IMAGE_H__
+#define __IMAGE_H__
 
 #include <string>
 #include <vector>
@@ -30,5 +31,4 @@ typedef union {
 
 } // end namespace core
 
-#define IMAGE_H
-#endif
+#endif //__IMAGE_H__

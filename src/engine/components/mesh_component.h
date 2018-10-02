@@ -1,4 +1,5 @@
-#if !defined(MESH_COMPONENT_H)
+#ifndef __MESH_COMPONENT_H__
+#define __MESH_COMPONENT_H__
 
 #include "../core/core.h"
 
@@ -7,5 +8,4 @@ COMPONENT(
           core::base_handle_t mesh_handle;
          )
 
-#define MESH_COMPONENT_H
-#endif
+#endif //__MESH_COMPONENT_H__

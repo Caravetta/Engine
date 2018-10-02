@@ -1,4 +1,5 @@
-#if !defined(MATH_UTILS_H)
+#ifndef __MATH_UTILS_H__
+#define __MATH_UTILS_H__
 
 #include <vector>
 #include "../core_common.h"
@@ -48,5 +49,4 @@ inline bool aabb_collision(float rect1_x, float rect1_y, float rect1_width, floa
 
 } // end namespace core
 
-#define MATH_UTILS_H
-#endif
+#endif //__MATH_UTILS_H__

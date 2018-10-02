@@ -1,4 +1,5 @@
-#if !defined(COMPONENT_H)
+#ifndef __COMPONENT_H__
+#define __COMPONENT_H__
 
 #include "../core_common.h"
 
@@ -23,5 +24,4 @@ namespace core {
 
 } // end namespace core
 
-#define COMPONENT_H
-#endif
+#endif //__COMPONENT_H__

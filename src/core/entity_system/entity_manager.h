@@ -1,4 +1,5 @@
-#if !defined(ENTITY_MANAGER_H)
+#ifndef __ENTITY_MANAGER_H__
+#define __ENTITY_MANAGER_H__
 
 #include <vector>
 #include <utility>
@@ -39,8 +40,8 @@ public:
     template<typename T> bool is_component_set( Entity entity );
 
 private:
-    void resize_entities();
-    void resize_entity_vec( void );
+    void increase_entity_vec( void );
+    void reduce_entity_vec( void );
 
 };
 
@@ -68,5 +69,4 @@ T* Entity_Manager::get_component( Entity entity )
 
 } // end namespace core
 
-#define ENTITY_MANAGER_H
-#endif
+#endif //__ENTITY_MANAGER_H__

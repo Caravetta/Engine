@@ -1,4 +1,5 @@
-#if !defined(UNHINGED_LOADER_H)
+#ifndef __LOADER_H__
+#define __LOADER_H__
 
 #include <vector>
 #include <string.h>
@@ -23,5 +24,4 @@ namespace core {
 
 } //end namespace core
 
-#define UNHINGED_LOADER_H
-#endif
+#endif //__LOADER_H__

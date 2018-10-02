@@ -1,4 +1,5 @@
-#if !defined(PLATFORM_H)
+#ifndef __PLATFORM_H__
+#define __PLATFORM_H__
 
 #ifdef LINUX
 #include "../core_common.h"
@@ -20,5 +21,4 @@
 #include "win_32/opengl/vbo.h"
 #endif
 
-#define PLATFORM_H
-#endif
+#endif //__PLATFORM_H__

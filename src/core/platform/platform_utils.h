@@ -1,4 +1,5 @@
-#if !defined(PLATFORM_UTILS_H)
+#ifndef __PLATFORM_UTILS_H__
+#define __PLATFORM_UTILS_H__
 
 #include "../core_common.h"
 
@@ -15,5 +16,4 @@ CORE_API void* get_current_process();
 
 } // end namespace core
 
-#define PLATFORM_UTILS_H
-#endif
+#endif //__PLATFORM_UTILS_H__

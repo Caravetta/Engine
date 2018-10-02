@@ -1,6 +1,10 @@
 #include "system_manager.h"
 #include "../entity_system/entity_manager.h"
 
+#include <ctime>
+#include <ratio>
+#include <chrono>
+
 namespace core {
 
 #define SYSTEM_VEC_SIZE 2
@@ -26,11 +30,13 @@ void System_Manager::init_systems()
 
 void System_Manager::update_systems()
 {
+    START_TIME_BLOCK( update_systems );
     for ( uint32_t i = 0; i < systems.size(); i++ ) {
         if ( systems[i]->pre_update() ) {
             systems[i]->update();
         }
     }
+    END_TIME_BLOCK( update_systems );
 }
 
 void System_Manager::shutdown_systems()

@@ -1,4 +1,5 @@
-#if !defined(OPENGL_H)
+#ifndef __OPENGL_H__
+#define __OPENGL_H__
 
 #include <windows.h>
 #include <gl/gl.h>
@@ -428,5 +429,4 @@ typedef enum {
 CORE_API int load_opengl_extensions();
 void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc );
 
-#define OPENGL_H
-#endif
+#endif //__OPENGL_H__

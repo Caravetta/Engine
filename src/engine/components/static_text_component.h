@@ -1,4 +1,5 @@
-#if !defined(STATIC_TEXT_COMPONENT_H)
+#ifndef __STATIC_TEXT_COMPONENT_H__
+#define __STATIC_TEXT_COMPONENT_H__
 
 #include <vector>
 #include <string>
@@ -20,6 +21,4 @@ COMPONENT(
           void generate_static_text( std::string user_text, uint16_t font_size, core::Font* font, uint16_t new_line_pad );
          )
 
-
-#define STATIC_TEXT_COMPONENT_H
-#endif
+#endif //__STATIC_TEXT_COMPONENT_H__

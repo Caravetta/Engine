@@ -1,4 +1,5 @@
-#if !defined(POSITION_COMPONENT_H)
+#ifndef __POSITION_COMPONENT_H__
+#define __POSITION_COMPONENT_H__
 
 #include "../core/core.h"
 
@@ -8,5 +9,4 @@ COMPONENT(
           std::string test_string = "awdawd";
          )
 
-#define POSITION_COMPONENT_H
-#endif
+#endif //__POSITION_COMPONENT_H__

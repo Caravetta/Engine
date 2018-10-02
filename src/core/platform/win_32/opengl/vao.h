@@ -1,4 +1,5 @@
-#if !defined(VAO_H)
+#ifndef __VAO_H__
+#define __VAO_H__
 
 #include "vbo.h"
 #include "opengl.h"
@@ -30,5 +31,4 @@ namespace core {
 
 } //end namespace core
 
-#define VAO_H
-#endif
+#endif //__VAO_H__

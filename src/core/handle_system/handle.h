@@ -1,6 +1,10 @@
-#if !defined(HANDLE_H)
+#ifndef __HANDLE_H__
+#define __HANDLE_H__
 
 namespace core {
+
+#define HANDLE_SET_ACTIVE 1
+#define HANDLE_SET_NON_ACTIVE 0
 
 typedef struct {
     union {
@@ -15,5 +19,4 @@ typedef struct {
 
 } // end namespace core
 
-#define HANDLE_H
-#endif
+#endif //__HANDLE_H__

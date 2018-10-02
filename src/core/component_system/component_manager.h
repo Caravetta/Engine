@@ -1,4 +1,5 @@
-#if !defined(COMPONENT_MANAGER_H)
+#ifndef __COMPONENT_MANAGER_H__
+#define __COMPONENT_MANAGER_H__
 
 #include <vector>
 #include <utility>
@@ -94,5 +95,4 @@ UhRC_t component_create( uint8_t* memory )
     return SUCCESS;
 }
 
-#define COMPONENT_MANAGER_H
-#endif
+#endif __COMPONENT_MANAGER_H__

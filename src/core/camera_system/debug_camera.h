@@ -1,4 +1,5 @@
-#if !defined(DEBUG_CAMERA_H)
+#ifndef __DEBUG_CAMERA_H__
+#define __DEBUG_CAMERA_H__
 
 #include "../core_common.h"
 #include "../event_system/event_system.h"
@@ -50,5 +51,4 @@ namespace core {
     };
 } //end namespace core
 
-#define DEBUG_CAMERA_H
-#endif
+#endif __DEBUG_CAMERA_H__

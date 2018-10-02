@@ -1,4 +1,5 @@
-#if !defined(TEXT_RENDER_SYSTEM_H)
+#ifndef __TEXT_RENDER_SYSTEM_H__
+#define __TEXT_RENDER_SYSTEM_H__
 
 #include "../core/core.h"
 
@@ -10,5 +11,4 @@ public:
     void shutdown();
 };
 
-#define TEXT_RENDER_SYSTEM_H
-#endif
+#endif //__TEXT_RENDER_SYSTEM_H__

@@ -1,4 +1,5 @@
-#if !defined(UH_EVENT_SYSTEM_H)
+#ifndef __EVENT_SYSTEM_H__
+#define __EVENT_SYSTEM_H__
 
 #include <string.h>
 #include <vector>
@@ -69,5 +70,4 @@ namespace core {
 
 } //end namespace core
 
-#define UH_EVENT_SYSTEM_H
-#endif
+#endif //__EVENT_SYSTEM_H__

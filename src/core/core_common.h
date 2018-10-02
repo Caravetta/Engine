@@ -1,4 +1,5 @@
-#if !defined(CORE_COMMON_H)
+#ifndef __CORE_COMMON_H__
+#define __CORE_COMMON_H__
 
 #include <iostream>
 #include <stdint.h>
@@ -6,6 +7,9 @@
 //#include<cxxabi.h>
 #include "core_return.h"
 #include <vector>
+#include <ctime>
+#include <ratio>
+#include <chrono>
 
 #define USE_BASE_MALLOC 0
 
@@ -51,11 +55,26 @@
     }                                       \
 }
 
+#define ALWAYS_INLINE __forceinline
+
 #define U8_MAX  255
 #define U16_MAX 65535
 #define U32_MAX 4294967295
 #define U64_MAX 18446744073709551615
 
+#define PASTE_TOKEN( value, token ) value ## token
+#define PASTE_LINE( value , line ) PASTE_TOKEN( value, line)
+
+#if 1
+#define START_TIME_BLOCK( name )                                                                           \
+    Function_Perf::get_instance()->set_current_node( #name ); \
+    std::chrono::steady_clock::time_point name ## t1 = std::chrono::steady_clock::now();
+
+#define END_TIME_BLOCK( name )                                                                                                                                            \
+    std::chrono::steady_clock::time_point name ## t2 = std::chrono::steady_clock::now();                                                                    \
+    std::chrono::duration<double> name ## time_span = std::chrono::duration_cast<std::chrono::duration<double>>( name ## t2 - name ## t1 ); \
+    Function_Perf::get_instance()->set_time_value((name ## time_span).count(), #name);
+#endif
 typedef std::vector<uint8_t> Array;
 
 template<typename T>
@@ -69,5 +88,4 @@ const char* realname (T &obj)
   return abi::__cxa_demangle(typeid(obj).name(), 0, 0, 0);
 }
 
-#define CORE_COMMON_H
-#endif
+#endif //__CORE_COMMON_H__

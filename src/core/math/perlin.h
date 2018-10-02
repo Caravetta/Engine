@@ -1,5 +1,5 @@
-#ifndef _PERLIN_H_
-#define _PERLIN_H_
+#ifndef __PERLIN_H__
+#define __PERLIN_H__
 
 class Perlin {
 private:
@@ -13,4 +13,4 @@ public:
     float noise(float sample_x, float sample_y, float sample_z);
 };
 
-#endif
+#endif //__PERLIN_H__

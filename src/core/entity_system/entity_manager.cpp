@@ -6,10 +6,12 @@ Entity_Manager* Entity_Manager::instance = NULL;
 
 #define ENTITY_RESIZE_SIZE 1000
 
-void Entity_Manager::resize_entity_vec( void )
+void Entity_Manager::increase_entity_vec( void )
 {
     size_t current_size = entity_manager.entity_ids.size();
+
     CHECK( (current_size + ENTITY_RESIZE_SIZE) < U32_MAX );
+
     entity_manager.entity_ids.resize( current_size + ENTITY_RESIZE_SIZE );
 
     // loop through new nodes and set them up
@@ -19,7 +21,7 @@ void Entity_Manager::resize_entity_vec( void )
     }
 }
 
-void _reduce_entity_vec( entity_manager_t* entity_manager )
+void Entity_Manager::reduce_entity_vec( void )
 {
     //TODO(JOSH): need to implement.
     CHECK_INFO( 0, "_reduce_entity_vec not implemented" );
@@ -29,7 +31,7 @@ UhRC_t Entity_Manager::init( void )
 {
     entity_manager.next_entity_idx = 0;
 
-    resize_entity_vec();
+    increase_entity_vec();
 
     return SUCCESS;
 }
@@ -70,14 +72,14 @@ Entity Entity_Manager::create_entity( std::string archetype_name )
         uint32_t free_idx = entity_manager.free_entity_idx.back();
         entity_manager.free_entity_idx.pop_back();
 
-        entity_manager.entity_ids[free_idx].active = 1;
+        entity_manager.entity_ids[free_idx].active = HANDLE_SET_ACTIVE;
         return_entity = entity_manager.entity_ids[free_idx];
     } else {
         // check to see if we have run out of entities in the vector
         if ( entity_manager.entity_ids.size() == entity_manager.next_entity_idx ) {
-            resize_entity_vec();
+            increase_entity_vec();
         }
-        entity_manager.entity_ids[entity_manager.next_entity_idx].active = 1;
+        entity_manager.entity_ids[entity_manager.next_entity_idx].active = HANDLE_SET_ACTIVE;
         return_entity.id = entity_manager.entity_ids[entity_manager.next_entity_idx].id;
         entity_manager.next_entity_idx++;
     }
@@ -98,11 +100,12 @@ UhRC_t Entity_Manager::delete_entity( Entity entity )
     // check to see if the Entity is valid
     if ( entity.id == entity_manager.entity_ids[entity.index].id ) {
         entity_manager.entity_ids[entity.index].phase++;
-        entity_manager.entity_ids[entity.index].active = 0;
+        entity_manager.entity_ids[entity.index].active = HANDLE_SET_NON_ACTIVE;
 
         entity_manager.free_entity_idx.push_back(entity.index);
 
         //TODO(JOSH); Call the archetype manager and tell it to drop this entity
+        CHECK_INFO( 0, "We are not telling the archetype manager to drop this entity");
 
         return SUCCESS;
     }

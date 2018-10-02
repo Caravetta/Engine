@@ -1,4 +1,5 @@
-#if !defined(THREAD_H)
+#ifndef __THREAD_H__
+#define __THREAD_H__
 
 #include "../core_common.h"
 
@@ -15,5 +16,4 @@ CORE_API void create_thread( thread_data_t* thread_data );
 
 } // end namespace core
 
-#define THREAD_H
-#endif
+#endif //__THREAD_H__

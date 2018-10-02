@@ -1,4 +1,5 @@
-#if !defined(CAMERA_H)
+#ifndef __CAMERA_H__
+#define __CAMERA_H__
 
 #include "../core_common.h"
 #include "../math/vector.h"
@@ -37,5 +38,4 @@ namespace core {
 
 } //end namespace core
 
-#define CAMERA_H
-#endif
+#endif //__CAMERA_H__
