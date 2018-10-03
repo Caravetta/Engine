@@ -381,6 +381,7 @@ void generate_commands(std::vector<opengl_command_t>* opengl_commands)
 #define GL_MULTISAMPLE                    0x809D
 void render()
 {
+    START_TIME_BLOCK(render);
     glEnable( GL_MULTISAMPLE );
     glViewport(0, 0, Engine::get_instance()->window->get_width(), Engine::get_instance()->window->get_height());
     glClearColor(0.16f, 0.29f, 0.48f, 0.54f);
@@ -480,6 +481,7 @@ void render()
     }
 
     render_command_queue.erase(render_command_queue.begin(), render_command_queue.begin() + render_command_queue.size());
+    END_TIME_BLOCK(render);
 }
 
 

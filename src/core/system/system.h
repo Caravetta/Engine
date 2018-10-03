@@ -2,6 +2,7 @@
 #define __SYSTEM_H__
 
 #include "../core_common.h"
+#include "../time/function_perf.h"
 
 namespace core {
 
@@ -17,12 +18,14 @@ typedef struct {
     size_t                  size;
     std::vector<Array*>     array_data_vec;
     std::vector<uint64_t*>  entity_count_vec;
+    std::vector<uint8_t*>   packed_data;
 } component_node_t;
 
 class System {
 private:
     std::vector<component_node_t>           component_nodes;
     std::unordered_map<uint64_t, uint64_t>  comp_map;
+    Component_Manager* comp_manager;
 
 protected:
     uint64_t entity_count = 0;
@@ -32,6 +35,7 @@ protected:
     template<typename T> void add_component( component_usage_t usage );
     template<typename T> void add_component();
     template<typename T> T* get_data_at( uint64_t idx );
+    template<typename T> std::vector<T*>* get_data_vec();
 
 public:
     std::string             name;
@@ -41,11 +45,11 @@ public:
     void add_component_data( uint64_t** enitiy_count, uint64_t comp_id, Array** data_array );
     bool has_component( uint64_t component_id );
     template<typename T> bool has_component();
+    bool pre_update();
 
     virtual void init() = 0;
     virtual void update() = 0;
     virtual void shutdown() = 0;
-    bool pre_update();
 };
 
 bool System::has_component( uint64_t component_id )
@@ -65,7 +69,7 @@ template<typename T>
 T* System::get_data_at( uint64_t idx )
 {
     START_TIME_BLOCK(system_get_data_at);
-    uint64_t comp_id = Component_Manager::get_instance()->id<T>();
+    uint64_t comp_id = comp_manager->id<T>();
     uint64_t comp_total = 0;
     T* return_data = NULL;
 
@@ -95,23 +99,58 @@ T* System::get_data_at( uint64_t idx )
     return return_data;
 }
 
+template<typename T>
+std::vector<T*>* System::get_data_vec()
+{
+    START_TIME_BLOCK(system_get_data_vec);
+    uint64_t comp_id = comp_manager->id<T>();
+
+    std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(comp_id);
+    if ( comp_idx != comp_map.end() ) {
+        CHECK_INFO( comp_id == component_nodes[comp_idx->second].component_id,
+                    "comp_id:" << comp_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
+
+        END_TIME_BLOCK(system_get_data_vec);
+        return (std::vector<T*>*)&component_nodes[comp_idx->second].packed_data;
+    }
+
+    CHECK_INFO( comp_idx == comp_map.end(), "This comp ID:" << comp_id << " is not tracked by " << name );
+
+    END_TIME_BLOCK(system_get_data_vec);
+    return NULL;
+}
+
 bool System::pre_update()
 {
+    START_TIME_BLOCK(system_pre_update);
+    comp_manager = Component_Manager::get_instance();
     entity_count = 0;
 
     // check to see if this system is tracking any comps
     if ( component_nodes.size() > 0 ) {
-
-        // loop through the first comp (all comps have the same size) to see how many entities there are.
-        for ( int i = 0; i < component_nodes[0].entity_count_vec.size(); i++ ) {
-            entity_count += *(component_nodes[0].entity_count_vec[i]);
+        uint64_t total_count = 0;
+        uint64_t current_idx = 0;
+        for (uint64_t ii = 0; ii < component_nodes.size(); ii++) {
+            total_count = 0;
+            component_nodes[ii].packed_data.clear();
+            current_idx = 0;
+            for (uint64_t jj = 0; jj < component_nodes[ii].entity_count_vec.size(); jj++) {
+                total_count += *(component_nodes[ii].entity_count_vec[jj]);
+                component_nodes[ii].packed_data.resize(total_count);
+                for (uint64_t kk = 0; kk < *(component_nodes[ii].entity_count_vec[jj]); kk++) {
+                    component_nodes[ii].packed_data[current_idx++] = &(component_nodes[ii].array_data_vec[jj]->at(component_nodes[ii].size * kk));
+                }
+            }
+            entity_count = total_count;
         }
 
         if ( entity_count > 0 ) {
+            END_TIME_BLOCK(system_pre_update);
             return true;
         }
     }
 
+    END_TIME_BLOCK(system_pre_update);
     return false;
 }
 

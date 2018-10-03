@@ -14,6 +14,7 @@
 #define USE_BASE_MALLOC 0
 
 #ifdef CORE_EXPORT
+
 #define CORE_API __declspec(dllexport)
 #else
 #define CORE_API __declspec(dllimport)
@@ -30,11 +31,11 @@
 
 #define CHECK( expr ) CHECK_INFO( expr, "" )
 
-#define CHECK_INFO( expr, ... ){ \
-    if ( !(expr) ) { \
-        std::cout << __DATE__ << " - " << __TIME__ << " - " << "ERROR" << " - " << __FILENAME__ << " - " << __LINE__ << ": "; \
-        std::cout << "Assertion error [" << #expr << "] in " << __FUNCTION__ << "() at line " << __LINE__ << " in file " << __FILENAME__ << " " << __VA_ARGS__ << std::endl; \
-    } \
+#define CHECK_INFO( expr, ... ){                                                                                                                                            \
+    if ( !(expr) ) {                                                                                                                                                        \
+        std::cout << __DATE__ << " - " << __TIME__ << " - " << "ERROR" << " - " << __FILENAME__ << " - " << __LINE__ << ": ";                                               \
+        std::cout << "Assertion error [" << #expr << "] in " << __FUNCTION__ << "() at line " << __LINE__ << " in file " << __FILENAME__ << " " << __VA_ARGS__ << std::endl;\
+    }                                                                                                                                                                       \
 }
 #else
 #define DEBUG_LOG(...) while(false){}
@@ -42,9 +43,9 @@
 #define CHECK( expr ) while(false){}
 #endif
 
-#define PRINT(level,...){ \
+#define PRINT(level,...){                                                                                       \
     std::cout << __DATE__ << " - " << __TIME__ << " - " << level << " - " << __FILENAME__ << " - " << __LINE__; \
-    std::cout << ": " << __VA_ARGS__ << std::endl; \
+    std::cout << ": " << __VA_ARGS__ << std::endl;                                                              \
 }
 
 #define ALLOC_RETURN_FAILURE( var, ... ) {  \
@@ -65,16 +66,15 @@
 #define PASTE_TOKEN( value, token ) value ## token
 #define PASTE_LINE( value , line ) PASTE_TOKEN( value, line)
 
-#if 1
-#define START_TIME_BLOCK( name )                                                                           \
-    Function_Perf::get_instance()->set_current_node( #name ); \
+#define START_TIME_BLOCK( name )                                                            \
+    Function_Perf::get_instance()->set_current_node( #name );                               \
     std::chrono::steady_clock::time_point name ## t1 = std::chrono::steady_clock::now();
 
-#define END_TIME_BLOCK( name )                                                                                                                                            \
-    std::chrono::steady_clock::time_point name ## t2 = std::chrono::steady_clock::now();                                                                    \
+#define END_TIME_BLOCK( name )                                                                                                              \
+    std::chrono::steady_clock::time_point name ## t2 = std::chrono::steady_clock::now();                                                    \
     std::chrono::duration<double> name ## time_span = std::chrono::duration_cast<std::chrono::duration<double>>( name ## t2 - name ## t1 ); \
     Function_Perf::get_instance()->set_time_value((name ## time_span).count(), #name);
-#endif
+
 typedef std::vector<uint8_t> Array;
 
 template<typename T>

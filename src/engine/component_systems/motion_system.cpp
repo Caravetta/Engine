@@ -35,23 +35,20 @@ void Motion_System::update()
 {
     START_TIME_BLOCK(motion_System_update);
 
+    std::vector<Motion_Component*>* motion_vec = get_data_vec<Motion_Component>();
+    std::vector<Position_Component*>* position_vec = get_data_vec<Position_Component>();
+
     Motion_Component* motion_component;
     Position_Component* position_component;
     Engine* engine = Engine::get_instance();
 
     for(int i = 0; i < entity_count; i++) {
 
-        motion_component = get_data_at<Motion_Component>(i);
-        if ( motion_component == NULL ) {
-            LOG_ERROR("Motion_System: Failed to get Mesh_Component idx: " << i);
-            continue;
-        }
+        //motion_component = get_data_at<Motion_Component>(i);
+        motion_component = motion_vec->at(i);
 
-        position_component = get_data_at<Position_Component>(i);
-        if ( position_component == NULL ) {
-            LOG_ERROR("Motion_System: Failed to get Position_Component idx: " << i);
-            continue;
-        }
+        //position_component = get_data_at<Position_Component>(i);
+        position_component = position_vec->at(i);
 
         forestRuth(position_component->position, motion_component->velocity,
                    motion_component->acceleration, engine->frame_time.get_delta());

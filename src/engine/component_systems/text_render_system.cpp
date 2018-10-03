@@ -17,6 +17,11 @@ void Text_Render_System::init()
 
 void Text_Render_System::update()
 {
+    std::vector<Position_Component*>* position_vec = get_data_vec<Position_Component>();
+    std::vector<Shader_Component*>* shader_vec = get_data_vec<Shader_Component>();
+    std::vector<Static_Text_Component*>* static_text_vec = get_data_vec<Static_Text_Component>();
+    std::vector<Texture_Component*>* texture_vec = get_data_vec<Texture_Component>();
+
     Position_Component* position_component;
     Shader_Component*   shader_component;
     Static_Text_Component* static_text_component;
@@ -35,30 +40,10 @@ void Text_Render_System::update()
 
     for(int i = 0; i < entity_count; i++) {
 
-
-        position_component = get_data_at<Position_Component>(i);
-        if ( position_component == NULL ) {
-            LOG_ERROR("Text_Render_System: Failed to get Position_Component idx:" << i);
-            continue;
-        }
-
-        shader_component = get_data_at<Shader_Component>(i);
-        if ( shader_component == NULL ) {
-            LOG_ERROR("Text_Render_System: Failed to get Shader_Component idx:" << i);
-            continue;
-        }
-
-        static_text_component = get_data_at<Static_Text_Component>(i);
-        if ( static_text_component == NULL ) {
-            LOG_ERROR("Text_Render_System: Failed to get Static_Text_Component idx:" << i);
-            continue;
-        }
-
-        texture_component = get_data_at<Texture_Component>(i);
-        if ( texture_component == NULL ) {
-            LOG_ERROR("Text_Render_System: Failed to get Texture_Component idx:" << i);
-            continue;
-        }
+        position_component = position_vec->at(i);
+        shader_component = shader_vec->at(i);
+        static_text_component = static_text_vec->at(i);
+        texture_component = texture_vec->at(i);
 
         render_command.command_type = RENDER_TEXT;
         render_command.shader_id = shader_component->program_id;
