@@ -19,6 +19,7 @@ void Mesh_Render_System::init()
 
 void Mesh_Render_System::update()
 {
+    START_TIME_BLOCK(mesh_render_System_update);
      render_command_t render_command;
 
      render_command.command_type = ENABLE_BLEND;
@@ -30,6 +31,12 @@ void Mesh_Render_System::update()
      render_command.command_type = ENABLE_CULL_FACE;
      render_command_queue.push_back(render_command);
 
+     std::vector<Position_Component*>* position_vec = get_data_vec<Position_Component>();
+     std::vector<Shader_Component*>* shader_vec = get_data_vec<Shader_Component>();
+     std::vector<Mesh_Component*>* mesh_vec = get_data_vec<Mesh_Component>();
+
+
+
      Position_Component* position_component;
      Shader_Component*   shader_component;
      Mesh_Component*     mesh_component;
@@ -38,23 +45,9 @@ void Mesh_Render_System::update()
 
      for(int i = 0; i < entity_count; i++) {
 
-         position_component = get_data_at<Position_Component>(i);
-         if ( position_component == NULL ) {
-             LOG_ERROR("Mesh_Render_System: Failed to get Position_Component idx:" << i);
-             continue;
-         }
-
-         shader_component = get_data_at<Shader_Component>(i);
-         if ( shader_component == NULL ) {
-             LOG_ERROR("Mesh_Render_System: Failed to get Shader_Component idx:" << i << " DATA " << (void*)shader_component);
-             continue;
-         }
-
-         mesh_component = get_data_at<Mesh_Component>(i);
-         if ( mesh_component == NULL ) {
-             LOG_ERROR("Mesh_Render_System: Failed to get Mesh_Component idx:" << i);
-             continue;
-         }
+         position_component = position_vec->at(i);
+         shader_component = shader_vec->at(i);
+         mesh_component = mesh_vec->at(i);
 
          Engine::get_instance()->debug_camera->set_transformation(&position_component->position, 0, 0, 0, 1);
          render_command.command_type = RENDER_MESH;
@@ -66,6 +59,7 @@ void Mesh_Render_System::update()
          render_command.transformation_matrix = Engine::get_instance()->debug_camera->transformation_matrix;
          render_command_queue.push_back(render_command);
      }
+     END_TIME_BLOCK(mesh_render_System_update);
 }
 
 void Mesh_Render_System::shutdown()

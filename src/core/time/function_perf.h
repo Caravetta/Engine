@@ -115,13 +115,13 @@ void _print_node( func_perf_data* node, uint64_t offset )
 
 void Function_Perf::print()
 {
-    //LOG("****************** TIME BLOCK START **************************");
+    LOG("****************** TIME BLOCK START **************************");
     for (int i = 0; i < perf_data.size(); i++) {
-        //_print_node(&perf_data[i], 0);
+        _print_node(&perf_data[i], 0);
         perf_data[i].total_time = 0;
         perf_data[i].func_calls = 0;
     }
-    //LOG("****************** TIME BLOCK END ****************************");
+    LOG("****************** TIME BLOCK END ****************************");
 }
 
 #endif //__FUNCTION_PERF_H__
