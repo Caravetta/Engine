@@ -25,17 +25,18 @@ else
 endif
 
 CXX := g++
-CXXFLAGS := -Wall -Werror -O3
+CXXFLAGS := -Wall -Werror -O3 -std=gnu++0x -Wno-attributes -fmax-errors=10
 
 SOURCEDIR := $(shell pwd)
 BUILDDIR := $(SOURCEDIR)/build
 ENGINE := $(BUILDDIR)/engine
 
-CXXSRCS := $(shell find $(SOURCEDIR) -type d \( -name '.git' -o -name 'win_32' \) -prune -o -name "*.cpp" -type f) 
+CXXSRCS := $(shell find $(SOURCEDIR) -type d \( -name '.git' -o -name 'win_32' -o -name 'linux' \) -prune -false -o -name "*.cpp" -type f ) 
 
 CXXOBJS := $(addprefix $(BUILDDIR)/,$(CXXSRCS:%.cpp=%.o))
 
 $(BUILDDIR)/%.o: %.cpp
+	mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -I$(HEADERDIR) -I$(dir $<) -c $< -o $@
 
 $(ENGINE): $(CXXOBJS)

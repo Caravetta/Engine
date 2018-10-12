@@ -188,12 +188,12 @@ void render()
         } break;
         case BIND_MESH: {
             Engine::get_instance()->asset_manager->get_asset<Mesh_Asset>(internal_command_queue[i].mesh_handle, &render_state.mesh_asset);
-            render_state.mesh_asset->mesh.vao->bind();
-            render_state.mesh_asset->mesh.vao->bind_attributes();
+            render_state.mesh_asset->mesh.m_vao->bind();
+            render_state.mesh_asset->mesh.m_vao->bind_attributes();
         } break;
         case UNBIND_MESH: {
-            render_state.mesh_asset->mesh.vao->unbind_attributes();
-            render_state.mesh_asset->mesh.vao->unbind();
+            render_state.mesh_asset->mesh.m_vao->unbind_attributes();
+            render_state.mesh_asset->mesh.m_vao->unbind();
         } break;
         case DRAW_ELEMENTS: {
             glUniformMatrix4fv(render_state.transformation_matrix_id, 1, GL_FALSE, (GLfloat *)&internal_command_queue[i].transformation_matrix);

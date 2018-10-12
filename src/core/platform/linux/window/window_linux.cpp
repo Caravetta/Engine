@@ -14,8 +14,10 @@ struct platform_window_t {
     int         width;
     int         height;
     int         show;
+    bool        should_swap;
     Window      instance;
-    Display     display;
+    GLXWindow   glxWindow;
+    Display*     display;
     std::string title;
 };
 
@@ -23,6 +25,10 @@ int local_width;
 int local_height;
 
 void init( struct platform_window_t* window );
+
+static Bool WaitForNotify( Display *dpy, XEvent *event, XPointer arg ) {
+    return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
+}
 
 void platform_window_update( struct platform_window_t* platform_window )
 {
@@ -76,24 +82,86 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
     return window;
 }
 
+int singleBufferAttributess[] = {
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_RED_SIZE,      1,   /* Request a single buffered color buffer */
+    GLX_GREEN_SIZE,    1,   /* with the maximum number of color bits  */
+    GLX_BLUE_SIZE,     1,   /* for each component                     */
+    None
+};
+
+int doubleBufferAttributes[] = {
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_DOUBLEBUFFER,  True,  /* Request a double-buffered color buffer with */
+    GLX_RED_SIZE,      1,     /* the maximum number of bits per component    */
+    GLX_GREEN_SIZE,    1, 
+    GLX_BLUE_SIZE,     1,
+    None
+};
+/* https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glXIntro.xml */
 void init( struct platform_window_t* window )
 {
-   int s;
- 
    window->display = XOpenDisplay(NULL);
    if (window->display == NULL) {
       fprintf(stderr, "Cannot open display\n");
       exit(1);
    }
  
-   s = DefaultScreen(window->display);
-   window->instance = XCreateSimpleWindow(window->display, 
-					  RootWindow(window->display, s), 
-					  10, 10, 100, 100, 1,
-                                          BlackPixel(window->display, s), 
-					  WhitePixel(window->display, s));
-   XSelectInput(window->display, window->instance, ExposureMask | KeyPressMask);
-   XMapWindow(window->display, window->instance);
+   //int s = DefaultScreen(window->display);
+   //window->instance = XCreateSimpleWindow(window->display, 
+   //     				  RootWindow(window->display, s), 
+   //     				  10, 10, 100, 100, 1,
+   //                                       BlackPixel(window->display, s), 
+   //     				  WhitePixel(window->display, s));
+   //XSelectInput(window->display, window->instance, ExposureMask | KeyPressMask);
+   //XMapWindow(window->display, window->instance);
+
+   GLXFBConfig *fbConfigs;
+   int numReturned;
+   fbConfigs = glXChooseFBConfig( window->display, DefaultScreen(window->display),
+                                  doubleBufferAttributes, &numReturned );
+
+   if ( fbConfigs == NULL ) {  /* no double buffered configs available */
+       fbConfigs = glXChooseFBConfig( window->display, DefaultScreen(window->display),
+               singleBufferAttributess, &numReturned );
+       window->should_swap = False;
+   }
+
+    /* Create an X colormap and window with a visual matching the first
+    ** returned framebuffer config */
+    XVisualInfo *vInfo;
+    vInfo = glXGetVisualFromFBConfig( window->display, fbConfigs[0] );
+
+    init_opengl(window->display, vInfo);
+
+    XSetWindowAttributes swa = {};
+    swa.border_pixel = 0;
+    swa.event_mask = StructureNotifyMask;
+    swa.colormap = XCreateColormap( window->display, RootWindow(window->display, vInfo->screen),
+                                    vInfo->visual, AllocNone );
+    unsigned long swaMask = CWBorderPixel | CWColormap | CWEventMask;
+    window->instance = XCreateWindow( window->display, RootWindow(window->display, vInfo->screen), 0, 0, 256, 256,
+                              0, vInfo->depth, InputOutput, vInfo->visual,
+                              swaMask, &swa );
+
+    /* Create a GLX context for OpenGL rendering */
+    GLXContext context = glXCreateNewContext( window->display, fbConfigs[0], GLX_RGBA_TYPE,
+				 NULL, True );
+
+    /* Create a GLX window to associate the frame buffer configuration
+    ** with the created X window */
+    window->glxWindow = glXCreateWindow( window->display, fbConfigs[0], window->instance, NULL );
+    
+    /* Map the window to the screen, and wait for it to appear */
+    XMapWindow( window->display, window->instance );
+    XEvent event;
+
+    XIfEvent( window->display, &event, WaitForNotify, (XPointer) window->instance );
+
+    /* Bind the GLX context to the Window */
+    glXMakeContextCurrent( window->display, window->glxWindow, window->glxWindow, context );
 }
 
 void platform_window_swap_buffers( struct platform_window_t* platform_window )

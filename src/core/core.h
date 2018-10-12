@@ -1,9 +1,17 @@
 #if !defined(CORE_H)
 
-#ifdef CORE_EXPORT
-#define CORE_API __declspec(dllexport)
+#ifdef LINUX
+    #if __GNUC__ >= 4
+        #define CORE_API __attribute__ ((visibility ("default")))
+    #else
+        #define CORE_API
+    #endif
 #else
-#define CORE_API __declspec(dllimport)
+    #ifdef CORE_EXPORT
+        #define CORE_API __declspec(dllexport)
+    #else
+        #define CORE_API __declspec(dllimport)
+    #endif
 #endif
 
 #include "asset_system/asset.h"

@@ -2,11 +2,17 @@
 
 #include "../core_common.h"
 
+#ifdef LINUX
+#define NOW_T uint64_t
+#else
+#define NOW_T DWORD
+#endif
+
 namespace core {
 
     class CORE_API Timer {
     private:
-        DWORD last_time;
+        NOW_T last_time;
         float delta_time;
 
     public:

@@ -1,5 +1,12 @@
 #include <thread>
 #include "platform_utils.h"
+#include "assert.h"
+
+#ifdef LINUX
+#include "linux/utils/utils_linux.h"
+#else
+#include "windows/utils/utils_win32.h"
+#endif
 
 namespace core {
 

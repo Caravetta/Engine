@@ -6,10 +6,12 @@
 
 #define USE_BASE_MALLOC 0
 
-#ifdef CORE_EXPORT
-#define CORE_API __declspec(dllexport)
-#else
-#define CORE_API __declspec(dllimport)
+#ifdef WINDOWS
+#include "windows_core_common.h"
+#endif
+
+#ifdef LINUX
+#include "linux_core_common.h"
 #endif
 
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)

@@ -4,42 +4,7 @@
 #include <GL/glx.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
-
-typedef GLuint(APIENTRY * PFNGLCREATESHADERPROC) ( GLenum type );
-typedef void (APIENTRY * PFNGLSHADERSOURCEPROC) ( GLuint shader, GLsizei count, const char* *string, const GLint *length );
-typedef void (APIENTRY * PFNGLCOMPILESHADERPROC) ( GLuint shader );
-typedef void (APIENTRY * PFNGLGETSHADERIVPROC) ( GLuint shader, GLenum pname, GLint *params );
-typedef void (APIENTRY * PFNGLGETSHADERINFOLOGPROC) ( GLuint shader, GLsizei bufSize, GLsizei *length, char *infoLog );
-typedef GLuint(APIENTRY * PFNGLCREATEPROGRAMPROC) ( void );
-typedef GLuint(APIENTRY * PFNGLCREATEPROGRAMPROC) ( void );
-typedef void (APIENTRY * PFNGLATTACHSHADERPROC) ( GLuint program, GLuint shader );
-typedef void (APIENTRY * PFNGLLINKPROGRAMPROC) ( GLuint program );
-typedef void (APIENTRY * PFNGLGETPROGRAMIVPROC) ( GLuint program, GLenum pname, GLint *params );
-typedef void (APIENTRY * PFNGLGETPROGRAMINFOLOGPROC) ( GLuint program, GLsizei bufSize, GLsizei *length, char *infoLog );
-typedef void (APIENTRY * PFNGLDELETESHADERPROC) ( GLuint shader );
-typedef void (APIENTRY * PFNGLDELETEPROGRAMPROC) ( GLuint program );
-typedef void (APIENTRY * PFNGLGENVERTEXARRAYSPROC) ( GLsizei n, GLuint *arrays );
-typedef void (APIENTRY * PFNGLBINDVERTEXARRAYPROC) ( GLuint array );
-typedef void (APIENTRY * PFNGLENABLEVERTEXATTRIBARRAYPROC) ( GLuint index );
-typedef void (APIENTRY * PFNGLDISABLEVERTEXATTRIBARRAYPROC) ( GLuint index );
-typedef void (APIENTRY * PFNGLVERTEXATTRIBPOINTERPROC) ( GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer );
-typedef void (APIENTRY * PFNGLGENBUFFERSPROC) ( GLsizei n, GLuint *buffers );
-typedef void (APIENTRY * PFNGLBINDBUFFERPROC) ( GLenum target, GLuint buffer );
-typedef void (APIENTRY * PFNGLBUFFERDATAPROC) ( GLenum target, ptrdiff_t size, const GLvoid *data, GLenum usage );
-typedef BOOL(WINAPI * PFNWGLCHOOSEPIXELFORMATARBPROC) ( HDC hdc, const int *piAttribIList, const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats );
-typedef HGLRC(WINAPI * PFNWGLCREATECONTEXTATTRIBSARBPROC) ( HDC hDC, HGLRC hShareContext, const int *attribList );
-typedef void (APIENTRY * PFNGLGENBUFFERSPROC) ( GLsizei n, GLuint *buffers );
-typedef void (APIENTRY * PFNGLBINDBUFFERPROC) ( GLenum target, GLuint buffer );
-typedef void (APIENTRY * PFNGLBUFFERDATAPROC) ( GLenum target, ptrdiff_t size, const GLvoid *data, GLenum usage );
-typedef GLint(APIENTRY * PFNGLGETUNIFORMLOCATIONPROC) ( GLuint program, const char *name );
-typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC) ( GLenum texture );
-typedef void (APIENTRY * PFNGLUSEPROGRAMPROC) ( GLuint program );
-typedef void (APIENTRY * PFNGLUNIFORMMATRIX4FVPROC) ( GLint location, GLsizei count, GLboolean transpose, const GLfloat *value );
-typedef void (APIENTRY * PFNGLUNIFORM3FVPROC) ( GLint location, GLsizei count, const GLfloat *value );
-typedef void (APIENTRY * PFNGLUNIFORM1FPROC) ( GLint location, const GLfloat value );
-typedef void (APIENTRY * PFNGLGENERATEMIPMAPPROC) ( GLenum target );
-typedef GLubyte*(APIENTRY * PFNGLGETSTRINGIPROC) ( GLenum name, GLuint index );
-typedef void (APIENTRY * PFNWGLSWAPINTERVALEXTPROC) ( GLint value );
+#include <GL/glxext.h>
 
 typedef short GLshort;
 typedef unsigned short GLushort;
@@ -51,6 +16,7 @@ typedef char GLchar;
 typedef unsigned int GLbitfield;
 typedef int GLint;
 typedef unsigned char GLboolean;
+typedef unsigned char Glubyte;
 typedef int GLsizei;
 
 #define GL_DEPTH_BUFFER_BIT               0x00000100
@@ -375,20 +341,20 @@ CORE_API PFNGLBINDVERTEXARRAYPROC 			glBindVertexArray;
 CORE_API PFNGLENABLEVERTEXATTRIBARRAYPROC   glEnableVertexAttribArray;
 CORE_API PFNGLDISABLEVERTEXATTRIBARRAYPROC 	glDisableVertexAttribArray;
 CORE_API PFNGLVERTEXATTRIBPOINTERPROC 		glVertexAttribPointer;
-CORE_API PFNWGLCHOOSEPIXELFORMATARBPROC 	wglChoosePixelFormatARB;
-CORE_API PFNWGLCREATECONTEXTATTRIBSARBPROC 	wglCreateContextAttribsARB;
+//CORE_API PFNWGLCHOOSEPIXELFORMATARBPROC 	wglChoosePixelFormatARB;
+//CORE_API PFNWGLCREATECONTEXTATTRIBSARBPROC 	wglCreateContextAttribsARB;
 CORE_API PFNGLGENBUFFERSPROC 				glGenBuffers;
 CORE_API PFNGLBINDBUFFERPROC 				glBindBuffer;
 CORE_API PFNGLBUFFERDATAPROC 				glBufferData;
 CORE_API PFNGLGETUNIFORMLOCATIONPROC 		glGetUniformLocation;
-CORE_API PFNGLACTIVETEXTUREPROC 			glActiveTexture;
+//CORE_API PFNGLACTIVETEXTUREPROC 			glActiveTexture;
 CORE_API PFNGLUSEPROGRAMPROC 				glUseProgram;
 CORE_API PFNGLUNIFORMMATRIX4FVPROC 			glUniformMatrix4fv;
 CORE_API PFNGLUNIFORM3FVPROC 				glUniform3fv;
 CORE_API PFNGLUNIFORM1FPROC 				glUniform1f;
 CORE_API PFNGLGENERATEMIPMAPPROC 			glGenerateMipmap;
 CORE_API PFNGLGETSTRINGIPROC 				glGetStringi;
-CORE_API PFNWGLSWAPINTERVALEXTPROC          glSwapIntervalEXT;
+//CORE_API PFNWGLSWAPINTERVALEXTPROC          glSwapIntervalEXT;
 
 typedef enum {
 	OPENGL_SUCCESS 	= 0,
@@ -397,7 +363,7 @@ typedef enum {
 } opengl_rc;
 
 CORE_API int load_opengl_extensions();
-void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc );
+void init_opengl( Display display, GLXWindow glxWindow );
 
 #define OPENGL_H
 #endif

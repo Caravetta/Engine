@@ -17,13 +17,13 @@ static void* MyThreadFunction( void* arg )
 
 void platform_create_thread( thread_data_window_t* thread_data )
 {
-    thread_data->thread_handle = pthread_create(
+    int rc = pthread_create(
             &thread_data->thread_id,
             NULL,
             &MyThreadFunction,
             thread_data);
 
-    if ( thread_data->thread_handle != 0 ) {
+    if ( rc != 0 ) {
         LOG_ERROR("Failed to create thread");
     }
 }

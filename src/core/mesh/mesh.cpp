@@ -14,7 +14,7 @@ Mesh::Mesh() {
     normals = NULL;
     textures_count = 0;
     textures = NULL;
-    vao = NULL;
+    m_vao = NULL;
 }
 
 UhRC_t Mesh::serialize( std::ofstream* out_stream )
@@ -72,13 +72,13 @@ UhRC_t Mesh::deserialize( std::ifstream* in_stream )
         in_stream->read((char*)&this->textures[i], sizeof(float));
     }
 
-    this->vao = new core::vao;
-    this->vao->bind();
-    this->vao->create_index_buffer((int*)this->indices, (int)this->indices_count); //TODO: need to get ride of this cast
-    this->vao->create_attribute(0, this->vertices, this->vertices_count * sizeof(float), 3);
-    this->vao->create_attribute(1, this->normals, this->normals_count * sizeof(float), 3);
-    this->vao->create_attribute(2, this->textures, this->textures_count * sizeof(float), 2);
-    this->vao->unbind();
+    this->m_vao = new core::vao;
+    this->m_vao->bind();
+    this->m_vao->create_index_buffer((int*)this->indices, (int)this->indices_count); //TODO: need to get ride of this cast
+    this->m_vao->create_attribute(0, this->vertices, this->vertices_count * sizeof(float), 3);
+    this->m_vao->create_attribute(1, this->normals, this->normals_count * sizeof(float), 3);
+    this->m_vao->create_attribute(2, this->textures, this->textures_count * sizeof(float), 2);
+    this->m_vao->unbind();
 
     return SUCCESS;
 }

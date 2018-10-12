@@ -1,7 +1,20 @@
 #include "platform.h"
 
 #ifdef LINUX
-#error LINUX not yet implemented
+#include "linux/opengl/opengl.cpp"
+#include "linux/opengl/opengl.h"
+#include "linux/opengl/shader.cpp"
+#include "linux/opengl/shader.h"
+#include "linux/opengl/vao.cpp"
+#include "linux/opengl/vao.h"
+#include "linux/opengl/vbo.cpp"
+#include "linux/opengl/vbo.h"
+#include "linux/thread/thread_linux.cpp"
+#include "linux/thread/thread_linux.h"
+#include "linux/utils/utils_linux.cpp"
+#include "linux/utils/utils_linux.h"
+#include "linux/window/window_linux.cpp"
+#include "linux/window/window_linux.h"
 #else
 #include "win_32/window/window_win32.h"
 #include "win_32/window/window_win32.cpp"
