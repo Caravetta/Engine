@@ -94,20 +94,17 @@ UhRC_t Entity_Archetype_Manager::register_archetype( Entity_Archetype archetype,
 
         bool should_add = false;
         std::unordered_map<uint64_t, uint64_t>::const_iterator current_comp;
-        System_Manager* system_manager = System_Manager::get_instance();
 
-        if ( system_manager == NULL ) {
-            CHECK_INFO( 0, "Failed to get System_Manager" );
-            return ENGINE_ERROR;
-        }
+        //get a pointer to vector containing all systems
+        std::vector<System*>* systems = System_Manager::get_system_vec();
 
         // go through all systems to see if they care about this archetype
-        for (int j = 0; j < system_manager->systems.size(); j++) {
+        for (int j = 0; j < systems->size(); j++) {
             should_add = true;
 
             // loop through all the system components
-            for (int l = 0; l < system_manager->systems[j]->component_list.size(); l++) {
-                current_comp = tmp_archetype_node->comp_map->find(system_manager->systems[j]->component_list[l]);
+            for (int l = 0; l < systems->at(j)->component_list.size(); l++) {
+                current_comp = tmp_archetype_node->comp_map->find(systems->at(j)->component_list[l]);
                 if ( current_comp == tmp_archetype_node->comp_map->end() ) {
                     should_add = false;
                     break;
@@ -115,15 +112,15 @@ UhRC_t Entity_Archetype_Manager::register_archetype( Entity_Archetype archetype,
             }
 
             if ( should_add == true ) {
-                DEBUG_LOG( "Adding " << archetype_name << " to " << system_manager->systems[j]->name );
+                DEBUG_LOG( "Adding " << archetype_name << " to " << systems->at(j)->name );
 
                 //TODO(JOSH): Currently we are sending all the comps to the system should only send ones they care about.
 
                 // loop through all the comp and add them to this system
                 for (int k = 0; k < tmp_archetype_node->comp_nodes_vec->size(); k++) {
-                    system_manager->systems[j]->add_component_data(&tmp_archetype_node->comp_nodes_vec->at(k)->empty_idx_p,
-                                                                   tmp_archetype_node->comp_nodes_vec->at(k)->component_id,
-                                                                   &tmp_archetype_node->comp_nodes_vec->at(k)->data_array);
+                    systems->at(j)->add_component_data(&tmp_archetype_node->comp_nodes_vec->at(k)->empty_idx_p,
+                                                       tmp_archetype_node->comp_nodes_vec->at(k)->component_id,
+                                                       &tmp_archetype_node->comp_nodes_vec->at(k)->data_array);
                 }
             }
         }

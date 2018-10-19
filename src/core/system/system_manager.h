@@ -8,36 +8,22 @@
 #include "../entity_system/entity.h"
 
 namespace core {
+namespace System_Manager {
 
-    class CORE_API System_Manager {
-    private:
-        static System_Manager* instance;
+CORE_API void init_systems( void );
+CORE_API void update_systems( void );
+CORE_API void shutdown_systems( void );
+CORE_API void register_generic_system( System* system );
 
-        struct system_info_t {
-            std::vector<Entity> entities;
-            std::unordered_map<uint64_t, uint64_t> entity_map;
-        };
-
-        std::vector<system_info_t> systems_info;
-
-    public:
-        std::vector<System*> systems;
-
-
-        static System_Manager* get_instance();
-        template<typename T> void register_system();
-        void init_systems();
-        void update_systems();
-        void shutdown_systems();
-    };
+std::vector<System*>* get_system_vec( void );
 
 template<typename T>
-void System_Manager::register_system()
+void System_Manager::register_system( void )
 {
-    systems.push_back( new T );
-    systems_info.resize(systems_info.size() + 1);
+    register_generic_system( new T );
 }
 
-} // end namespace core
+} //end namespace System_Manager
+} //end namespace core
 
 #endif //__SYSTEM_MANAGER_H__

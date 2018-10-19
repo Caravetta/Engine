@@ -47,7 +47,7 @@ void Engine::init()
     core::Entity_Manager::init();
 
     //setup system manager
-    system_manager = core::System_Manager::get_instance();
+    //system_manager = core::System_Manager::get_instance();
 
     //setup asset manager
     asset_manager = core::Asset_Manager::get_instance();
@@ -68,9 +68,9 @@ void Engine::init()
     //component_manager->register_component<Cube_Orbit_Component>();
 
     //register all systems NOTE: this will need to be generated maybe
-    system_manager->register_system<Mesh_Render_System>();
-    system_manager->register_system<Text_Render_System>();
-    system_manager->register_system<Motion_System>();
+    core::System_Manager::register_system<Mesh_Render_System>();
+    core::System_Manager::register_system<Text_Render_System>();
+    core::System_Manager::register_system<Motion_System>();
     //system_manager->register_system<Test_System>();
     //system_manager->register_system<Cube_Orbit_System>();
 
@@ -87,7 +87,7 @@ void Engine::init()
         LOG_ERROR("Failed to init render lock");
     }
 
-    system_manager->init_systems();
+    core::System_Manager::init_systems();
 
     return;
 }
@@ -106,7 +106,7 @@ void Engine::update()
     //process an event from the event queue
     core::IEMS::process_event();
 
-    system_manager->update_systems();
+    core::System_Manager::update_systems();
 
     /************* START TEST CODE ***************/
     this->debug_camera->update_projection_matrix(core::Vector2f((float)this->window->get_width(), (float)this->window->get_height()));
@@ -124,5 +124,5 @@ void Engine::update()
 
 void Engine::shutdown()
 {
-    system_manager->shutdown_systems();
+    core::System_Manager::shutdown_systems();
 }
