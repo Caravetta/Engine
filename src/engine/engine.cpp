@@ -44,7 +44,7 @@ void Engine::init()
     //component_manager = core::Component_Manager::get_instance();
 
     //setup entity manager
-    enitiy_manager = core::Entity_Manager::get_instance();
+    core::Entity_Manager::init();
 
     //setup system manager
     system_manager = core::System_Manager::get_instance();

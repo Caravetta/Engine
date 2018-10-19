@@ -10,7 +10,6 @@
     public:
         core::Window* window;
         core::Timer frame_time;
-        core::Entity_Manager* enitiy_manager;
         core::System_Manager* system_manager;
         core::Asset_Manager* asset_manager;
         core::Debug_Camera* debug_camera;
