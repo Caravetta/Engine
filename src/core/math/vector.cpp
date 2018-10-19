@@ -10,7 +10,7 @@ std::ostream& operator<<(std::ostream& stream, const Vector2f& vector)
 
 std::ostream& operator<<(std::ostream& stream, const Vector3f& vector)
 {
-    stream << "vector3f:( x:" << vector.x << ", y:" << vector.y << ", z:" << vector.z << ")";
+    stream << "vector3f:( x:" << vector.vec.x << ", y:" << vector.vec.y << ", z:" << vector.vec.z << ")";
     return stream;
 }
 

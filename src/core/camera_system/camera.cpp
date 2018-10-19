@@ -20,8 +20,8 @@ Camera::Camera( Vector3f position, Vector2f frame_dimesions )
     far_plane = 10000;
 
     set_projection_matrix(frame_dimesions.x, frame_dimesions.y);
-    l_position.x = sin(yaw);
-    l_position.z = -cos(yaw);
+    l_position.vec.x = sin(yaw);
+    l_position.vec.z = -cos(yaw);
 }
 
 void Camera::update_projection_matrix( Vector2f frame_dimesions )
@@ -50,43 +50,43 @@ void Camera::set_transformation( Vector3f* translation, float rx, float ry, floa
 
 void Camera::set_view_matrix()
 {
-    look_at(position.x,
-            position.y,
-            position.z,
-            position.x + l_position.x,
-            position.y + l_position.y, position.z + l_position.z,
+    look_at(position.vec.x,
+            position.vec.y,
+            position.vec.z,
+            position.vec.x + l_position.vec.x,
+            position.vec.y + l_position.vec.y, position.vec.z + l_position.vec.z,
             0.0f, 1.0f, 0.0f);
     Vector3f neg_pos;
-    neg_pos.x = -position.x;
-    neg_pos.y = -position.y;
-    neg_pos.z = -position.z;
+    neg_pos.vec.x = -position.vec.x;
+    neg_pos.vec.y = -position.vec.y;
+    neg_pos.vec.z = -position.vec.z;
     view_matrix.translate(&neg_pos);
 }
 
 void Camera::move( float dx, float dy, float dz )
 {
     if (dz != 0) {
-        position.x += l_position.x * dz;
-        position.z += l_position.z * dz;
+        position.vec.x += l_position.vec.x * dz;
+        position.vec.z += l_position.vec.z * dz;
     }
 
     if (dx > 0) {
         Vector3f up(0.0f, 1.0f, 0.0f);
         Vector3f cross = l_position.cross(up);
         Vector3f n_cross = cross.normalize();
-        position.x += n_cross.x * (0.08f);
-        position.z += n_cross.z * 0.08f;
+        position.vec.x += n_cross.vec.x * (0.08f);
+        position.vec.z += n_cross.vec.z * 0.08f;
     }
     else if (dx < 0) {
         Vector3f up(0.0f, 1.0f, 0.0f);
         Vector3f cross = l_position.cross(up);
         Vector3f n_cross = cross.normalize();
-        position.x -= n_cross.x * 0.08f;
-        position.z -= n_cross.z * 0.08f;
+        position.vec.x -= n_cross.vec.x * 0.08f;
+        position.vec.z -= n_cross.vec.z * 0.08f;
     }
 
     if (dy != 0) {
-        position.y += dy;
+        position.vec.y += dy;
     }
 }
 
@@ -94,8 +94,8 @@ void Camera::rotate( float dyaw, float dpitch )
 {
     if (dyaw != 0) {
         yaw += dyaw;
-        l_position.x = sin(yaw);
-        l_position.z = -cos(yaw);
+        l_position.vec.x = sin(yaw);
+        l_position.vec.z = -cos(yaw);
     }
     if (dpitch != 0) {
         pitch += dpitch;
@@ -105,7 +105,7 @@ void Camera::rotate( float dyaw, float dpitch )
         if (pitch < -0.89f) {
             pitch = -0.89f;
         }
-        l_position.y = sin(pitch);
+        l_position.vec.y = sin(pitch);
     }
 }
 

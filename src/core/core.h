@@ -42,5 +42,8 @@
 #include "font/font.h"
 #include "entity_system/entity_archetype.h"
 #include "entity_system/entity_archetype_manager.h"
+#include "job_system/job.h"
+#include "job_system/job_manager.h"
+#include "worker_system/worker_manager.h"
 
 #endif //__CORE_H__

@@ -106,6 +106,18 @@ typedef struct {
     int transformation_matrix_id;
 } render_state_t;
 
+CRITICAL_SECTION render_command_queue_lock;
+
+void lock_render_queue()
+{
+    EnterCriticalSection(&render_command_queue_lock);
+}
+
+void release_render_queue()
+{
+    LeaveCriticalSection(&render_command_queue_lock);
+}
+
 std::vector<render_command_t> render_command_queue;
 
 std::vector<opengl_command_t> internal_command_queue;
@@ -387,6 +399,7 @@ void render()
     glClearColor(0.16f, 0.29f, 0.48f, 0.54f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#if 1
     std::vector<opengl_command_t> opengl_commands;
     generate_commands(&opengl_commands);
 
@@ -431,7 +444,7 @@ void render()
             if ( (transformation_matrix_id != -1) && (opengl_commands[i].draw_data.d_type == VAO_3D) ) {
                  glUniformMatrix4fv(transformation_matrix_id, 1, GL_FALSE, (GLfloat *)&opengl_commands[i].draw_data.transformation_matrix);
             } else if ( (pos_id != -1) && (opengl_commands[i].draw_data.d_type == VAO_2D) ) {
-                 glUniform2f(pos_id, opengl_commands[i].draw_data.position.x, opengl_commands[i].draw_data.position.y);
+                 glUniform2f(pos_id, opengl_commands[i].draw_data.position.vec.x, opengl_commands[i].draw_data.position.vec.y);
             }
             glDrawElements(GL_TRIANGLES, opengl_commands[i].draw_data.indices_count, GL_UNSIGNED_INT, 0);
         } break;
@@ -479,7 +492,7 @@ void render()
         }
         }
     }
-
+#endif
     render_command_queue.erase(render_command_queue.begin(), render_command_queue.begin() + render_command_queue.size());
     END_TIME_BLOCK(render);
 }

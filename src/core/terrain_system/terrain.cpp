@@ -40,9 +40,9 @@ void Terrain::generate_patches( double frequency, int octaves, int x_scale, int 
     uint32_t mesh_offset = 0;
     for ( uint32_t i = 0; i < num_height_patches; i++ ) {
         for ( uint32_t j = 0; j < num_width_patches; j++ ) {
-            Vector3f cur_patch_pos(position.x + (j * patch_width),
-                                   position.y,
-                                   position.z + (i * patch_height));
+            Vector3f cur_patch_pos(position.vec.x + (j * patch_width),
+                                   position.vec.y,
+                                   position.vec.z + (i * patch_height));
             patches[mesh_offset].position = cur_patch_pos;
             generate_patch(&patches[mesh_offset].mesh, cur_patch_pos, patch_width, patch_height, x_scale, z_scale, &fractal_noise);
             mesh_offset++;

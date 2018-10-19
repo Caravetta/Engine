@@ -8,10 +8,30 @@ namespace core {
 
     class CORE_API Matrix4f {
     public:
-        float m00, m01, m02, m03;
-        float m10, m11, m12, m13;
-        float m20, m21, m22, m23;
-        float m30, m31, m32, m33;
+        union {
+            struct {
+                float m00, m01, m02, m03;
+            };
+            __m128 row_0;
+        };
+        union {
+            struct {
+                float m10, m11, m12, m13;
+            };
+            __m128 row_1;
+        };
+        union {
+            struct {
+                float m20, m21, m22, m23;
+            };
+            __m128 row_2;
+        };
+        union {
+            struct {
+                float m30, m31, m32, m33;
+            };
+            __m128 row_3;
+        };
 
         Matrix4f();
         void identity();

@@ -17,9 +17,58 @@ void Mesh_Render_System::init()
     glSwapIntervalEXT(0);
 }
 
+#define PI 3.14159265
+
+float _to_radians( float angle ) //TODO: need to move this into math lib
+{
+    return (float)((angle * PI) / 180);
+}
+
+core::Vector3f vec_x(1, 0, 0);
+core::Vector3f vec_y(0, 1, 0);
+core::Vector3f vec_z(0, 0, 1);
+
+struct __declspec(align(16)) math_job : public core::Job_Loop {
+    std::vector<render_command_t>* commands;
+    std::vector<Position_Component*>* position_vec;
+
+    void Execute( uint64_t index ) {
+        Position_Component* position_component = position_vec->at(index);
+
+        render_command_t*   render_command = &commands->at(index);
+        render_command->transformation_matrix.identity();
+        render_command->transformation_matrix.translate(&position_component->position);
+        render_command->transformation_matrix.scale(1);
+    }
+};
+
+struct __declspec(align(16)) mesh_render_job : public core::Job_Loop {
+    std::vector<Position_Component*>* position_vec;
+    std::vector<Shader_Component*>* shader_vec;
+    std::vector<Mesh_Component*>* mesh_vec;
+    std::vector<render_command_t>* commands;
+    std::vector<core::Matrix4f>* mats;
+    Engine* engine;
+
+    void Execute( uint64_t index ) {
+        render_command_t*   render_command = &commands->at(index);
+        Position_Component* position_component = position_vec->at(index);
+        Shader_Component*   shader_component = shader_vec->at(index);
+        Mesh_Component*     mesh_component = mesh_vec->at(index);
+        Mesh_Asset*         mesh_asset = NULL;
+
+        render_command->command_type = RENDER_MESH;
+        render_command->shader_id = shader_component->program_id;
+        render_command->texture_id = 0;
+        engine->asset_manager->get_asset<Mesh_Asset>(mesh_component->mesh_handle, &mesh_asset);
+        render_command->vao = mesh_asset->mesh.vao;
+        render_command->indices_count = mesh_asset->mesh.indices_count;
+    }
+};
+
 void Mesh_Render_System::update()
 {
-    START_TIME_BLOCK(mesh_render_System_update);
+     START_TIME_BLOCK(mesh_render_System_update);
      render_command_t render_command;
 
      render_command.command_type = ENABLE_BLEND;
@@ -31,11 +80,12 @@ void Mesh_Render_System::update()
      render_command.command_type = ENABLE_CULL_FACE;
      render_command_queue.push_back(render_command);
 
+     Engine* engine = Engine::get_instance();
+
+#if 1
      std::vector<Position_Component*>* position_vec = get_data_vec<Position_Component>();
      std::vector<Shader_Component*>* shader_vec = get_data_vec<Shader_Component>();
      std::vector<Mesh_Component*>* mesh_vec = get_data_vec<Mesh_Component>();
-
-
 
      Position_Component* position_component;
      Shader_Component*   shader_component;
@@ -44,21 +94,57 @@ void Mesh_Render_System::update()
      Mesh_Asset* mesh_asset = NULL;
 
      for(int i = 0; i < entity_count; i++) {
-
          position_component = position_vec->at(i);
          shader_component = shader_vec->at(i);
          mesh_component = mesh_vec->at(i);
+        //START_TIME_BLOCK(mesh_render_System_math);
+        core::Matrix4f transformation_matrix;
+        transformation_matrix.identity();
+        transformation_matrix.translate(&position_component->position);
+        //transformation_matrix.rotate(_to_radians(0), &vec_x);
+        //transformation_matrix.rotate(_to_radians(0), &vec_y);
+        //transformation_matrix.rotate(_to_radians(0), &vec_z);
+        transformation_matrix.scale(1);
+        //END_TIME_BLOCK(mesh_render_System_math);
 
-         Engine::get_instance()->debug_camera->set_transformation(&position_component->position, 0, 0, 0, 1);
+        render_command.transformation_matrix = transformation_matrix;
+
+         //engine->debug_camera->set_transformation(&position_component->position, 0, 0, 0, 1);
          render_command.command_type = RENDER_MESH;
          render_command.shader_id = shader_component->program_id;
          render_command.texture_id = 0;
-         Engine::get_instance()->asset_manager->get_asset<Mesh_Asset>(mesh_component->mesh_handle, &mesh_asset);
+         engine->asset_manager->get_asset<Mesh_Asset>(mesh_component->mesh_handle, &mesh_asset);
          render_command.vao = mesh_asset->mesh.vao;
          render_command.indices_count = mesh_asset->mesh.indices_count;
-         render_command.transformation_matrix = Engine::get_instance()->debug_camera->transformation_matrix;
+         //render_command.transformation_matrix = Engine::get_instance()->debug_camera->transformation_matrix;
          render_command_queue.push_back(render_command);
      }
+#endif
+#if 0
+    core::Job_Manager* job_manager = core::Job_Manager::get_instance();
+    std::vector<render_command_t> commands;
+    commands.resize(entity_count);
+
+     math_job math_jober;
+     math_jober.position_vec = get_data_vec<Position_Component>();
+     math_jober.commands = &commands;
+     core::Job_Handle job_handle1 = math_jober.Schedule(entity_count, 1000);
+     while (job_manager->is_job_complete(job_handle1) == false) {};
+
+     mesh_render_job job;
+     job.position_vec = get_data_vec<Position_Component>();
+     job.shader_vec = get_data_vec<Shader_Component>();
+     job.mesh_vec = get_data_vec<Mesh_Component>();
+     job.engine = engine;
+     job.commands = &commands;//.resize(entity_count);
+     core::Job_Handle job_handle = job.Schedule(entity_count, 1000);
+     while (job_manager->is_job_complete(job_handle) == false) {};
+     //START_TIME_BLOCK(mesh_render_System_loop);
+     for (uint64_t ii = 0; ii < commands.size(); ii++) {
+        render_command_queue.push_back(commands[ii]);
+     }
+     //END_TIME_BLOCK(mesh_render_System_loop);
+#endif
      END_TIME_BLOCK(mesh_render_System_update);
 }
 

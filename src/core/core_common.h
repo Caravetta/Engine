@@ -26,7 +26,8 @@
 #define LOG_WARN(...) PRINT("WARN", __VA_ARGS__);
 #define LOG_ERROR(...) PRINT("ERROR", __VA_ARGS__);
 
-#ifdef DEBUG_BUILD
+#ifdef DEBUG_BUILD //DEBUG_BUILD
+
 #define DEBUG_LOG(...) PRINT("DEBUG", __VA_ARGS__);
 
 #define CHECK( expr ) CHECK_INFO( expr, "" )
@@ -37,10 +38,13 @@
         std::cout << "Assertion error [" << #expr << "] in " << __FUNCTION__ << "() at line " << __LINE__ << " in file " << __FILENAME__ << " " << __VA_ARGS__ << std::endl;\
     }                                                                                                                                                                       \
 }
-#else
+
+#else //NON_DEBUG_BUILD
+
 #define DEBUG_LOG(...) while(false){}
 #define CHECK_INFO( expr, ... ) while(false){}
 #define CHECK( expr ) while(false){}
+
 #endif
 
 #define PRINT(level,...){                                                                                       \
@@ -66,6 +70,9 @@
 #define PASTE_TOKEN( value, token ) value ## token
 #define PASTE_LINE( value , line ) PASTE_TOKEN( value, line)
 
+#define TIME_ENABLE 1
+
+#ifdef TIME_ENABLE
 #define START_TIME_BLOCK( name )                                                            \
     Function_Perf::get_instance()->set_current_node( #name );                               \
     std::chrono::steady_clock::time_point name ## t1 = std::chrono::steady_clock::now();
@@ -75,7 +82,14 @@
     std::chrono::duration<double> name ## time_span = std::chrono::duration_cast<std::chrono::duration<double>>( name ## t2 - name ## t1 ); \
     Function_Perf::get_instance()->set_time_value((name ## time_span).count(), #name);
 
-typedef std::vector<uint8_t> Array;
+#define PRINT_TIME_BLOCKS() Function_Perf::get_instance()->print();
+#else
+#define START_TIME_BLOCK( name ) while(false){}
+#define END_TIME_BLOCK( name ) while(false){}
+#define PRINT_TIME_BLOCKS() while(false){}
+#endif
+
+typedef __declspec(align(64)) std::vector<uint8_t> Array;
 
 template<typename T>
 struct BaseType { typedef T type; };

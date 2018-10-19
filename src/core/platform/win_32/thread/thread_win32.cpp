@@ -6,7 +6,7 @@ DWORD WINAPI MyThreadFunction( LPVOID lpParam )
 {
     thread_data_window_t* thread_data = (thread_data_window_t*)lpParam;
     SetThreadAffinityMask(GetCurrentThread(), (uint32_t)(1 << thread_data->cpu));
-    LOG("CPU " << GetCurrentProcessorNumber());
+    //LOG("CPU " << GetCurrentProcessorNumber());
     thread_data->function((void*)lpParam);
     return 0;
 }

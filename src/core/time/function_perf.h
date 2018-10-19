@@ -6,9 +6,10 @@
 #define SET_FUNC_NAME( store, name ) store = #name
 
 typedef struct {
-    std::string                             name;
-    uint64_t                                func_calls;
-    double                                  total_time;
+    std::string name;
+    uint64_t    func_calls;
+    double      total_time;
+    double      max_time = 0;
 } func_perf_data;
 
 template <typename T>
@@ -69,6 +70,10 @@ void Function_Perf::set_time_value( double time, std::string func_name )
     perf_data[idx].name = func_name;
     perf_data[idx].total_time += time;
     perf_data[idx].func_calls += 1;
+
+    if (time > perf_data[idx].max_time) {
+        perf_data[idx].max_time = time;
+    }
 }
 
 void Function_Perf::set_current_node( std::string func_name )
@@ -110,7 +115,7 @@ void _print_node( func_perf_data* node, uint64_t offset )
         star += "-";
     }
     LOG(star << node->name << " Total_Time:" << node->total_time * 1000 << "ms Avg_Time:" <<
-        (node->total_time / node->func_calls) * 1000 << "ms" << " Call_Count:" << node->func_calls);
+        (node->total_time / node->func_calls) * 1000 << "ms" << " Max:" << node->max_time * 1000 << " Call_Count:" << node->func_calls);
 }
 
 void Function_Perf::print()

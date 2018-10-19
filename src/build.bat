@@ -1,7 +1,7 @@
 
 @echo off
 
-set CommonCompilerFlags= -fp:fast -fp:except- -Gm- -MD -GR- -Zo -Oi -W4 -wd4251 -wd4201 -wd4100 -wd4189 -wd4505 -wd4127 -FC -Zi -O2 -Ot
+set CommonCompilerFlags= -fp:fast -fp:except- -Gm- -MD -GR- -Zo -Oi -W4 -wd4251 -wd4201 -wd4100 -wd4189 -wd4505 -wd4127 -FC -Ox -Ot
 set DebugCompilerFlags= -fp:fast -fp:except- -Gm- -MD -GR- -Zo -Oi -W4 -wd4251 -wd4201 -wd4100 -wd4189 -wd4505 -wd4127 -FC -Zi
 
 mkdir ..\build

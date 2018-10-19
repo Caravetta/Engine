@@ -6,6 +6,7 @@
     class Engine {
     private:
         static Engine* instance;
+
     public:
         core::Window* window;
         core::Timer frame_time;

@@ -5,7 +5,7 @@
 
 #define COMPONENT(name,...)         \
                                     \
-    typedef struct                  \
+    typedef __declspec(align(16)) struct                  \
     {                               \
         union                       \
         {                           \

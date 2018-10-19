@@ -2,7 +2,10 @@
 #define __VECTOR_H__
 
 #include <math.h>
+#include <xmmintrin.h>
 #include "../core_common.h"
+
+#define SIMD_ON 1
 
 namespace core {
 
@@ -30,14 +33,24 @@ namespace core {
     }
 
     /*** Vector3f ***/
+
+    typedef union {
+        struct {
+            float pad;
+            float x;
+            float y;
+            float z;
+        };
+        __m128 data;
+    } vec_3f;
+
     class CORE_API Vector3f {
     public:
-        float x;
-        float y;
-        float z;
+        vec_3f vec;
 
         Vector3f();
         Vector3f( const float x, const float y, const float z );
+        Vector3f( const __m128 data );
         bool compare( const Vector3f &other ) const;
         Vector3f normalize_fast() const;
         Vector3f normalize() const;
@@ -67,54 +80,70 @@ namespace core {
 
     ALWAYS_INLINE Vector3f::Vector3f()
     {
-        this->x = this->y = this->z = 0;
+#if SIMD_ON
+        vec.data = _mm_set1_ps(0);
+#else
+        memset(&vec, 0, sizeof(vec_3f));
+#endif
     }
 
     ALWAYS_INLINE Vector3f::Vector3f( const float x, const float y, const float z )
     {
-        this->x = x;
-        this->y = y;
-        this->z = z;
+#if SIMD_ON
+        vec.data = _mm_set_ps(z, y, x, 0);
+#else
+        vec.x = x;
+        vec.y = y;
+        vec.z = z;
+#endif
+    }
+    ALWAYS_INLINE Vector3f::Vector3f( const __m128 data )
+    {
+        vec.data = data;
     }
 
     ALWAYS_INLINE bool Vector3f::compare( const Vector3f &other ) const
     {
-        return ( ( x == other.x ) && ( y == other.y ) && ( z == other.z ) );
+#if SIMD_ON
+        return _mm_movemask_ps(_mm_cmpeq_ps(vec.data, other.vec.data)) == 0xF;
+#else
+        return ( ( vec.x == other.vec.x ) && ( vec.y == other.vec.y ) && ( vec.z == other.vec.z ) );
+#endif
     }
 
     ALWAYS_INLINE Vector3f Vector3f::normalize_fast() const
     {
         //float length = qsqrt(x * x + y * y + z * z); //TODO: fix this
         float length = 1;
-        return Vector3f(x / length, y / length, z / length);
+        return Vector3f(vec.x / length, vec.y / length, vec.z / length);
     }
 
     ALWAYS_INLINE Vector3f Vector3f::normalize() const
     {
-        float length = sqrtf(x * x + y * y + z * z);
-        return Vector3f(x / length, y / length, z / length);
+        float length = sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+        return Vector3f(vec.x / length, vec.y / length, vec.z / length);
     }
 
     ALWAYS_INLINE Vector3f Vector3f::cross( const Vector3f& other )
     {
-        return Vector3f( y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x );
+        return Vector3f( vec.y * other.vec.z - vec.z * other.vec.y, vec.z * other.vec.x - vec.x * other.vec.z, vec.x * other.vec.y - vec.y * other.vec.x );
     }
 
     ALWAYS_INLINE float Vector3f::operator[]( const int index ) const
     {
-        return ( &x )[ index ];
+        return ( &vec.x )[ index ];
     }
 
     ALWAYS_INLINE float &Vector3f::operator[]( const int index )
     {
-        return ( &x )[ index ];
+        return ( &vec.x )[ index ];
     }
 
     ALWAYS_INLINE Vector3f &Vector3f::operator=( const Vector3f &other )
     {
-        x = other.x;
-        y = other.y;
-        z = other.z;
+        vec.x = other.vec.x;
+        vec.y = other.vec.y;
+        vec.z = other.vec.z;
 
         return *this;
     }
@@ -131,24 +160,29 @@ namespace core {
 
     ALWAYS_INLINE Vector3f Vector3f::operator-() const
     {
-        return Vector3f( -x, -y, -z );
+        return Vector3f( -vec.x, -vec.y, -vec.z );
     }
 
     ALWAYS_INLINE float Vector3f::operator*( const Vector3f &other ) const
     {
-        return x * other.x + y * other.y + z * other.z;
+        return vec.x * other.vec.x + vec.y * other.vec.y + vec.z * other.vec.z;
     }
 
     ALWAYS_INLINE Vector3f Vector3f::operator*( const float scalar ) const
     {
-        return Vector3f( x * scalar, y * scalar, z * scalar );
+#if SIMD_ON
+        __m128 tmp_scalar = _mm_set_ps(scalar, scalar, scalar, 0);
+        return Vector3f( _mm_mul_ps(vec.data, tmp_scalar) );
+#else
+        return Vector3f( vec.x * scalar, vec.y * scalar, vec.z * scalar );
+#endif
     }
 
     ALWAYS_INLINE Vector3f &Vector3f::operator*=( const float scalar )
     {
-        x *= scalar;
-        y *= scalar;
-        z *= scalar;
+        vec.x *= scalar;
+        vec.y *= scalar;
+        vec.z *= scalar;
 
         return *this;
     }
@@ -156,52 +190,52 @@ namespace core {
     ALWAYS_INLINE Vector3f Vector3f::operator/( const float scalar ) const
     {
         float inverted_scalar = 1.0f / scalar;
-        return Vector3f( x * inverted_scalar, y * inverted_scalar, z * inverted_scalar );
+        return Vector3f( vec.x * inverted_scalar, vec.y * inverted_scalar, vec.z * inverted_scalar );
     }
 
     ALWAYS_INLINE Vector3f &Vector3f::operator/=( const float scalar )
     {
         float inverted_scalar = 1.0f / scalar;
-        x *= inverted_scalar;
-        y *= inverted_scalar;
-        z *= inverted_scalar;
+        vec.x *= inverted_scalar;
+        vec.y *= inverted_scalar;
+        vec.z *= inverted_scalar;
 
         return *this;
     }
 
     ALWAYS_INLINE Vector3f &Vector3f::operator/=( const Vector3f &other )
     {
-        x /= other.x;
-        y /= other.y;
-        z /= other.z;
+        vec.x /= other.vec.x;
+        vec.y /= other.vec.y;
+        vec.z /= other.vec.z;
 
         return *this;
     }
 
     ALWAYS_INLINE Vector3f Vector3f::operator+( const Vector3f &other ) const
     {
-        return Vector3f( x + other.x, y + other.y, z + other.z );
+        return Vector3f( vec.x + other.vec.x, vec.y + other.vec.y, vec.z + other.vec.z );
     }
 
     ALWAYS_INLINE Vector3f &Vector3f::operator+=( const Vector3f &other )
     {
-        x += other.x;
-        y += other.y;
-        z += other.z;
+        vec.x += other.vec.x;
+        vec.y += other.vec.y;
+        vec.z += other.vec.z;
 
         return *this;
     }
 
     ALWAYS_INLINE Vector3f Vector3f::operator-( const Vector3f &other ) const
     {
-        return Vector3f( x - other.x, y - other.y, z - other.z );
+        return Vector3f( vec.x - other.vec.x, vec.y - other.vec.y, vec.z - other.vec.z );
     }
 
     ALWAYS_INLINE Vector3f &Vector3f::operator-=( const Vector3f &other )
     {
-        x -= other.x;
-        y -= other.y;
-        z -= other.z;
+        vec.x -= other.vec.x;
+        vec.y -= other.vec.y;
+        vec.z -= other.vec.z;
 
         return *this;
     }

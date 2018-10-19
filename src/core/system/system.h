@@ -3,6 +3,8 @@
 
 #include "../core_common.h"
 #include "../time/function_perf.h"
+#include "../job_system/job.h"
+#include "../job_system/job_manager.h"
 
 namespace core {
 
@@ -68,7 +70,7 @@ bool System::has_component()
 template<typename T>
 T* System::get_data_at( uint64_t idx )
 {
-    START_TIME_BLOCK(system_get_data_at);
+    //START_TIME_BLOCK(system_get_data_at);
     uint64_t comp_id = comp_manager->id<T>();
     uint64_t comp_total = 0;
     T* return_data = NULL;
@@ -95,14 +97,14 @@ T* System::get_data_at( uint64_t idx )
 
     CHECK_INFO( comp_idx == comp_map.end(), "This comp ID:" << comp_id << " is not tracked by " << name );
 
-    END_TIME_BLOCK(system_get_data_at);
+    //END_TIME_BLOCK(system_get_data_at);
     return return_data;
 }
 
 template<typename T>
 std::vector<T*>* System::get_data_vec()
 {
-    START_TIME_BLOCK(system_get_data_vec);
+    //START_TIME_BLOCK(system_get_data_vec);
     uint64_t comp_id = comp_manager->id<T>();
 
     std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(comp_id);
@@ -110,15 +112,26 @@ std::vector<T*>* System::get_data_vec()
         CHECK_INFO( comp_id == component_nodes[comp_idx->second].component_id,
                     "comp_id:" << comp_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
 
-        END_TIME_BLOCK(system_get_data_vec);
+        //END_TIME_BLOCK(system_get_data_vec);
         return (std::vector<T*>*)&component_nodes[comp_idx->second].packed_data;
     }
 
     CHECK_INFO( comp_idx == comp_map.end(), "This comp ID:" << comp_id << " is not tracked by " << name );
 
-    END_TIME_BLOCK(system_get_data_vec);
+    //END_TIME_BLOCK(system_get_data_vec);
     return NULL;
 }
+
+struct pre_update_job : public Job_Loop {
+    std::vector<component_node_t>* volatile component_nodes;
+    uint64_t ll;
+    uint64_t oo;
+    uint64_t current_idx;
+    void Execute( uint64_t index ) {
+        component_nodes->at(ll).packed_data[current_idx + index] = &(component_nodes->at(ll).array_data_vec[oo]->at(component_nodes->at(ll).size * index));
+    }
+
+};
 
 bool System::pre_update()
 {

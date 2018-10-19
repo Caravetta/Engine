@@ -185,18 +185,18 @@ void load_obj_file( std::string file_path, Mesh* mesh )
         indice_data* data = temp_data[i];
 
         //vert
-        mesh->vertices[vec3_offset] = vert_vector[data->vert - 1].x;
-        mesh->vertices[vec3_offset + 1] = vert_vector[data->vert - 1].y;
-        mesh->vertices[vec3_offset + 2] = vert_vector[data->vert - 1 ].z;
+        mesh->vertices[vec3_offset] = vert_vector[data->vert - 1].vec.x;
+        mesh->vertices[vec3_offset + 1] = vert_vector[data->vert - 1].vec.y;
+        mesh->vertices[vec3_offset + 2] = vert_vector[data->vert - 1 ].vec.z;
 
         //norm
-        mesh->normals[vec3_offset] = norm_vector[data->norm - 1].x;
-        mesh->normals[vec3_offset + 1] = norm_vector[data->norm - 1].y;
-        mesh->normals[vec3_offset + 2] = norm_vector[data->norm - 1 ].z;
+        mesh->normals[vec3_offset] = norm_vector[data->norm - 1].vec.x;
+        mesh->normals[vec3_offset + 1] = norm_vector[data->norm - 1].vec.y;
+        mesh->normals[vec3_offset + 2] = norm_vector[data->norm - 1 ].vec.z;
 
         //text
-        mesh->textures[vec2_offset] = text_vector[data->text -1].x;
-        mesh->textures[vec2_offset + 1] = text_vector[data->text -1].y;
+        mesh->textures[vec2_offset] = text_vector[data->text -1].vec.x;
+        mesh->textures[vec2_offset + 1] = text_vector[data->text -1].vec.y;
 
         vec3_offset += 3;
         vec2_offset += 2;

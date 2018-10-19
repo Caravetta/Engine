@@ -99,9 +99,9 @@ void Mesh::generate_flat_plane( Mesh* mesh, Vector3f position, uint32_t width, u
     mesh->indices = (uint32_t*)malloc(sizeof(uint32_t) * mesh->indices_count);
 
     int vert_index = 0;
-    float x = position.x;
-    float y = position.y;
-    float z = position.z;
+    float x = position.vec.x;
+    float y = position.vec.y;
+    float z = position.vec.z;
     for ( int i = 0; i < num_width_verts; i++ ) {
         for ( int j = 0; j < num_height_verts; j++ ) {
             mesh->vertices[vert_index * 3] = x;
@@ -113,7 +113,7 @@ void Mesh::generate_flat_plane( Mesh* mesh, Vector3f position, uint32_t width, u
             z += vert_scale;
             vert_index++;
         }
-        z = position.z;
+        z = position.vec.z;
         x += vert_scale;
     }
     int indices_index = 0;
@@ -150,23 +150,23 @@ void Mesh::generate_face_normals( Mesh* mesh, uint32_t width, uint32_t height, f
     for ( int i = 0; i < width_box; i++ ) {
         for ( int j = 0; j < height_box; j++ ) {
             //top face
-            v0.x = mesh->vertices[(j + face_offset) * 3];
-            v0.y = mesh->vertices[(j + face_offset) * 3 + 1];
-            v0.z = mesh->vertices[(j + face_offset) * 3 + 2];
-            v1.x = mesh->vertices[(j + face_offset + height_verts + 1) * 3];
-            v1.y = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 1];
-            v1.z = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 2];
-            v2.x = mesh->vertices[(j + face_offset + 1) * 3];
-            v2.y = mesh->vertices[(j + face_offset + 1) * 3 + 1];
-            v2.z = mesh->vertices[(j + face_offset + 1) * 3 + 2];
+            v0.vec.x = mesh->vertices[(j + face_offset) * 3];
+            v0.vec.y = mesh->vertices[(j + face_offset) * 3 + 1];
+            v0.vec.z = mesh->vertices[(j + face_offset) * 3 + 2];
+            v1.vec.x = mesh->vertices[(j + face_offset + height_verts + 1) * 3];
+            v1.vec.y = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 1];
+            v1.vec.z = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 2];
+            v2.vec.x = mesh->vertices[(j + face_offset + 1) * 3];
+            v2.vec.y = mesh->vertices[(j + face_offset + 1) * 3 + 1];
+            v2.vec.z = mesh->vertices[(j + face_offset + 1) * 3 + 2];
             face_normals->at(j + face_offset).top_face = generate_face_norm(v0, v1, v2);
             //bottom face
-            v1.x = mesh->vertices[(j + face_offset + height_verts) * 3];
-            v1.y = mesh->vertices[(j + face_offset + height_verts) * 3 + 1];
-            v1.z = mesh->vertices[(j + face_offset + height_verts) * 3 + 2];
-            v2.x = mesh->vertices[(j + face_offset + height_verts + 1) * 3];
-            v2.y = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 1];
-            v2.z = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 2];
+            v1.vec.x = mesh->vertices[(j + face_offset + height_verts) * 3];
+            v1.vec.y = mesh->vertices[(j + face_offset + height_verts) * 3 + 1];
+            v1.vec.z = mesh->vertices[(j + face_offset + height_verts) * 3 + 2];
+            v2.vec.x = mesh->vertices[(j + face_offset + height_verts + 1) * 3];
+            v2.vec.y = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 1];
+            v2.vec.z = mesh->vertices[(j + face_offset + height_verts + 1) * 3 + 2];
             face_normals->at(j + face_offset).bottom_face = generate_face_norm(v0, v1, v2);
         }
         face_offset += height_verts;
@@ -206,9 +206,9 @@ void Mesh::generate_and_set_vert_normals( Mesh* mesh, uint32_t width, uint32_t h
                 vert_normal = vert_normal + face_normals->at(vert_index - 1).top_face;
             }
             vert_normal = vert_normal.normalize();
-            mesh->normals[vert_index * 3] = vert_normal.x;
-            mesh->normals[vert_index * 3 + 1] = vert_normal.y;
-            mesh->normals[vert_index * 3 + 2] = vert_normal.z;
+            mesh->normals[vert_index * 3] = vert_normal.vec.x;
+            mesh->normals[vert_index * 3 + 1] = vert_normal.vec.y;
+            mesh->normals[vert_index * 3 + 2] = vert_normal.vec.z;
             vert_index++;
         }
     }

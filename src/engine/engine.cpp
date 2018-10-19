@@ -6,12 +6,10 @@
 #include "asset_types/assets.h"
 #include "asset_types/assets.cpp"
 #include "renderer.h"
-//#include "user_init.h"
-//#include "user_init.cpp"
+#include "user_init.h"
+#include "user_init.cpp"
 
-#include <ctime>
-#include <ratio>
-#include <chrono>
+#define MAX_WORKER_THREADS 4
 
 Engine* Engine::instance = NULL;
 
@@ -25,11 +23,22 @@ Engine* Engine::get_instance()
 
 void Engine::init()
 {
+
+    //IMPORTANT never want to run on CPU 0
+    // lock the main thread to CPU 1
+    SetThreadAffinityMask(GetCurrentThread(), (uint32_t)(1 << 1));
+
     //load opengl extentions (important this must be done before creating window)
     load_opengl_extensions();
 
     //create the game window
     this->window = new core::Window(1000, 800, "Launcher");
+
+    //setup job manager
+    core::Job_Manager::init();
+
+    //setup worker manager
+    core::Worker_Manager::init();
 
     //setup component manager
     component_manager = core::Component_Manager::get_instance();
@@ -66,14 +75,21 @@ void Engine::init()
     //system_manager->register_system<Cube_Orbit_System>();
 
     /************* START TEST CODE ***************/
-    //user_init();
+    user_init();
 
     debug_camera = new core::Debug_Camera(core::Vector3f(67, 8, 32), core::Vector2f(1000, 800));
     debug_camera->rotate(30.29, -0.2);
 
     /************* END TEST CODE *****************/
 
+    //TODO(JOSH): need to find better place to put this
+    if ( !InitializeCriticalSectionAndSpinCount(&render_command_queue_lock, 0x00000400) ) {
+        LOG_ERROR("Failed to init render lock");
+    }
+
     system_manager->init_systems();
+
+    return;
 }
 
 static int count = 0;
@@ -82,7 +98,6 @@ float up_max = -1.0f;
 
 void Engine::update()
 {
-
     this->frame_time.update();
 
     //update the window
@@ -102,7 +117,7 @@ void Engine::update()
 
     render();
 
-    Function_Perf::get_instance()->print();
+    PRINT_TIME_BLOCKS();
 
     Engine::get_instance()->window->swap_buffers();
 }
