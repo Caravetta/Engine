@@ -23,7 +23,7 @@ namespace core {
 template<typename T>
 void Entity_Archetype::add_component()
 {
-    add_component(Component_Manager::get_instance()->id<T>());
+    add_component(Component_Manager::id<T>());
 }
 
 template<typename T>

@@ -4,10 +4,10 @@
 Text_Render_System::Text_Render_System()
 {
     name = "Text_Render_System";
-    add_component(core::Component_Manager::get_instance()->id<Position_Component>());
-    add_component(core::Component_Manager::get_instance()->id<Static_Text_Component>());
-    add_component(core::Component_Manager::get_instance()->id<Shader_Component>());
-    add_component(core::Component_Manager::get_instance()->id<Texture_Component>());
+    add_component(core::Component_Manager::id<Position_Component>());
+    add_component(core::Component_Manager::id<Static_Text_Component>());
+    add_component(core::Component_Manager::id<Shader_Component>());
+    add_component(core::Component_Manager::id<Texture_Component>());
 }
 
 void Text_Render_System::init()

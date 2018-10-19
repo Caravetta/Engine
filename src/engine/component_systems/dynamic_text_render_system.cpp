@@ -3,10 +3,10 @@
 
 Dynamic_Text_Render_System::Dynamic_Text_Render_System()
 {
-    add_component(core::Component_Manager::get_instance()->id<Position_Component>());
-    add_component(core::Component_Manager::get_instance()->id<Dynamic_Text_Component>());
-    add_component(core::Component_Manager::get_instance()->id<Shader_Component>());
-    add_component(core::Component_Manager::get_instance()->id<Texture_Component>());
+    add_component(core::Component_Manager::id<Position_Component>());
+    add_component(core::Component_Manager::id<Dynamic_Text_Component>());
+    add_component(core::Component_Manager::id<Shader_Component>());
+    add_component(core::Component_Manager::id<Texture_Component>());
 }
 
 void Dynamic_Text_Render_System::init()

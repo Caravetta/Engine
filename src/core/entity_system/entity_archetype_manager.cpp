@@ -86,13 +86,7 @@ UhRC_t Entity_Archetype_Manager::register_archetype( Entity_Archetype archetype,
             tmp_comp_node->empty_idx_p = &(tmp_comp_node->empty_idx);
             tmp_comp_node->component_id = archetype.used_component_ids[i];
 
-            Component_Manager* component_manager  = Component_Manager::get_instance();
-            if ( component_manager == NULL ) {
-                CHECK_INFO( 0, "Failed to get Component_Manager" );
-                return ENGINE_ERROR;
-            }
-
-            comp_size = component_manager->get_component_size(archetype.used_component_ids[i]);
+            comp_size = Component_Manager::get_component_size(archetype.used_component_ids[i]);
 
             tmp_comp_node->data_array = new Array;
             tmp_comp_node->data_array->resize(comp_size * COMP_RESIZE_SIZE);
@@ -162,15 +156,9 @@ UhRC_t Entity_Archetype_Manager::register_entity( Entity entity, std::string arc
 
         entity_idx = tmp_archetype_node->comp_nodes_vec->at(0)->empty_idx;
 
-        Component_Manager* component_manager = Component_Manager::get_instance();
-        if ( component_manager == NULL ) {
-            CHECK_INFO( 0, "Failed to get Component_Manager" );
-            return ENGINE_ERROR;
-        }
-
         // loop through all the components in arche and init the data location / check if data needs to be resized
         for (int i = 0; i < tmp_archetype_node->comp_nodes_vec->size(); i++) {
-            size_t comp_size = component_manager->get_component_size(tmp_archetype_node->comp_nodes_vec->at(i)->component_id);
+            size_t comp_size = Component_Manager::get_component_size(tmp_archetype_node->comp_nodes_vec->at(i)->component_id);
 
             // check to see if we need to resize data
             if ( tmp_archetype_node->comp_nodes_vec->at(i)->empty_idx == tmp_archetype_node->comp_nodes_vec->at(i)->total_elements ) {
@@ -182,7 +170,7 @@ UhRC_t Entity_Archetype_Manager::register_entity( Entity entity, std::string arc
             }
 
             // call the allocator for this component ( because C++ sucks )
-            component_create_function init_func = component_manager->get_component_create(tmp_archetype_node->comp_nodes_vec->at(i)->component_id);
+            Component_Manager::component_create_function init_func = Component_Manager::get_component_create(tmp_archetype_node->comp_nodes_vec->at(i)->component_id);
             init_func(&(tmp_archetype_node->comp_nodes_vec->at(i)->data_array->at(entity_idx * comp_size)));
             tmp_archetype_node->comp_nodes_vec->at(i)->empty_idx += 1;
         }
@@ -213,7 +201,7 @@ uint8_t* Entity_Archetype_Manager::get_component_data( Entity entity, uint64_t c
             // get the entity offset in the comp data chunk
             std::unordered_map<uint64_t, uint64_t>::const_iterator entity_comp_idx = tmp_archetype_node->entity_map->find(entity.id);
 
-            size_t comp_size = Component_Manager::get_instance()->get_component_size(component_id); //TODO(JOSH): add comp size to the comp_node
+            size_t comp_size = Component_Manager::get_component_size(component_id); //TODO(JOSH): add comp size to the comp_node
 
             return &(tmp_comp_node->data_array->at(entity_comp_idx->second * comp_size));
         }

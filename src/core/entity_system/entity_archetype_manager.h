@@ -70,7 +70,7 @@ public:
 template<typename T>
 T* Entity_Archetype_Manager::get_component_data( Entity entity )
 {
-    return (T*)get_component_data(entity, Component_Manager::get_instance()->id<T>());
+    return (T*)get_component_data(entity, Component_Manager::id<T>());
 }
 
 } // end namespace core

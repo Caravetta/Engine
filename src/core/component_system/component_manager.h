@@ -12,61 +12,27 @@
 #define NON_VALID_ID 18446744073709551615
 
 namespace core {
+namespace Component_Manager {
 
-    typedef UhRC_t (*component_create_function)( uint8_t* memory );
+typedef UhRC_t (*component_create_function)( uint8_t* memory );
 
-    struct component_info {
-        component_create_function create_function;
-        size_t size;
-    };
+struct component_info {
+    component_create_function create_function;
+    size_t size;
+};
 
-    template <typename T>
-    struct type_idx_info
-    {
-        static uint64_t id;
-    };
-    template <typename T>
-    uint64_t type_idx_info<T>::id{NON_VALID_ID};
-
-    class Component_Manager {
-    private:
-        CORE_API static Component_Manager* instance;
-        std::vector<component_info> component_info_vec;
-
-    public:
-        static Component_Manager* get_instance();
-        uint64_t get_max_components();
-        uint64_t get_component_size( uint64_t component_id );
-        component_create_function get_component_create( uint64_t component_id );
-        template<typename T> void register_component();
-        template<typename T> uint64_t id();
-    };
-
-Component_Manager* Component_Manager::get_instance()
+template <typename T>
+struct type_idx_info
 {
-    if ( instance == NULL ) {
-        LOG("Initializing Component_Manager");
-        instance = new Component_Manager;
-    }
-    return instance;
-}
+    static uint64_t id;
+};
+template <typename T>
+uint64_t type_idx_info<T>::id{NON_VALID_ID};
 
-uint64_t Component_Manager::get_max_components()
-{
-    return component_info_vec.size();
-}
-
-uint64_t Component_Manager::get_component_size( uint64_t component_id )
-{
-    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
-    return component_info_vec[component_id].size;
-}
-
-component_create_function Component_Manager::get_component_create( uint64_t component_id )
-{
-    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
-    return component_info_vec[component_id].create_function;
-}
+CORE_API uint64_t get_max_components();
+CORE_API uint64_t get_component_size( uint64_t component_id );
+CORE_API component_create_function get_component_create( uint64_t component_id );
+CORE_API void register_component_info( component_info comp_info );
 
 template<typename T>
 uint64_t Component_Manager::id()
@@ -76,16 +42,17 @@ uint64_t Component_Manager::id()
 }
 
 template<typename T>
-void Component_Manager::register_component()
+void Component_Manager::register_component( void )
 {
     component_info temp_comp;
     temp_comp.create_function = component_create<T>;
     temp_comp.size = sizeof(T);
-    type_idx_info<T>::id = component_info_vec.size();
-    component_info_vec.push_back(temp_comp);
+    type_idx_info<T>::id = get_max_components();
+    register_component_info(temp_comp);
     LOG("Registered Component: " << typeid(T).name() << " with ID: " << type_idx_info<T>::id << " sizeof " << temp_comp.size);
 }
 
+} // end namespace Component_Manager
 } // end namespace core
 
 template<typename T>

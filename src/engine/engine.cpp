@@ -41,7 +41,7 @@ void Engine::init()
     core::Worker_Manager::init();
 
     //setup component manager
-    component_manager = core::Component_Manager::get_instance();
+    //component_manager = core::Component_Manager::get_instance();
 
     //setup entity manager
     enitiy_manager = core::Entity_Manager::get_instance();
@@ -58,12 +58,12 @@ void Engine::init()
     //uh::CEMS::get_instance();
 
     //register all components NOTE: this will need to be generated maybe
-    component_manager->register_component<Position_Component>();
-    component_manager->register_component<Mesh_Component>();
-    component_manager->register_component<Texture_Component>();
-    component_manager->register_component<Shader_Component>();
-    component_manager->register_component<Static_Text_Component>();
-    component_manager->register_component<Motion_Component>();
+    core::Component_Manager::register_component<Position_Component>();
+    core::Component_Manager::register_component<Mesh_Component>();
+    core::Component_Manager::register_component<Texture_Component>();
+    core::Component_Manager::register_component<Shader_Component>();
+    core::Component_Manager::register_component<Static_Text_Component>();
+    core::Component_Manager::register_component<Motion_Component>();
     //component_manager->register_component<Dynamic_Text_Component>();
     //component_manager->register_component<Cube_Orbit_Component>();
 

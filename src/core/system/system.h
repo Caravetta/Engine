@@ -27,7 +27,6 @@ class System {
 private:
     std::vector<component_node_t>           component_nodes;
     std::unordered_map<uint64_t, uint64_t>  comp_map;
-    Component_Manager* comp_manager;
 
 protected:
     uint64_t entity_count = 0;
@@ -105,7 +104,7 @@ template<typename T>
 std::vector<T*>* System::get_data_vec()
 {
     //START_TIME_BLOCK(system_get_data_vec);
-    uint64_t comp_id = comp_manager->id<T>();
+    uint64_t comp_id = Component_Manager::id<T>();
 
     std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(comp_id);
     if ( comp_idx != comp_map.end() ) {
@@ -136,7 +135,6 @@ struct pre_update_job : public Job_Loop {
 bool System::pre_update()
 {
     START_TIME_BLOCK(system_pre_update);
-    comp_manager = Component_Manager::get_instance();
     entity_count = 0;
 
     // check to see if this system is tracking any comps
@@ -194,7 +192,7 @@ void System::add_component( component_usage_t usage )
 template<typename T>
 void System::add_component()
 {
-    add_component(Component_Manager::get_instance()->id<T>(), COMPONENT_READ_AND_WRITE);
+    add_component(Component_Manager::id<T>(), COMPONENT_READ_AND_WRITE);
 }
 
 void System::add_component( uint64_t component_id, component_usage_t usage )
@@ -209,7 +207,7 @@ void System::add_component( uint64_t component_id, component_usage_t usage )
         component_node_t tmp_comp_node;
         tmp_comp_node.component_id = component_id;
         tmp_comp_node.usage = usage;
-        tmp_comp_node.size = Component_Manager::get_instance()->get_component_size(component_id);
+        tmp_comp_node.size = Component_Manager::get_component_size(component_id);
         component_nodes.push_back(tmp_comp_node);
         component_list.push_back(component_id);
 
