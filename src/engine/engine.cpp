@@ -52,7 +52,7 @@ void Engine::init()
     //setup asset manager
     //asset_manager = core::Asset_Manager::get_instance();
 
-    archetype_manager = core::Entity_Archetype_Manager::get_instance();
+    core::Entity_Archetype_Manager::init();
 
     //setup event manager
     //uh::CEMS::get_instance();

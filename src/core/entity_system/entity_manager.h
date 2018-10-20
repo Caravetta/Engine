@@ -38,7 +38,7 @@ UhRC_t remove_component( Entity entity )
 template<typename T>
 T* get_component( Entity entity )
 {
-    return Entity_Archetype_Manager::get_instance()->get_component_data<T>(entity);
+    return Entity_Archetype_Manager::get_component_data<T>(entity);
 }
 
 template<typename T>

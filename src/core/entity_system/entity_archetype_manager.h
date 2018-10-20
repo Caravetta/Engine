@@ -6,73 +6,40 @@
 #include "entity.h"
 
 namespace core {
+namespace Entity_Archetype_Manager {
 
-typedef struct {
-    uint64_t    total_elements;
-    uint64_t    empty_idx;
-    uint64_t*   empty_idx_p;
-    uint64_t    component_id;
-    Array*      data_array;
-} arche_comp_node_t;
+CORE_API UhRC_t init( void );
 
-typedef struct {
-    uint64_t total_components;
-    std::vector<arche_comp_node_t*>*         comp_nodes_vec;
-    std::unordered_map<uint64_t, uint64_t>*  comp_map;       //map comp id to vector pos
-    std::unordered_map<uint64_t, uint64_t>*  idx_map;        //map location to entity
-    std::unordered_map<uint64_t, uint64_t>*  entity_map;     //map entity to vector location
-} archetype_node_t;
+/**
+    Register an archetype to a string name that will allow them to get this archetype back at a later date.
 
-typedef struct {
-    std::vector<archetype_node_t*>*             archetype_nodes;
-    std::unordered_map<std::string, uint64_t>*  archetype_map;
-    std::unordered_map<uint64_t, uint64_t>*     entity_map;
-} entity_archetype_manager_t;
+    @param archetype        holds the archetype data.
+    @param archetype_name   name to map to the passed archetype.
 
-class CORE_API Entity_Archetype_Manager {
-private:
-    entity_archetype_manager_t*         entity_archetype_manager;
-    static Entity_Archetype_Manager*    instance;
+    @return UhRC_t returns a return code.
+*/
+CORE_API UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_name );
 
-    void expand_comp_node( arche_comp_node_t* component_node );
+/**
+    Register and entity with the archetype system.
 
-    UhRC_t init( void );
-public:
-    static Entity_Archetype_Manager* get_instance();
+    @param entity           the entity handle
+    @param archetype_name   archetype to register the entity with
 
-    /**
-        Register an archetype to a string name that will allow them to get this archetype back at a later date.
+    @return UhRC_t returns a return code.
+*/
+CORE_API UhRC_t register_entity( Entity entity, std::string archetype_name );
 
-        @param archetype        holds the archetype data.
-        @param archetype_name   name to map to the passed archetype.
-
-        @return UhRC_t returns a return code.
-    */
-    UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_name );
-
-    /**
-        Register and entity with the archetype system.
-
-        @param entity           the entity handle
-        @param archetype_name   archetype to register the entity with
-
-        @return UhRC_t returns a return code.
-    */
-    UhRC_t register_entity( Entity entity, std::string archetype_name );
-
-    uint8_t* get_component_data( Entity entity, uint64_t component_id );
-
-    template<typename T> T* get_component_data( Entity entity );
-
-    UhRC_t remove_entity( Entity entity );
-};
+CORE_API uint8_t* get_component_data_generic( Entity entity, uint64_t component_id );
+CORE_API UhRC_t remove_entity( Entity entity );
 
 template<typename T>
 T* Entity_Archetype_Manager::get_component_data( Entity entity )
 {
-    return (T*)get_component_data(entity, Component_Manager::id<T>());
+    return (T*)get_component_data_generic(entity, Component_Manager::id<T>());
 }
 
-} // end namespace core
+} //end namespace Entity_Archetype_Manager
+} //end namespace core
 
 #endif // __ENTITY_ARCHETYPE_MANAGER_H__

@@ -47,12 +47,6 @@ Entity create_entity( std::string archetype_name )
 {
     Entity return_entity = {0};
 
-    Entity_Archetype_Manager* archetype_manager = Entity_Archetype_Manager::get_instance();
-    if ( archetype_manager == NULL ) {
-        CHECK_INFO( 0, "Failed to get Entity_Archetype_Manager");
-        return return_entity;
-    }
-
     // check to see if there is a node in the free vector
     if ( !entity_manager.free_entity_idx.empty() ) {
         uint32_t free_idx = entity_manager.free_entity_idx.back();
@@ -70,19 +64,13 @@ Entity create_entity( std::string archetype_name )
         entity_manager.next_entity_idx++;
     }
 
-    archetype_manager->register_entity(return_entity, archetype_name);
+    Entity_Archetype_Manager::register_entity(return_entity, archetype_name);
 
     return return_entity;
 }
 
 UhRC_t delete_entity( Entity entity )
 {
-    Entity_Archetype_Manager* archetype_manager = Entity_Archetype_Manager::get_instance();
-    if ( archetype_manager == NULL ) {
-        CHECK_INFO( 0, "Failed to get Entity_Archetype_Manager");
-        return ENGINE_ERROR;
-    }
-
     // check to see if the Entity is valid
     if ( entity.id == entity_manager.entity_ids[entity.index].id ) {
         entity_manager.entity_ids[entity.index].phase++;

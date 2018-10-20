@@ -1,33 +1,35 @@
 #include "entity_archetype_manager.h"
 
 namespace core {
+namespace Entity_Archetype_Manager {
 
 #define COMP_RESIZE_SIZE 10
 
-Entity_Archetype_Manager* Entity_Archetype_Manager::instance = NULL;
+typedef struct {
+    uint64_t    total_elements;
+    uint64_t    empty_idx;
+    uint64_t*   empty_idx_p;
+    uint64_t    component_id;
+    Array*      data_array;
+} arche_comp_node_t;
 
-Entity_Archetype_Manager* Entity_Archetype_Manager::get_instance()
-{
-    if ( instance == NULL ) {
-        LOG("Initializing Entity_Archetype_Manager");
+typedef struct {
+    uint64_t total_components;
+    std::vector<arche_comp_node_t*>*         comp_nodes_vec;
+    std::unordered_map<uint64_t, uint64_t>*  comp_map;       //map comp id to vector pos
+    std::unordered_map<uint64_t, uint64_t>*  idx_map;        //map location to entity
+    std::unordered_map<uint64_t, uint64_t>*  entity_map;     //map entity to vector location
+} archetype_node_t;
 
-        instance = new (std::nothrow) Entity_Archetype_Manager;
-        if ( instance == NULL ) {
-            CHECK_INFO( 0, "Failed to allocate Entity_Archetype_Manager" );
-            return NULL;
-        }
+typedef struct {
+    std::vector<archetype_node_t*>*             archetype_nodes;
+    std::unordered_map<std::string, uint64_t>*  archetype_map;
+    std::unordered_map<uint64_t, uint64_t>*     entity_map;
+} entity_archetype_manager_t;
 
-        UhRC_t rc = instance->init();
-        if ( rc != SUCCESS ) {
-            delete instance;
-            instance = NULL;
-        }
-    }
+entity_archetype_manager_t* entity_archetype_manager;
 
-    return instance;
-}
-
-UhRC_t Entity_Archetype_Manager::init( void )
+UhRC_t init( void )
 {
     ALLOC_RETURN_FAILURE( entity_archetype_manager, entity_archetype_manager_t );
     ALLOC_RETURN_FAILURE( entity_archetype_manager->entity_map, std::unordered_map<uint64_t, uint64_t> );
@@ -37,7 +39,7 @@ UhRC_t Entity_Archetype_Manager::init( void )
     return SUCCESS;
 }
 
-UhRC_t Entity_Archetype_Manager::register_archetype( Entity_Archetype archetype, std::string archetype_name )
+UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_name )
 {
     CHECK( entity_archetype_manager != NULL );
 
@@ -133,7 +135,7 @@ UhRC_t Entity_Archetype_Manager::register_archetype( Entity_Archetype archetype,
     return ARCHETYPE_EXISTS;
 }
 
-UhRC_t Entity_Archetype_Manager::register_entity( Entity entity, std::string archetype_name )
+UhRC_t register_entity( Entity entity, std::string archetype_name )
 {
     CHECK( entity_archetype_manager != NULL );
 
@@ -180,7 +182,7 @@ UhRC_t Entity_Archetype_Manager::register_entity( Entity entity, std::string arc
     return ARCHETYPE_DOES_NOT_EXIST;
 }
 
-uint8_t* Entity_Archetype_Manager::get_component_data( Entity entity, uint64_t component_id )
+uint8_t* get_component_data_generic( Entity entity, uint64_t component_id )
 {
     CHECK( entity_archetype_manager != NULL );
 
@@ -218,4 +220,6 @@ UhRC_t remove_entity( Entity entity )
     return ENGINE_ERROR;
 }
 
-} // end namespace core
+} //end namespace Entity_Archetype_Manager
+} //end namespace core
+
