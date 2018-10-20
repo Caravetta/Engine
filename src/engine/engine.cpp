@@ -50,7 +50,7 @@ void Engine::init()
     //system_manager = core::System_Manager::get_instance();
 
     //setup asset manager
-    asset_manager = core::Asset_Manager::get_instance();
+    //asset_manager = core::Asset_Manager::get_instance();
 
     archetype_manager = core::Entity_Archetype_Manager::get_instance();
 
@@ -91,10 +91,6 @@ void Engine::init()
 
     return;
 }
-
-static int count = 0;
-float up_min = 1.0f;
-float up_max = -1.0f;
 
 void Engine::update()
 {

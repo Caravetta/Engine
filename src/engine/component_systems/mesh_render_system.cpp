@@ -60,7 +60,7 @@ struct __declspec(align(16)) mesh_render_job : public core::Job_Loop {
         render_command->command_type = RENDER_MESH;
         render_command->shader_id = shader_component->program_id;
         render_command->texture_id = 0;
-        engine->asset_manager->get_asset<Mesh_Asset>(mesh_component->mesh_handle, &mesh_asset);
+        core::Asset_Manager::get_asset_with_handle<Mesh_Asset>(mesh_component->mesh_handle, &mesh_asset);
         render_command->vao = mesh_asset->mesh.vao;
         render_command->indices_count = mesh_asset->mesh.indices_count;
     }
@@ -113,7 +113,7 @@ void Mesh_Render_System::update()
          render_command.command_type = RENDER_MESH;
          render_command.shader_id = shader_component->program_id;
          render_command.texture_id = 0;
-         engine->asset_manager->get_asset<Mesh_Asset>(mesh_component->mesh_handle, &mesh_asset);
+         core::Asset_Manager::get_asset_with_handle<Mesh_Asset>(mesh_component->mesh_handle, &mesh_asset);
          render_command.vao = mesh_asset->mesh.vao;
          render_command.indices_count = mesh_asset->mesh.indices_count;
          //render_command.transformation_matrix = Engine::get_instance()->debug_camera->transformation_matrix;
