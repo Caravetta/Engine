@@ -9,7 +9,7 @@
 #include "../core_common.h"
 #include "component.h"
 
-#define NON_VALID_ID 18446744073709551615
+#define NON_VALID_ID 4294967295
 
 namespace core {
 namespace Component_Manager {
@@ -24,18 +24,18 @@ struct component_info {
 template <typename T>
 struct type_idx_info
 {
-    static uint64_t id;
+    static uint32_t id;
 };
 template <typename T>
-uint64_t type_idx_info<T>::id{NON_VALID_ID};
+uint32_t type_idx_info<T>::id{NON_VALID_ID};
 
-CORE_API uint64_t get_max_components();
-CORE_API uint64_t get_component_size( uint64_t component_id );
-CORE_API component_create_function get_component_create( uint64_t component_id );
+CORE_API uint32_t get_max_components();
+CORE_API uint64_t get_component_size( uint32_t component_id );
+CORE_API component_create_function get_component_create( uint32_t component_id );
 CORE_API void register_component_info( component_info comp_info );
 
 template<typename T>
-uint64_t Component_Manager::id()
+uint32_t Component_Manager::id()
 {
     CHECK_INFO( type_idx_info<T>::id != NON_VALID_ID, "This component (" << typeid(T).name() << ") has not been registered" );
     return type_idx_info<T>::id;

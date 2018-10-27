@@ -40,17 +40,8 @@ void Engine::init()
     //setup worker manager
     core::Worker_Manager::init();
 
-    //setup component manager
-    //component_manager = core::Component_Manager::get_instance();
-
     //setup entity manager
     core::Entity_Manager::init();
-
-    //setup system manager
-    //system_manager = core::System_Manager::get_instance();
-
-    //setup asset manager
-    //asset_manager = core::Asset_Manager::get_instance();
 
     core::Entity_Archetype_Manager::init();
 
@@ -64,6 +55,8 @@ void Engine::init()
     core::Component_Manager::register_component<Shader_Component>();
     core::Component_Manager::register_component<Static_Text_Component>();
     core::Component_Manager::register_component<Motion_Component>();
+    core::Component_Manager::register_component<Transform>();
+
     //component_manager->register_component<Dynamic_Text_Component>();
     //component_manager->register_component<Cube_Orbit_Component>();
 

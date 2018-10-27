@@ -5,7 +5,7 @@
 Mesh_Render_System::Mesh_Render_System()
 {
     name = "Mesh_Render_System";
-    add_component<Position_Component>();
+    add_component<Transform>();
     add_component<Mesh_Component>();
     add_component<Shader_Component>();
 }
@@ -30,20 +30,20 @@ core::Vector3f vec_z(0, 0, 1);
 
 struct __declspec(align(16)) math_job : public core::Job_Loop {
     std::vector<render_command_t>* commands;
-    std::vector<Position_Component*>* position_vec;
+    std::vector<Transform*>* transforms;
 
     void Execute( uint64_t index ) {
-        Position_Component* position_component = position_vec->at(index);
+        Transform* transform = transforms->at(index);
 
         render_command_t*   render_command = &commands->at(index);
         render_command->transformation_matrix.identity();
-        render_command->transformation_matrix.translate(&position_component->position);
+        render_command->transformation_matrix.translate(&transform->position);
         render_command->transformation_matrix.scale(1);
     }
 };
 
 struct __declspec(align(16)) mesh_render_job : public core::Job_Loop {
-    std::vector<Position_Component*>* position_vec;
+    std::vector<Transform*>* position_vec;
     std::vector<Shader_Component*>* shader_vec;
     std::vector<Mesh_Component*>* mesh_vec;
     std::vector<render_command_t>* commands;
@@ -52,7 +52,7 @@ struct __declspec(align(16)) mesh_render_job : public core::Job_Loop {
 
     void Execute( uint64_t index ) {
         render_command_t*   render_command = &commands->at(index);
-        Position_Component* position_component = position_vec->at(index);
+        Transform* position_component = position_vec->at(index);
         Shader_Component*   shader_component = shader_vec->at(index);
         Mesh_Component*     mesh_component = mesh_vec->at(index);
         Mesh_Asset*         mesh_asset = NULL;
@@ -83,24 +83,24 @@ void Mesh_Render_System::update()
      Engine* engine = Engine::get_instance();
 
 #if 1
-     std::vector<Position_Component*>* position_vec = get_data_vec<Position_Component>();
+     std::vector<Transform*>* transforms = get_data_vec<Transform>();
      std::vector<Shader_Component*>* shader_vec = get_data_vec<Shader_Component>();
      std::vector<Mesh_Component*>* mesh_vec = get_data_vec<Mesh_Component>();
 
-     Position_Component* position_component;
+     Transform* transform;
      Shader_Component*   shader_component;
      Mesh_Component*     mesh_component;
 
      Mesh_Asset* mesh_asset = NULL;
 
      for(int i = 0; i < entity_count; i++) {
-         position_component = position_vec->at(i);
+         transform = transforms->at(i);
          shader_component = shader_vec->at(i);
          mesh_component = mesh_vec->at(i);
         //START_TIME_BLOCK(mesh_render_System_math);
         core::Matrix4f transformation_matrix;
         transformation_matrix.identity();
-        transformation_matrix.translate(&position_component->position);
+        transformation_matrix.translate(&transform->position);
         //transformation_matrix.rotate(_to_radians(0), &vec_x);
         //transformation_matrix.rotate(_to_radians(0), &vec_y);
         //transformation_matrix.rotate(_to_radians(0), &vec_z);

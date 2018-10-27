@@ -31,8 +31,8 @@ private:
 protected:
     uint64_t entity_count = 0;
 
-    void add_component( uint64_t component_id, component_usage_t usage );
-    void add_component( uint64_t component_id );
+    void add_component( uint32_t component_id, component_usage_t usage );
+    void add_component( uint32_t component_id );
     template<typename T> void add_component( component_usage_t usage );
     template<typename T> void add_component();
     template<typename T> T* get_data_at( uint64_t idx );
@@ -43,8 +43,8 @@ public:
     std::vector<uint64_t>   component_list;
 
     System(){};
-    void add_component_data( uint64_t** enitiy_count, uint64_t comp_id, Array** data_array );
-    bool has_component( uint64_t component_id );
+    void add_component_data( uint64_t** enitiy_count, uint32_t comp_id, Array** data_array );
+    bool has_component( uint32_t component_id );
     template<typename T> bool has_component();
     bool pre_update();
 
@@ -53,7 +53,7 @@ public:
     virtual void shutdown() = 0;
 };
 
-bool System::has_component( uint64_t component_id )
+bool System::has_component( uint32_t component_id )
 {
     std::unordered_map<uint64_t, uint64_t>::const_iterator ele = comp_map.find(component_id);
 
@@ -165,7 +165,7 @@ bool System::pre_update()
     return false;
 }
 
-void System::add_component_data( uint64_t** enitiy_count, uint64_t component_id, Array** data_array )
+void System::add_component_data( uint64_t** enitiy_count, uint32_t component_id, Array** data_array )
 {
     std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(component_id);
     if ( comp_idx != comp_map.end() ) {
@@ -178,7 +178,7 @@ void System::add_component_data( uint64_t** enitiy_count, uint64_t component_id,
     CHECK_INFO( comp_idx != comp_map.end(), "This comp ID:" << component_id << " is not tracked by " << name );
 }
 
-void System::add_component( uint64_t component_id )
+void System::add_component( uint32_t component_id )
 {
     add_component(component_id, COMPONENT_READ_AND_WRITE);
 }
@@ -195,7 +195,7 @@ void System::add_component()
     add_component(Component_Manager::id<T>(), COMPONENT_READ_AND_WRITE);
 }
 
-void System::add_component( uint64_t component_id, component_usage_t usage )
+void System::add_component( uint32_t component_id, component_usage_t usage )
 {
     std::unordered_map<uint64_t, uint64_t>::const_iterator ele = comp_map.find(component_id);
     if ( ele == comp_map.end() ) {

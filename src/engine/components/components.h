@@ -11,5 +11,6 @@
 #include "shader_component.h"
 #include "static_text_component.h"
 #include "texture_component.h"
+#include "transform_component.h"
 
 #endif //__COMPONENTS_H__

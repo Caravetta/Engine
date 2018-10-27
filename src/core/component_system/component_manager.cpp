@@ -5,18 +5,18 @@ namespace Component_Manager {
 
 std::vector<component_info> component_info_vec;
 
-uint64_t Component_Manager::get_max_components()
+uint32_t Component_Manager::get_max_components()
 {
     return component_info_vec.size();
 }
 
-uint64_t Component_Manager::get_component_size( uint64_t component_id )
+uint64_t Component_Manager::get_component_size( uint32_t component_id )
 {
     CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
     return component_info_vec[component_id].size;
 }
 
-component_create_function Component_Manager::get_component_create( uint64_t component_id )
+component_create_function Component_Manager::get_component_create( uint32_t component_id )
 {
     CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
     return component_info_vec[component_id].create_function;
