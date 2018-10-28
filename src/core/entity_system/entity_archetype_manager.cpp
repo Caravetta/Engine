@@ -18,13 +18,11 @@ typedef struct {
     std::vector<arche_comp_node_t*>*         comp_nodes_vec;
     std::unordered_map<uint64_t, uint64_t>*  comp_map;       //map comp id to vector pos
     std::unordered_map<uint64_t, uint64_t>*  idx_map;        //map location to entity
-    std::unordered_map<uint64_t, uint64_t>*  entity_map;     //map entity to vector location
 } archetype_node_t;
 
 typedef struct {
     std::vector<archetype_node_t*>*             archetype_nodes;
     std::unordered_map<std::string, uint64_t>*  archetype_map;
-    std::unordered_map<uint64_t, uint64_t>*     entity_map;
 } entity_archetype_manager_t;
 
 entity_archetype_manager_t* entity_archetype_manager;
@@ -32,7 +30,6 @@ entity_archetype_manager_t* entity_archetype_manager;
 UhRC_t init( void )
 {
     ALLOC_RETURN_FAILURE( entity_archetype_manager, entity_archetype_manager_t );
-    ALLOC_RETURN_FAILURE( entity_archetype_manager->entity_map, std::unordered_map<uint64_t, uint64_t> );
     ALLOC_RETURN_FAILURE( entity_archetype_manager->archetype_map, std::unordered_map<std::string, uint64_t> );
     ALLOC_RETURN_FAILURE( entity_archetype_manager->archetype_nodes, std::vector<archetype_node_t*> );
 
@@ -66,7 +63,6 @@ UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_nam
         ALLOC_RETURN_FAILURE( tmp_archetype_node->comp_nodes_vec, std::vector<arche_comp_node_t*> );
         ALLOC_RETURN_FAILURE( tmp_archetype_node->comp_map, std::unordered_map<uint64_t, uint64_t> );
         ALLOC_RETURN_FAILURE( tmp_archetype_node->idx_map, std::unordered_map<uint64_t, uint64_t> );
-        ALLOC_RETURN_FAILURE( tmp_archetype_node->entity_map, std::unordered_map<uint64_t, uint64_t> );
 
         // loop through all comps for arche and create new comp nodes for them
         for (int i = 0; i < archetype.used_component_ids.size(); i++) {
@@ -135,7 +131,7 @@ UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_nam
     return ARCHETYPE_EXISTS;
 }
 
-UhRC_t register_entity( Entity entity, std::string archetype_name )
+UhRC_t register_entity( Entity entity, internal_entity_id* intern_entity_id, std::string archetype_name )
 {
     CHECK( entity_archetype_manager != NULL );
 
@@ -145,10 +141,10 @@ UhRC_t register_entity( Entity entity, std::string archetype_name )
         archetype_node_t* tmp_archetype_node = entity_archetype_manager->archetype_nodes->at(arche_idx->second);
 
         // map entity id to arche idx
-        entity_archetype_manager->entity_map->insert({ entity.id, arche_idx->second });
+        intern_entity_id->archetype = arche_idx->second;
 
         // map entity id to data idx in comp data
-        tmp_archetype_node->entity_map->insert({ entity.id, tmp_archetype_node->comp_nodes_vec->at(0)->empty_idx });
+        intern_entity_id->index = tmp_archetype_node->comp_nodes_vec->at(0)->empty_idx;
 
         // map data idx to entity id
         tmp_archetype_node->idx_map->insert({ tmp_archetype_node->comp_nodes_vec->at(0)->empty_idx, entity.id });
@@ -161,9 +157,6 @@ UhRC_t register_entity( Entity entity, std::string archetype_name )
 
             // check to see if we need to resize data
             if ( tmp_archetype_node->comp_nodes_vec->at(i)->empty_idx == tmp_archetype_node->comp_nodes_vec->at(i)->total_elements ) {
-                //DEBUG_LOG("Archetype " << archetype_name << " expanding Comp ID " << tmp_archetype_node->comp_nodes_vec->at(i)->component_id << " from " <<
-                //          tmp_archetype_node->comp_nodes_vec->at(i)->total_elements << " to " << tmp_archetype_node->comp_nodes_vec->at(i)->total_elements + COMP_RESIZE_SIZE);
-
                 tmp_archetype_node->comp_nodes_vec->at(i)->data_array->resize(comp_size * (tmp_archetype_node->comp_nodes_vec->at(i)->total_elements + COMP_RESIZE_SIZE));
                 tmp_archetype_node->comp_nodes_vec->at(i)->total_elements = tmp_archetype_node->comp_nodes_vec->at(i)->total_elements + COMP_RESIZE_SIZE;
             }
@@ -182,32 +175,24 @@ UhRC_t register_entity( Entity entity, std::string archetype_name )
     return ARCHETYPE_DOES_NOT_EXIST;
 }
 
-uint8_t* get_component_data_generic( Entity entity, uint32_t component_id )
+uint8_t* get_component_data_generic( internal_entity_id intern_entity_id, uint32_t component_id )
 {
     CHECK( entity_archetype_manager != NULL );
 
-    // get arche idx that this entity belongs to.
-    std::unordered_map<uint64_t, uint64_t>::const_iterator entity_idx = entity_archetype_manager->entity_map->find(entity.id);
-    if ( entity_idx != entity_archetype_manager->entity_map->end() ) {
-        archetype_node_t* tmp_archetype_node = entity_archetype_manager->archetype_nodes->at(entity_idx->second);
+    archetype_node_t* tmp_archetype_node = entity_archetype_manager->archetype_nodes->at(intern_entity_id.archetype);
 
-        // get the comp idx for the passed component ID
-        std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = tmp_archetype_node->comp_map->find(component_id);
-        if ( comp_idx != tmp_archetype_node->comp_map->end() ) {
+    // get the comp idx for the passed component ID
+    std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = tmp_archetype_node->comp_map->find(component_id);
+    if ( comp_idx != tmp_archetype_node->comp_map->end() ) {
 
-            arche_comp_node_t* tmp_comp_node = tmp_archetype_node->comp_nodes_vec->at(comp_idx->second);
+        arche_comp_node_t* tmp_comp_node = tmp_archetype_node->comp_nodes_vec->at(comp_idx->second);
 
-            // get the entity offset in the comp data chunk
-            std::unordered_map<uint64_t, uint64_t>::const_iterator entity_comp_idx = tmp_archetype_node->entity_map->find(entity.id);
+        size_t comp_size = Component_Manager::get_component_size(component_id); //TODO(JOSH): add comp size to the comp_node
 
-            size_t comp_size = Component_Manager::get_component_size(component_id); //TODO(JOSH): add comp size to the comp_node
-
-            return &(tmp_comp_node->data_array->at(entity_comp_idx->second * comp_size));
-        }
-        CHECK_INFO( comp_idx == tmp_archetype_node->comp_map->end(),
-                    "Component ID " << component_id << " not a part or this archetype" );
+        return &(tmp_comp_node->data_array->at(intern_entity_id.index * comp_size));
     }
-    CHECK_INFO( entity_idx == entity_archetype_manager->entity_map->end(), "Entity ID " << entity.id << "is not a valid entity" );
+    CHECK_INFO( comp_idx == tmp_archetype_node->comp_map->end(),
+                    "Component ID " << component_id << " not a part or this archetype" );
 
     return NULL;
 }

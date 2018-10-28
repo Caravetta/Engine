@@ -5,7 +5,7 @@
 #include <string>
 #include "../core/core.h"
 
-class Dynamic_Text_Component : public core::Component {
+class Dynamic_Text_Component {
 public:
     std::string text;
     uint16_t size;

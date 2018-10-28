@@ -18,6 +18,7 @@ CORE_API UhRC_t init( void );
 CORE_API Entity create_entity( std::string archetype_name );
 CORE_API UhRC_t delete_entity( Entity entity );
 CORE_API bool is_valid_entity( Entity entity );
+CORE_API internal_entity_id get_internal_id( Entity entity );
 
 template<typename T>
 UhRC_t add_component( Entity entity )
@@ -38,7 +39,7 @@ UhRC_t remove_component( Entity entity )
 template<typename T>
 T* get_component( Entity entity )
 {
-    return Entity_Archetype_Manager::get_component_data<T>(entity);
+    return Entity_Archetype_Manager::get_component_data<T>(get_internal_id(entity));
 }
 
 template<typename T>

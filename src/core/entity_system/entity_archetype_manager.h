@@ -28,15 +28,15 @@ CORE_API UhRC_t register_archetype( Entity_Archetype archetype, std::string arch
 
     @return UhRC_t returns a return code.
 */
-CORE_API UhRC_t register_entity( Entity entity, std::string archetype_name );
+CORE_API UhRC_t register_entity( Entity entity, internal_entity_id* intern_entity_id, std::string archetype_name );
 
-CORE_API uint8_t* get_component_data_generic( Entity entity, uint32_t component_id );
+CORE_API uint8_t* get_component_data_generic( internal_entity_id intern_entity_id, uint32_t component_id );
 CORE_API UhRC_t remove_entity( Entity entity );
 
 template<typename T>
-T* get_component_data( Entity entity )
+T* get_component_data( internal_entity_id id )
 {
-    return (T*)get_component_data_generic(entity, Component_Manager::id<T>());
+    return (T*)get_component_data_generic(id, Component_Manager::id<T>());
 }
 
 } //end namespace Entity_Archetype_Manager
