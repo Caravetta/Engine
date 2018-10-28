@@ -35,14 +35,14 @@ CORE_API component_create_function get_component_create( uint32_t component_id )
 CORE_API void register_component_info( component_info comp_info );
 
 template<typename T>
-uint32_t Component_Manager::id()
+uint32_t id()
 {
     CHECK_INFO( type_idx_info<T>::id != NON_VALID_ID, "This component (" << typeid(T).name() << ") has not been registered" );
     return type_idx_info<T>::id;
 }
 
 template<typename T>
-void Component_Manager::register_component( void )
+void register_component( void )
 {
     component_info temp_comp;
     temp_comp.create_function = component_create<T>;

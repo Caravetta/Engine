@@ -18,7 +18,7 @@ CORE_API void register_generic_system( System* system );
 std::vector<System*>* get_system_vec( void );
 
 template<typename T>
-void System_Manager::register_system( void )
+void register_system( void )
 {
     register_generic_system( new T );
 }

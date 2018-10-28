@@ -34,7 +34,7 @@ CORE_API uint8_t* get_component_data_generic( Entity entity, uint32_t component_
 CORE_API UhRC_t remove_entity( Entity entity );
 
 template<typename T>
-T* Entity_Archetype_Manager::get_component_data( Entity entity )
+T* get_component_data( Entity entity )
 {
     return (T*)get_component_data_generic(entity, Component_Manager::id<T>());
 }
