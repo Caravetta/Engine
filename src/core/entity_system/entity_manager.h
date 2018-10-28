@@ -9,7 +9,7 @@
 #include "entity.h"
 #include "../component_system/component_manager.h"
 #include "../component_system/component.h"
-#include "entity_archetype_manager.h"
+#include "../archetype_system/archetype_manager.h"
 
 namespace core {
 namespace Entity_Manager {
@@ -39,7 +39,7 @@ UhRC_t remove_component( Entity entity )
 template<typename T>
 T* get_component( Entity entity )
 {
-    return Entity_Archetype_Manager::get_component_data<T>(get_internal_id(entity));
+    return Archetype_Manager::get_component_data<T>(get_internal_id(entity));
 }
 
 template<typename T>

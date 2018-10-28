@@ -1,13 +1,13 @@
-#include "entity_archetype.h"
+#include "archetype.h"
 
 namespace core {
 
-Entity_Archetype::Entity_Archetype()
+Archetype::Archetype()
 {
 
 }
 
-void Entity_Archetype::add_component( uint32_t component_id )
+void Archetype::add_component( uint32_t component_id )
 {
     std::unordered_map<uint32_t, uint64_t>::const_iterator ele = component_map.find(component_id);
     if ( ele == component_map.end() ) {
@@ -16,7 +16,7 @@ void Entity_Archetype::add_component( uint32_t component_id )
     }
 }
 
-bool Entity_Archetype::has_component( uint32_t component_id )
+bool Archetype::has_component( uint32_t component_id )
 {
     std::unordered_map<uint32_t, uint64_t>::const_iterator ele = component_map.find(component_id);
     if ( ele == component_map.end() ) {

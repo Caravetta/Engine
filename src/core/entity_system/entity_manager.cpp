@@ -70,7 +70,7 @@ Entity create_entity( std::string archetype_name )
     }
 
     //TODO(JOSH): pass in internal entity id
-    Entity_Archetype_Manager::register_entity(return_entity, &entity_manager.internal_entity_ids[internal_idx], archetype_name);
+    Archetype_Manager::register_entity(return_entity, &entity_manager.internal_entity_ids[internal_idx], archetype_name);
 
     return return_entity;
 }

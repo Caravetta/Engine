@@ -1,12 +1,12 @@
-#ifndef __ENTITY_ARCHETYPE_MANAGER_H__
-#define __ENTITY_ARCHETYPE_MANAGER_H__
+#ifndef __ARCHETYPE_MANAGER_H__
+#define __ARCHETYPE_MANAGER_H__
 
 #include "../core_common.h"
-#include "entity_archetype.h"
-#include "entity.h"
+#include "archetype.h"
+#include "../entity_system/entity.h"
 
 namespace core {
-namespace Entity_Archetype_Manager {
+namespace Archetype_Manager {
 
 CORE_API UhRC_t init( void );
 
@@ -18,7 +18,7 @@ CORE_API UhRC_t init( void );
 
     @return UhRC_t returns a return code.
 */
-CORE_API UhRC_t register_archetype( Entity_Archetype archetype, std::string archetype_name );
+CORE_API UhRC_t register_archetype( Archetype archetype, std::string archetype_name );
 
 /**
     Register and entity with the archetype system.
@@ -39,7 +39,7 @@ T* get_component_data( internal_entity_id id )
     return (T*)get_component_data_generic(id, Component_Manager::id<T>());
 }
 
-} //end namespace Entity_Archetype_Manager
+} //end namespace Archetype_Manager
 } //end namespace core
 
-#endif // __ENTITY_ARCHETYPE_MANAGER_H__
+#endif // __ARCHETYPE_MANAGER_H__

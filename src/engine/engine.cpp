@@ -43,7 +43,7 @@ void Engine::init()
     //setup entity manager
     core::Entity_Manager::init();
 
-    core::Entity_Archetype_Manager::init();
+    core::Archetype_Manager::init();
 
     //setup event manager
     //uh::CEMS::get_instance();
