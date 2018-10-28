@@ -8,8 +8,6 @@ COMPONENT(
           Shader_Component,
 
           // Start of Component Data
-          uint32_t vertex_id;
-          uint32_t fragment_id;
           uint32_t program_id;
          )
 

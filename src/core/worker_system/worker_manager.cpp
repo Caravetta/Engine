@@ -57,7 +57,7 @@ void worker_thread( void* data )
             Job_Manager::complete_job(job_node.handle);
         } else {
             //Sleep(1);
-            //std::this_thread::sleep_for(std::chrono::microseconds(1));
+            std::this_thread::sleep_for(std::chrono::microseconds(1));
         }
     }
 }

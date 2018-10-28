@@ -30,7 +30,7 @@ CORE_API UhRC_t register_archetype( Entity_Archetype archetype, std::string arch
 */
 CORE_API UhRC_t register_entity( Entity entity, std::string archetype_name );
 
-CORE_API uint8_t* get_component_data_generic( Entity entity, uint64_t component_id );
+CORE_API uint8_t* get_component_data_generic( Entity entity, uint32_t component_id );
 CORE_API UhRC_t remove_entity( Entity entity );
 
 template<typename T>

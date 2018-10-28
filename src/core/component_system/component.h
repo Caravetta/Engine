@@ -2,7 +2,7 @@
 #define __COMPONENT_H__
 
 #include "../core_common.h"
-
+#if 0
 #define COMPONENT(name,...)         \
                                     \
     typedef struct                  \
@@ -12,6 +12,13 @@
             struct core::Component; \
             core::Component parent; \
         };                          \
+        __VA_ARGS__                 \
+    } name;
+#endif
+#define COMPONENT(name,...)         \
+                                    \
+    typedef struct                  \
+    {                               \
         __VA_ARGS__                 \
     } name;
 

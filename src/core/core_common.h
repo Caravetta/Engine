@@ -70,7 +70,7 @@
 #define PASTE_TOKEN( value, token ) value ## token
 #define PASTE_LINE( value , line ) PASTE_TOKEN( value, line)
 
-#define TIME_ENABLE 1
+//#define TIME_ENABLE 1
 
 #ifdef TIME_ENABLE
 #define START_TIME_BLOCK( name )                                                            \

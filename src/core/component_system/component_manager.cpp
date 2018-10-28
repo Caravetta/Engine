@@ -7,7 +7,7 @@ std::vector<component_info> component_info_vec;
 
 uint32_t Component_Manager::get_max_components()
 {
-    return component_info_vec.size();
+    return (uint32_t)component_info_vec.size();
 }
 
 uint64_t Component_Manager::get_component_size( uint32_t component_id )

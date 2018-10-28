@@ -9,7 +9,7 @@ typedef struct {
     uint64_t    total_elements;
     uint64_t    empty_idx;
     uint64_t*   empty_idx_p;
-    uint64_t    component_id;
+    uint32_t    component_id;
     Array*      data_array;
 } arche_comp_node_t;
 
@@ -182,7 +182,7 @@ UhRC_t register_entity( Entity entity, std::string archetype_name )
     return ARCHETYPE_DOES_NOT_EXIST;
 }
 
-uint8_t* get_component_data_generic( Entity entity, uint64_t component_id )
+uint8_t* get_component_data_generic( Entity entity, uint32_t component_id )
 {
     CHECK( entity_archetype_manager != NULL );
 

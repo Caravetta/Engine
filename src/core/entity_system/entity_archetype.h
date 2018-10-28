@@ -7,17 +7,16 @@ namespace core {
 
     class CORE_API Entity_Archetype {
     private:
-        std::unordered_map<uint64_t, uint64_t> component_map;
+        std::unordered_map<uint32_t, uint64_t> component_map;
 
     public:
-        std::vector<uint64_t> used_component_ids;
+        std::vector<uint32_t> used_component_ids;
 
         Entity_Archetype();
-        void add_component( uint64_t component_id );
-        bool has_component( uint64_t component_id );
+        void add_component( uint32_t component_id );
+        bool has_component( uint32_t component_id );
         template<typename T> void add_component();
         template<typename T> bool has_component();
-        void print();
     };
 
 template<typename T>

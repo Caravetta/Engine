@@ -46,6 +46,22 @@ inline bool aabb_collision(float rect1_x, float rect1_y, float rect1_width, floa
     }
 }
 
+template<typename T, typename U>
+static T lerp(const T& val1, const T& val2, const U& amt)
+{
+    return (T)(val1 * ((U)(1) - amt) + val2 * amt);
+}
+
+inline float randf()
+{
+    return ::rand()/(float)RAND_MAX;
+}
+inline float randf(float min, float max) {
+    return lerp(min, max, randf());
+}
+
+
+
 
 } // end namespace core
 
