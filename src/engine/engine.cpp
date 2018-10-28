@@ -6,8 +6,8 @@
 #include "asset_types/assets.h"
 #include "asset_types/assets.cpp"
 #include "renderer.h"
-#include "user_init.h"
-#include "user_init.cpp"
+//#include "user_init.h"
+//#include "user_init.cpp"
 
 #define MAX_WORKER_THREADS 4
 
@@ -68,7 +68,7 @@ void Engine::init()
     //system_manager->register_system<Cube_Orbit_System>();
 
     /************* START TEST CODE ***************/
-    user_init();
+    //user_init();
 
     debug_camera = new core::Debug_Camera(core::Vector3f(67, 8, 32), core::Vector2f(1000, 800));
     debug_camera->rotate(30.29, -0.2);
