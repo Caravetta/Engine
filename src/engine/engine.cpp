@@ -125,7 +125,7 @@ void Engine::update()
     std::chrono::duration<double> render_span = std::chrono::duration_cast<std::chrono::duration<double>>( r2 - r1 );
 
     Dynamic_Text_Component* test_dynam = core::Entity_Manager::get_component<Dynamic_Text_Component>(test_entity);
-    test_dynam->text = "FPS: " + std::to_string(1000/(time_span.count() * 1000));
+    test_dynam->text = "FPS: " + std::to_string(1000/this->frame_time.get_delta_ms());
     test_dynam->text += "\nTotal Time: " + std::to_string(time_span.count() * 1000) + "ms";
     test_dynam->text += "\nUpdate Time: " + std::to_string(update_span.count() * 1000) + "ms";
     test_dynam->text += "\nRender Time: " + std::to_string(render_span.count() * 1000) + "ms";
