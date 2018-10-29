@@ -11,6 +11,7 @@
         core::Window* window;
         core::Timer frame_time;
         core::Debug_Camera* debug_camera;
+        core::Entity test_entity;
 
         static Engine* get_instance();
         void init();

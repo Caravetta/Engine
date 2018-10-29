@@ -9,8 +9,6 @@
 #include "user_init.h"
 #include "user_init.cpp"
 
-#define MAX_WORKER_THREADS 4
-
 Engine* Engine::instance = NULL;
 
 Engine* Engine::get_instance()
@@ -54,6 +52,7 @@ void Engine::init()
     core::Component_Manager::register_component<Texture_Component>();
     core::Component_Manager::register_component<Shader_Component>();
     core::Component_Manager::register_component<Static_Text_Component>();
+    core::Component_Manager::register_component<Dynamic_Text_Component>();
     core::Component_Manager::register_component<Motion_Component>();
     core::Component_Manager::register_component<Transform>();
 
@@ -63,6 +62,7 @@ void Engine::init()
     //register all systems NOTE: this will need to be generated maybe
     core::System_Manager::register_system<Mesh_Render_System>();
     core::System_Manager::register_system<Text_Render_System>();
+    core::System_Manager::register_system<Dynamic_Text_Render_System>();
     core::System_Manager::register_system<Motion_System>();
     //system_manager->register_system<Test_System>();
     //system_manager->register_system<Cube_Orbit_System>();
@@ -87,8 +87,11 @@ void Engine::init()
 
 void Engine::update()
 {
+    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
+
     this->frame_time.update();
 
+    std::chrono::steady_clock::time_point u1 = std::chrono::steady_clock::now();
     //update the window
     this->window->update();
 
@@ -104,11 +107,28 @@ void Engine::update()
     this->debug_camera->update(this->frame_time.get_delta());
     /************* END TEST CODE *****************/
 
+    std::chrono::steady_clock::time_point u2 = std::chrono::steady_clock::now();
+
+    std::chrono::steady_clock::time_point r1 = std::chrono::steady_clock::now();
+
     render();
+
+    std::chrono::steady_clock::time_point r2 = std::chrono::steady_clock::now();
 
     PRINT_TIME_BLOCKS();
 
     Engine::get_instance()->window->swap_buffers();
+
+    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>( t2 - t1 );
+    std::chrono::duration<double> update_span = std::chrono::duration_cast<std::chrono::duration<double>>( u2 - u1 );
+    std::chrono::duration<double> render_span = std::chrono::duration_cast<std::chrono::duration<double>>( r2 - r1 );
+
+    Dynamic_Text_Component* test_dynam = core::Entity_Manager::get_component<Dynamic_Text_Component>(test_entity);
+    test_dynam->text = "FPS: " + std::to_string(1000/(time_span.count() * 1000));
+    test_dynam->text += "\nTotal Time: " + std::to_string(time_span.count() * 1000) + "ms";
+    test_dynam->text += "\nUpdate Time: " + std::to_string(update_span.count() * 1000) + "ms";
+    test_dynam->text += "\nRender Time: " + std::to_string(render_span.count() * 1000) + "ms";
 }
 
 void Engine::shutdown()

@@ -19,6 +19,7 @@ void Timer::update()
     }
 
     DWORD current_time = timeGetTime();
+
     delta_time = (current_time - last_time) * 0.001f;
     last_time = current_time;
 }

@@ -212,13 +212,14 @@ void load_obj_file( std::string file_path, Mesh* mesh )
     mesh->normals_count = 3 * (int)temp_data.size();
     mesh->textures_count = (int)temp_data.size() * 2;
 
-    mesh->vao = new vao();
-    mesh->vao->bind();
-    mesh->vao->create_index_buffer((int*)mesh->indices, (int)mesh->indices_count); //TODO: need to get ride of this cast
-    mesh->vao->create_attribute(0, mesh->vertices, mesh->vertices_count * sizeof(float), 3);
-    mesh->vao->create_attribute(1, mesh->normals, mesh->normals_count * sizeof(float), 3);
-    mesh->vao->create_attribute(2, mesh->textures, mesh->textures_count * sizeof(float), 2);
-    mesh->vao->unbind();
+    mesh->vao = new vao_t;
+    create_vao(mesh->vao);
+    bind_vao(mesh->vao);
+    create_index_buffer(mesh->vao, (int*)mesh->indices, (int)mesh->indices_count, STATIC_DRAW); //TODO: need to get ride of this cast
+    create_float_attribute(mesh->vao, 0, mesh->vertices, mesh->vertices_count * sizeof(float), 3, STATIC_DRAW);
+    create_float_attribute(mesh->vao, 1, mesh->normals, mesh->normals_count * sizeof(float), 3, STATIC_DRAW);
+    create_float_attribute(mesh->vao, 2, mesh->textures, mesh->textures_count * sizeof(float), 2, STATIC_DRAW);
+    unbind_vao();
 }
 
 } //end namespace core

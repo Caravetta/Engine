@@ -15,7 +15,7 @@ COMPONENT(
           std::vector<float>* vertices;
           std::vector<uint32_t>* indices;
           std::vector<float>* textures;
-          core::vao* vao;
+          core::vao_t* vao;
 
           // Start of Helper Functions
           void generate_static_text( std::string user_text, uint16_t font_size, core::Font* font, uint16_t new_line_pad );

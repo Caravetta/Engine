@@ -23,6 +23,8 @@ void platform_create_thread( thread_data_window_t* thread_data )
 
     if ( thread_data->thread_handle == NULL ) {
         LOG_ERROR("Failed to create thread");
+    } else {
+        SetThreadPriority( thread_data->thread_handle, THREAD_PRIORITY_ABOVE_NORMAL );
     }
 }
 

@@ -3,17 +3,15 @@
 
 namespace core {
 
-    class CORE_API vbo {
-    public:
-        unsigned int id;
-        int type;
+typedef struct {
+    unsigned int id;
+    int type;
+} vbo_t;
 
-        vbo( int type );
-        void bind();
-        void unbind();
-        void store_data( float* data, int data_size );
-        void store_data( int* data, int data_size );
-    };
+CORE_API void allocate_vbo( vbo_t* vbo );
+CORE_API void bind_vbo( vbo_t* vbo );
+CORE_API void unbind_vbo( vbo_t* vbo );
+CORE_API void vbo_store_data( vbo_t* vbo, void* data, uint64_t data_size, GLenum usage );
 
 } //end namespace core
 

@@ -59,12 +59,12 @@ typedef enum {
 } vao_D_type_t;
 
 struct render_command_t {
-    render_command_type_t command_type;
-    unsigned int shader_id;
-    core::vao*   vao;
-    uint32_t     indices_count;
-    unsigned int texture_id;
-    core::Vector3f position;
+    render_command_type_t   command_type;
+    unsigned int            shader_id;
+    core::vao_t*            vao;
+    uint32_t                indices_count;
+    unsigned int            texture_id;
+    core::Vector3f          position;
     union {
         core::Matrix4f projection_matrix;
         core::Matrix4f view_matrix;
@@ -80,7 +80,7 @@ struct opengl_command_t {
         opengl_type type;
         uint32_t shader_id;
         struct {
-            core::vao*   vao;
+            core::vao_t*   vao;
         } vao_info;
         uint32_t texture_id;
         core::Matrix4f projection_matrix;
@@ -126,7 +126,7 @@ uint64_t internal_command_count;
 // sorted data stored in below structs
 
 typedef struct {
-    core::vao* vao;
+    core::vao_t* vao;
     vao_D_type_t d_type;
     uint32_t   indices_count;
     std::vector<core::Matrix4f> vao_pos;
@@ -433,12 +433,12 @@ void render()
             glUseProgram(0);
         } break;
         case BIND_VAO: {
-            opengl_commands[i].vao_info.vao->bind();
-            opengl_commands[i].vao_info.vao->bind_attributes();
+            core::bind_vao(opengl_commands[i].vao_info.vao);
+            core::bind_vao_attributes(opengl_commands[i].vao_info.vao);
         } break;
         case UNBIND_VAO: {
-            opengl_commands[i].vao_info.vao->unbind_attributes();
-            opengl_commands[i].vao_info.vao->unbind();
+            core::unbind_vao_attributes(opengl_commands[i].vao_info.vao);
+            core::unbind_vao();
         } break;
         case DRAW_ELEMENTS: {
             if ( (transformation_matrix_id != -1) && (opengl_commands[i].draw_data.d_type == VAO_3D) ) {

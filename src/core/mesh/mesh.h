@@ -24,7 +24,7 @@ namespace core {
         float* normals;
         uint32_t textures_count;
         float* textures;
-        vao* vao;
+        vao_t* vao;
 
         Mesh();
 

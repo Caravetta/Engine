@@ -1,4 +1,5 @@
-#if !defined(DYNAMIC_TEXT_RENDER_SYSTEM_H)
+#ifndef __DYNAMIC_TEXT_RENDER_SYSTEM_H__
+#define __DYNAMIC_TEXT_RENDER_SYSTEM_H__
 
 #include "../core/core.h"
 
@@ -10,5 +11,4 @@ public:
     void shutdown();
 };
 
-#define DYNAMIC_TEXT_RENDER_SYSTEM_H
-#endif
+#endif //__DYNAMIC_TEXT_RENDER_SYSTEM_H__

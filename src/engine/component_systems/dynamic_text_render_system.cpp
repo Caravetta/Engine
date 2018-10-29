@@ -1,8 +1,9 @@
-#include "dynamic_text_render_system.h"
+#include "text_render_system.h"
 #include "../renderer.h"
 
 Dynamic_Text_Render_System::Dynamic_Text_Render_System()
 {
+    name = "Dynamic_Text_Render_System";
     add_component(core::Component_Manager::id<Position_Component>());
     add_component(core::Component_Manager::id<Dynamic_Text_Component>());
     add_component(core::Component_Manager::id<Shader_Component>());
@@ -11,51 +12,50 @@ Dynamic_Text_Render_System::Dynamic_Text_Render_System()
 
 void Dynamic_Text_Render_System::init()
 {
-glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Dynamic_Text_Render_System::update()
 {
-    #if 0
-    if ( entities->size() > 0 ) {
-         core::Entity_Manager* enitiy_manager = Engine::get_instance()->enitiy_manager;
-         core::Entity entity;
+    std::vector<Position_Component*>* position_vec = get_data_vec<Position_Component>();
+    std::vector<Shader_Component*>* shader_vec = get_data_vec<Shader_Component>();
+    std::vector<Dynamic_Text_Component*>* static_text_vec = get_data_vec<Dynamic_Text_Component>();
+    std::vector<Texture_Component*>* texture_vec = get_data_vec<Texture_Component>();
 
-         Shader_Component shader_component;
-         Position_Component pos_component;
-         Static_Text_Component static_text_component;
-         Texture_Component texture_component;
+    Position_Component* position_component;
+    Shader_Component*   shader_component;
+    Dynamic_Text_Component* static_text_component;
+    Texture_Component* texture_component;
 
-         render_command_t render_command;
+    render_command_t render_command;
 
-         render_command.command_type = ENABLE_BLEND;
-         render_command_queue.push_back(render_command);
+    render_command.command_type = ENABLE_BLEND;
+    render_command_queue.push_back(render_command);
 
-         render_command.command_type = ENABLE_DEPTH_TEST;
-         render_command_queue.push_back(render_command);
+    render_command.command_type = ENABLE_DEPTH_TEST;
+    render_command_queue.push_back(render_command);
 
-         render_command.command_type = DISABLE_CULL_FACE;
-         render_command_queue.push_back(render_command);
+    render_command.command_type = DISABLE_CULL_FACE;
+    render_command_queue.push_back(render_command);
 
-         for (int i = 0; i < entities->size(); i++) {
-              entity = entities->at(i);
+    for(int i = 0; i < entity_count; i++) {
 
-              enitiy_manager->get_component<Position_Component>(entity, &pos_component);
-              enitiy_manager->get_component<Shader_Component>(entity, &shader_component);
-              enitiy_manager->get_component<Static_Text_Component>(entity, &static_text_component);
-              enitiy_manager->get_component<Texture_Component>(entity, &texture_component);
+        position_component = position_vec->at(i);
+        shader_component = shader_vec->at(i);
+        static_text_component = static_text_vec->at(i);
+        texture_component = texture_vec->at(i);
 
-              render_command.command_type = RENDER_TEXT;
-              render_command.shader_id = shader_component.program_id;
-              render_command.texture_id = texture_component.texture_id;
-              render_command.vao = static_text_component.vao;
-              render_command.indices_count = static_text_component.indices.size();
-              render_command.position = pos_component.position;
+        static_text_component->regenerate_dynamic_text( static_text_component->text, 18, static_text_component->string_font, 4 );
 
-              render_command_queue.push_back(render_command);
-         }
+        render_command.command_type = RENDER_TEXT;
+        render_command.shader_id = shader_component->program_id;
+        render_command.texture_id = texture_component->texture_id;
+        render_command.vao = static_text_component->vao;
+        render_command.indices_count = (uint32_t)static_text_component->indices->size();
+        render_command.position = position_component->position;
+
+        render_command_queue.push_back(render_command);
     }
-    #endif
 }
 
 void Dynamic_Text_Render_System::shutdown()

@@ -89,7 +89,7 @@
 #define PRINT_TIME_BLOCKS() while(false){}
 #endif
 
-typedef __declspec(align(64)) std::vector<uint8_t> Array;
+typedef __declspec(align(16)) std::vector<uint8_t> Array;
 
 template<typename T>
 struct BaseType { typedef T type; };

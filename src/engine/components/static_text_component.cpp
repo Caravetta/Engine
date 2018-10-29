@@ -89,10 +89,11 @@ void Static_Text_Component::generate_static_text( std::string user_text, uint16_
          }
     }
 
-    vao = new core::vao;
-    vao->bind();
-    vao->create_index_buffer((int*)indices->data(), (int)indices->size());
-    vao->create_attribute(0, vertices->data(), (int)vertices->size() * sizeof(float), 3);
-    vao->create_attribute(2, textures->data(), (int)textures->size() * sizeof(float), 2);
-    vao->unbind();
+    vao = new core::vao_t;
+    core::create_vao(vao);
+    core::bind_vao(vao);
+    core::create_index_buffer(vao, (int*)indices->data(), (int)indices->size(), core::STATIC_DRAW);
+    core::create_float_attribute(vao, 0, vertices->data(), (int)vertices->size() * sizeof(float), 3, core::STATIC_DRAW);
+    core::create_float_attribute(vao, 2, textures->data(), (int)textures->size() * sizeof(float), 2, core::STATIC_DRAW);
+    core::unbind_vao();
 }

@@ -5,19 +5,24 @@
 #include <string>
 #include "../core/core.h"
 
-class Dynamic_Text_Component {
-public:
-    std::string text;
-    uint16_t size;
-    std::vector<float> vertices;
-    std::vector<uint32_t> indices;
-    std::vector<float> textures;
-    core::vao* vao;
-    core::Font* text_font;
+COMPONENT(
+          // Name of Component
+          Dynamic_Text_Component,
 
-    Dynamic_Text_Component();
-    void generate_dynamic_text( std::string user_text, uint16_t font_size, core::Font* font );
-    void regenerate_text();
-};
+          // Start of Component Data
+          std::string text;
+          uint16_t size;
+          std::vector<float>* vertices;
+          std::vector<uint32_t>* indices;
+          std::vector<float>* textures;
+          core::Font* string_font;
+          uint16_t string_new_line_pad;
+          core::vao_t* vao;
+
+          // Start of Helper Functions
+          void generate_dynamic_text( std::string user_text, uint16_t font_size, core::Font* font, uint16_t new_line_pad );
+          void regenerate_dynamic_text( std::string user_text, uint16_t font_size, core::Font* font, uint16_t new_line_pad );
+         )
+
 
 #endif //__DYNAMIC_TEXT_COMPONENT_H__
