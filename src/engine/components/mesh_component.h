@@ -1,7 +1,7 @@
 #ifndef __MESH_COMPONENT_H__
 #define __MESH_COMPONENT_H__
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 COMPONENT(
           Mesh_Component,

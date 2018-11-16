@@ -45,7 +45,8 @@ void Dynamic_Text_Render_System::update()
         static_text_component = static_text_vec->at(i);
         texture_component = texture_vec->at(i);
 
-        static_text_component->regenerate_dynamic_text( static_text_component->text, 18, static_text_component->string_font, 4 );
+        static_text_component->regenerate_dynamic_text( static_text_component->text, static_text_component->size,
+                                                        static_text_component->string_font, static_text_component->string_new_line_pad );
 
         render_command.command_type = RENDER_TEXT;
         render_command.shader_id = shader_component->program_id;

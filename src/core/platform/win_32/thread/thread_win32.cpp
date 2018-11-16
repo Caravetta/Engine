@@ -2,6 +2,25 @@
 
 namespace core {
 
+UhRC_t platform_init_lock( platform_lock_t* lock )
+{
+    if ( !InitializeCriticalSectionAndSpinCount(lock, 0x00000400) ) {
+        return ENGINE_ERROR;
+    }
+
+    return SUCCESS;
+}
+
+void platform_get_lock( platform_lock_t* lock )
+{
+    EnterCriticalSection(lock);
+}
+
+void platform_release_lock( platform_lock_t* lock )
+{
+    LeaveCriticalSection(lock);
+}
+
 DWORD WINAPI MyThreadFunction( LPVOID lpParam )
 {
     thread_data_window_t* thread_data = (thread_data_window_t*)lpParam;
@@ -26,6 +45,11 @@ void platform_create_thread( thread_data_window_t* thread_data )
     } else {
         SetThreadPriority( thread_data->thread_handle, THREAD_PRIORITY_ABOVE_NORMAL );
     }
+}
+
+void platform_set_thread_affinity( uint8_t cpu )
+{
+    SetThreadAffinityMask(GetCurrentThread(), (uint32_t)(1 << cpu));
 }
 
 } // end namespace core

@@ -12,12 +12,12 @@ REM cl %CommonCompilerFlags% -Zi /EHsc /FeCore /DDEBUG_BUILD /DCORE_EXPORT /D_CR
 REM cl %CommonCompilerFlags% -Zi /EHsc ..\src\test.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib
 
 IF "%1" == "core" (
-    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DWINDOWS_PLATFORM /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
 ) ELSE IF "%1" == "launcher" (
-    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /DDEBUG_BUILD /EHsc ..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+    cl %CommonCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /DWINDOWS_PLATFORM /DDEBUG_BUILD /EHsc ..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
 ) ELSE IF "%1" == "debug" (
-    cl %DebugCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
-    cl %DebugCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /DDEBUG_BUILD ..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+    cl %DebugCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DWINDOWS_PLATFORM /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
+    cl %DebugCompilerFlags% /I ..\src\libs\free_type\include\ -Zi /EHsc /DWINDOWS_PLATFORM /DDEBUG_BUILD ..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\src\libs\free_type\freetype.lib /link /LIBPATH:..\src\libs\free_type\
 ) ELSE (
 
 echo.
@@ -28,8 +28,8 @@ pushd ..\build\release
 
 copy ..\..\src\libs\free_type\freetype.dll .
 
-    cl %CommonCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
-    cl %CommonCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc ..\..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
+    cl %CommonCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DWINDOWS_PLATFORM /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
+    cl %CommonCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc /DWINDOWS_PLATFORM ..\..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
 )
 
 popd
@@ -42,7 +42,7 @@ pushd ..\build\debug
 
 copy ..\..\src\libs\free_type\freetype.dll .
 
-    cl %DebugCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
-    cl %DebugCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc /DDEBUG_BUILD ..\..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
+    cl %DebugCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc /FeCore /DWINDOWS_PLATFORM /DDEBUG_BUILD /DCORE_EXPORT /D_CRT_SECURE_NO_WARNINGS /LD ..\..\src\core\core.cpp user32.lib gdi32.lib opengl32.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
+    cl %DebugCompilerFlags% /I ..\..\src\libs\free_type\include\ -Zi /EHsc /DWINDOWS_PLATFORM /DDEBUG_BUILD ..\..\src\engine\launcher.cpp user32.lib gdi32.lib opengl32.lib Core.lib winmm.lib ..\..\src\libs\free_type\freetype.lib /link /LIBPATH:..\..\src\libs\free_type\
 
 popd

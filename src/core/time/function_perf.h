@@ -17,9 +17,6 @@ struct func_type_idx_info {
     static uint64_t idx;
 };
 
-template <typename T>
-uint64_t func_type_idx_info<T>::idx{Function_Perf::func_current_type_idx++};
-
 class Function_Perf {
 private:
     CORE_API static Function_Perf* instance;
@@ -37,6 +34,9 @@ public:
     void set_current_node( std::string func_name );
     void print();
 };
+
+template <typename T>
+uint64_t func_type_idx_info<T>::idx{Function_Perf::func_current_type_idx++};
 
 Function_Perf* Function_Perf::get_instance()
 {
@@ -111,7 +111,7 @@ void Function_Perf::set_current_node( std::string func_name )
 void _print_node( func_perf_data* node, uint64_t offset )
 {
     std::string star = "";
-    for (int k = 0; k < offset; k++) {
+    for (uint64_t k = 0; k < offset; k++) {
         star += "-";
     }
     LOG(star << node->name << " Total_Time:" << node->total_time * 1000 << "ms Avg_Time:" <<
@@ -121,7 +121,7 @@ void _print_node( func_perf_data* node, uint64_t offset )
 void Function_Perf::print()
 {
     LOG("****************** TIME BLOCK START **************************");
-    for (int i = 0; i < perf_data.size(); i++) {
+    for (uint64_t i = 0; i < perf_data.size(); i++) {
         _print_node(&perf_data[i], 0);
         perf_data[i].total_time = 0;
         perf_data[i].func_calls = 0;

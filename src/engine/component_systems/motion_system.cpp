@@ -31,7 +31,7 @@ void Motion_System::init()
 
 }
 
-struct __declspec(align(16)) job_test : public core::Job_Loop {
+struct job_test : public core::Job_Loop {
     std::vector<Motion_Component*>* motion_vec;
     std::vector<Transform*>* transforms;
     float delta;

@@ -65,7 +65,7 @@ UhRC_t register_archetype( Archetype archetype, std::string archetype_name )
         ALLOC_RETURN_FAILURE( tmp_archetype_node->idx_map, std::unordered_map<uint64_t, uint64_t> );
 
         // loop through all comps for arche and create new comp nodes for them
-        for (int i = 0; i < archetype.used_component_ids.size(); i++) {
+        for (uint64_t i = 0; i < archetype.used_component_ids.size(); i++) {
             comp_node_idx = tmp_archetype_node->comp_nodes_vec->size();
 
             DEBUG_LOG( archetype_name << " creating comp node for ID " << archetype.used_component_ids[i] );
@@ -97,11 +97,11 @@ UhRC_t register_archetype( Archetype archetype, std::string archetype_name )
         std::vector<System*>* systems = System_Manager::get_system_vec();
 
         // go through all systems to see if they care about this archetype
-        for (int j = 0; j < systems->size(); j++) {
+        for (uint64_t j = 0; j < systems->size(); j++) {
             should_add = true;
 
             // loop through all the system components
-            for (int l = 0; l < systems->at(j)->component_list.size(); l++) {
+            for (uint64_t l = 0; l < systems->at(j)->component_list.size(); l++) {
                 current_comp = tmp_archetype_node->comp_map->find(systems->at(j)->component_list[l]);
                 if ( current_comp == tmp_archetype_node->comp_map->end() ) {
                     should_add = false;
@@ -115,7 +115,7 @@ UhRC_t register_archetype( Archetype archetype, std::string archetype_name )
                 //TODO(JOSH): Currently we are sending all the comps to the system should only send ones they care about.
 
                 // loop through all the comp and add them to this system
-                for (int k = 0; k < tmp_archetype_node->comp_nodes_vec->size(); k++) {
+                for (uint64_t k = 0; k < tmp_archetype_node->comp_nodes_vec->size(); k++) {
                     systems->at(j)->add_component_data(&tmp_archetype_node->comp_nodes_vec->at(k)->empty_idx_p,
                                                        tmp_archetype_node->comp_nodes_vec->at(k)->component_id,
                                                        &tmp_archetype_node->comp_nodes_vec->at(k)->data_array);
@@ -152,7 +152,7 @@ UhRC_t register_entity( Entity entity, internal_entity_id* intern_entity_id, std
         entity_idx = tmp_archetype_node->comp_nodes_vec->at(0)->empty_idx;
 
         // loop through all the components in arche and init the data location / check if data needs to be resized
-        for (int i = 0; i < tmp_archetype_node->comp_nodes_vec->size(); i++) {
+        for (uint64_t i = 0; i < tmp_archetype_node->comp_nodes_vec->size(); i++) {
             size_t comp_size = Component_Manager::get_component_size(tmp_archetype_node->comp_nodes_vec->at(i)->component_id);
 
             // check to see if we need to resize data

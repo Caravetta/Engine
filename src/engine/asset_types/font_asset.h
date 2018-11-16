@@ -1,7 +1,7 @@
 #if !defined(FONT_ASSET_H)
 
 #include <string>
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Font_Asset : public core::Asset {
 public:

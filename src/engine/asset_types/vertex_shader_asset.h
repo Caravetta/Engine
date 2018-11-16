@@ -1,6 +1,6 @@
 #if !defined(VERTEX_SHADER_ASSET_H)
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Vertex_Shader_Asset : public core::Asset {
 public:

@@ -3,6 +3,21 @@
 
 namespace core {
 
+UhRC_t platform_init_lock( platform_lock_t* lock )
+{
+    return SUCCESS;
+}
+
+void platform_get_lock( platform_lock_t* lock )
+{
+
+}
+
+void platform_release_lock( platform_lock_t* lock )
+{
+
+}
+
 static void* MyThreadFunction( void* arg )
 {
     thread_data_window_t* thread_data = (thread_data_window_t*)arg;
@@ -26,6 +41,11 @@ void platform_create_thread( thread_data_window_t* thread_data )
     if ( thread_data->thread_handle != 0 ) {
         LOG_ERROR("Failed to create thread");
     }
+}
+
+void platform_set_thread_affinity( uint8_t cpu )
+{
+
 }
 
 } // end namespace core

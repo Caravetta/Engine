@@ -1,7 +1,7 @@
 #ifndef __TRANSFORM_COMPONENT_H__
 #define __TRANSFORM_COMPONENT_H__
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 COMPONENT(
           Transform,

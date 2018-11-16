@@ -40,7 +40,7 @@ typedef enum {
     UNBIND_TEXTURE,
 } opengl_command_type_t;
 
-typedef enum : __int64 {
+typedef enum {
     VSYNC_ENABLED       = 1 << 0,
     CULL_FACE_ENABLED   = 1 << 1,
     DEPTH_TEST_ENABLED  = 1 << 2,
@@ -106,16 +106,22 @@ typedef struct {
     int transformation_matrix_id;
 } render_state_t;
 
+#ifdef WINDOWS_PLATFORM
 CRITICAL_SECTION render_command_queue_lock;
+#endif
 
 void lock_render_queue()
 {
+#ifdef WINDOWS_PLATFORM
     EnterCriticalSection(&render_command_queue_lock);
+#endif
 }
 
 void release_render_queue()
 {
+#ifdef WINDOWS_PLATFORM
     LeaveCriticalSection(&render_command_queue_lock);
+#endif
 }
 
 std::vector<render_command_t> render_command_queue;

@@ -58,9 +58,10 @@ void _replace_multi_space_with_single_space( char *str )
 
     while (*str != '\0')
     {
-        while ( *str == ' ' && *(str + 1) == ' ' )
+        while ( *str == ' ' && *(str + 1) == ' ' ) {
             str++;
-            *dest++ = *str++;
+            *dest++ = *str++; //TODO:(JOSH) need to check if this should be in here
+        }
     }
 
     *dest = '\0';
@@ -72,9 +73,9 @@ typedef struct {
     int text;
 } indice_data;
 
-int _get_indice( int vert , int text, int norm, std::vector<indice_data*>* temp_data )
+uint64_t _get_indice( int vert , int text, int norm, std::vector<indice_data*>* temp_data )
 {
-    for ( int i = 0; i < temp_data->size(); i++ ) {
+    for ( uint64_t i = 0; i < temp_data->size(); i++ ) {
         indice_data* data = (*temp_data)[i];
         if ( vert == data->vert && text == data->text && norm == data->norm ) {
             return i;
@@ -92,9 +93,8 @@ int _get_indice( int vert , int text, int norm, std::vector<indice_data*>* temp_
 
 void load_obj_file( std::string file_path, Mesh* mesh )
 {
-    int indice_index = 0;
+    //int indice_index = 0;
     FILE *file;
-    errno_t err;
     std::vector<Vector3f> vert_vector(1000);
     std::vector<Vector3f> norm_vector(1000);
     std::vector<Vector3f> text_vector(1000);
@@ -108,11 +108,11 @@ void load_obj_file( std::string file_path, Mesh* mesh )
     int first = 0;
 
     char buf[bufSize];
-    int current_indice = 0;
+    //int current_indice = 0;
 
-    err = fopen_s(&file, file_path.c_str(), "r");
+    file = fopen(file_path.c_str(), "r");
 
-    if ( err != 0 ) {
+    if ( file == NULL ) {
         LOG_ERROR("Error opening File at path " << file_path);
         return;
     }
@@ -137,7 +137,7 @@ void load_obj_file( std::string file_path, Mesh* mesh )
         int norm1, norm2, norm3;
 
 
-        sscanf_s(buf, "%c%c", &type1, (unsigned)sizeof(char), &type2, (unsigned)sizeof(char));
+        sscanf(buf, "%c%c", &type1, &type2 );
 
         if ( tokens.at(0) == "v" ) {
             vert_vector.push_back(Vector3f((float)atof(tokens.at(1).c_str()), (float)atof(tokens.at(2).c_str()), (float)atof(tokens.at(3).c_str())));
@@ -145,26 +145,26 @@ void load_obj_file( std::string file_path, Mesh* mesh )
             text_vector.push_back(Vector3f((float)atof(tokens.at(1).c_str()), (float)atof(tokens.at(2).c_str()), 0));
 
         } else if ( tokens.at(0) == "vn" ) {
-            sscanf_s(buf, "%c%c %f %f %f", &type1, (unsigned)sizeof(char), &type2, (unsigned)sizeof(char), &x, &y, &z);
+            sscanf(buf, "%c%c %f %f %f", &type1, &type2, &x, &y, &z);
             norm_vector.push_back(Vector3f((float)atof(tokens.at(1).c_str()), (float)atof(tokens.at(2).c_str()), (float)atof(tokens.at(3).c_str())));
         } else if ( tokens.at(0) == "f" ) {
             if ( first == 0 ) {
                 indice_vector.clear();
                 first = 1;
             }
-            int total_tri = (int)tokens.size() - 3;
+            //int total_tri = (int)tokens.size() - 3;
             for ( int i = 0; i < 1; i++ ) {
-                sscanf_s(tokens.at(i+1).c_str(), "%d/%d/%d", &vert1, &text1, &norm1);
-                sscanf_s(tokens.at(i+2).c_str(), "%d/%d/%d", &vert2, &text2, &norm2);
-                sscanf_s(tokens.at(i+3).c_str(), "%d/%d/%d", &vert3, &text3, &norm3);
+                sscanf(tokens.at(i+1).c_str(), "%d/%d/%d", &vert1, &text1, &norm1);
+                sscanf(tokens.at(i+2).c_str(), "%d/%d/%d", &vert2, &text2, &norm2);
+                sscanf(tokens.at(i+3).c_str(), "%d/%d/%d", &vert3, &text3, &norm3);
                 indice_vector.push_back(_get_indice( vert1 , text1, norm1, &temp_data ));
                 indice_vector.push_back(_get_indice( vert2 , text2, norm2, &temp_data ));
                 indice_vector.push_back(_get_indice( vert3 , text3, norm3, &temp_data ));
 
                 if ( tokens.size() > 4 ) {
-                    sscanf_s(tokens.at(i+3).c_str(), "%d/%d/%d", &vert1, &text1, &norm1);
-                    sscanf_s(tokens.at(i+4).c_str(), "%d/%d/%d", &vert2, &text2, &norm2);
-                    sscanf_s(tokens.at(i+1).c_str(), "%d/%d/%d", &vert3, &text3, &norm3);
+                    sscanf(tokens.at(i+3).c_str(), "%d/%d/%d", &vert1, &text1, &norm1);
+                    sscanf(tokens.at(i+4).c_str(), "%d/%d/%d", &vert2, &text2, &norm2);
+                    sscanf(tokens.at(i+1).c_str(), "%d/%d/%d", &vert3, &text3, &norm3);
                     indice_vector.push_back(_get_indice( vert1 , text1, norm1, &temp_data ));
                     indice_vector.push_back(_get_indice( vert2 , text2, norm2, &temp_data ));
                     indice_vector.push_back(_get_indice( vert3 , text3, norm3, &temp_data ));
@@ -180,7 +180,7 @@ void load_obj_file( std::string file_path, Mesh* mesh )
     int vec3_offset = 0;
     int vec2_offset = 0;
 
-    for ( int i = 0; i < temp_data.size(); i++ ) {
+    for ( uint64_t i = 0; i < temp_data.size(); i++ ) {
 
         indice_data* data = temp_data[i];
 
@@ -216,9 +216,9 @@ void load_obj_file( std::string file_path, Mesh* mesh )
     create_vao(mesh->vao);
     bind_vao(mesh->vao);
     create_index_buffer(mesh->vao, (int*)mesh->indices, (int)mesh->indices_count, STATIC_DRAW); //TODO: need to get ride of this cast
-    create_float_attribute(mesh->vao, 0, mesh->vertices, mesh->vertices_count * sizeof(float), 3, STATIC_DRAW);
-    create_float_attribute(mesh->vao, 1, mesh->normals, mesh->normals_count * sizeof(float), 3, STATIC_DRAW);
-    create_float_attribute(mesh->vao, 2, mesh->textures, mesh->textures_count * sizeof(float), 2, STATIC_DRAW);
+    create_float_attribute(mesh->vao, 0, mesh->vertices, mesh->vertices_count * sizeof(float), 3, 3 * sizeof(float), 0, STATIC_DRAW);
+    create_float_attribute(mesh->vao, 1, mesh->normals, mesh->normals_count * sizeof(float), 3, 3 * sizeof(float), 0, STATIC_DRAW);
+    create_float_attribute(mesh->vao, 2, mesh->textures, mesh->textures_count * sizeof(float), 2, 2 * sizeof(float), 0, STATIC_DRAW);
     unbind_vao();
 }
 

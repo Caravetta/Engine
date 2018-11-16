@@ -6,14 +6,14 @@ namespace System_Manager{
 
 std::vector<System*> systems;
 
-void System_Manager::init_systems( void )
+void init_systems( void )
 {
     for ( uint32_t i = 0; i < systems.size(); i++ ) {
         systems[i]->init();
     }
 }
 
-void System_Manager::update_systems( void )
+void update_systems( void )
 {
     START_TIME_BLOCK( update_systems );
     for ( uint32_t i = 0; i < systems.size(); i++ ) {
@@ -24,7 +24,7 @@ void System_Manager::update_systems( void )
     END_TIME_BLOCK( update_systems );
 }
 
-void System_Manager::shutdown_systems( void )
+void shutdown_systems( void )
 {
     for ( uint32_t i = 0; i < systems.size(); i++ ) {
         systems[i]->shutdown();

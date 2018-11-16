@@ -1,7 +1,7 @@
 #ifndef __DYNAMIC_TEXT_RENDER_SYSTEM_H__
 #define __DYNAMIC_TEXT_RENDER_SYSTEM_H__
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Dynamic_Text_Render_System : public core::System {
 public:

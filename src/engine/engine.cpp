@@ -22,12 +22,10 @@ Engine* Engine::get_instance()
 void Engine::init()
 {
 
-    //IMPORTANT never want to run on CPU 0
-    // lock the main thread to CPU 1
-    SetThreadAffinityMask(GetCurrentThread(), (uint32_t)(1 << 1));
-
     //load opengl extentions (important this must be done before creating window)
+#ifdef WINDOWS_PLATFORM
     load_opengl_extensions();
+#endif
 
     //create the game window
     this->window = new core::Window(1000, 800, "Launcher");
@@ -75,10 +73,12 @@ void Engine::init()
 
     /************* END TEST CODE *****************/
 
+#ifdef WINDOWS_PLATFORM
     //TODO(JOSH): need to find better place to put this
     if ( !InitializeCriticalSectionAndSpinCount(&render_command_queue_lock, 0x00000400) ) {
         LOG_ERROR("Failed to init render lock");
     }
+#endif
 
     core::System_Manager::init_systems();
 

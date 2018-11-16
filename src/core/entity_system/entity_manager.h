@@ -14,11 +14,11 @@
 namespace core {
 namespace Entity_Manager {
 
-CORE_API UhRC_t init( void );
-CORE_API Entity create_entity( std::string archetype_name );
-CORE_API UhRC_t delete_entity( Entity entity );
-CORE_API bool is_valid_entity( Entity entity );
-CORE_API internal_entity_id get_internal_id( Entity entity );
+CORE_API UhRC_t init( void ); //used only in Engine
+CORE_API Entity create_entity( std::string archetype_name ); //not used in engine
+CORE_API UhRC_t delete_entity( Entity entity ); //not used in engine
+CORE_API bool is_valid_entity( Entity entity ); //not used in engine
+CORE_API internal_entity_id get_internal_id( Entity entity ); //used only in Engine
 
 template<typename T>
 UhRC_t add_component( Entity entity )

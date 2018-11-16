@@ -12,12 +12,18 @@ typedef enum {
 } shader_type_t;
 
 typedef struct {
+    std::string     file_name;
+    shader_type_t   type;
+} shader_file_t;
+
+typedef struct {
     uint32_t vert_id;
     uint32_t frag_id;
     uint32_t geom_id;
     uint32_t prog_id;
 } shader_t;
 
+CORE_API uint32_t create_shader(shader_file_t shader_files[], uint8_t size);
 CORE_API void load_shader_file( std::string file_name, shader_type_t type, unsigned int* id );
 CORE_API void create_shader_program( unsigned int vertex_id, unsigned int fragment_id, unsigned int* program_id );
 

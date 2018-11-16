@@ -1,6 +1,6 @@
 #if !defined(FRAGMENT_SHADER_ASSET_H)
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Fragment_Shader_Asset : public core::Asset {
 public:

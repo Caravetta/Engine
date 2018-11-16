@@ -1,6 +1,6 @@
 #if !defined(MESH_RENDER_SYSTEM_H)
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Mesh_Render_System : public core::System {
 public:

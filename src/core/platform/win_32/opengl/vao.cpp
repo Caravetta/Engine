@@ -44,27 +44,27 @@ void create_index_buffer( vao_t* vao, int* indices, int num_indices, usage_type_
 
 }
 
-void create_float_attribute( vao_t* vao, int attribute, float* data, int data_size, int attribute_size, usage_type_t usage_type )
+void create_float_attribute( vao_t* vao, int attribute, float* data, int data_size, int attribute_size, int stride, int offset, usage_type_t usage_type )
 {
     vbo_t tmp_vbo;
     tmp_vbo.type = GL_ARRAY_BUFFER;
     allocate_vbo(&tmp_vbo);
     bind_vbo(&tmp_vbo);
     vbo_store_data(&tmp_vbo, data, data_size, usage_type);
-    glVertexAttribPointer(attribute, attribute_size, GL_FLOAT, GL_FALSE, (attribute_size * sizeof(float)), (void*)0);
+    glVertexAttribPointer(attribute, attribute_size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
     unbind_vbo(&tmp_vbo);
     vao->attribute_map.insert({ attribute, vao->vbos.size() });
     vao->vbos.push_back(tmp_vbo);
 }
 
-void create_int_attribute( vao_t* vao, int attribute, int* data, int data_size, int attribute_size, usage_type_t usage_type )
+void create_int_attribute( vao_t* vao, int attribute, int* data, int data_size, int attribute_size, int stride, int offset, usage_type_t usage_type )
 {
     vbo_t tmp_vbo;
     tmp_vbo.type = GL_ARRAY_BUFFER;
     allocate_vbo(&tmp_vbo);
     bind_vbo(&tmp_vbo);
     vbo_store_data(&tmp_vbo, data, data_size, usage_type);
-    glVertexAttribPointer(attribute, attribute_size, GL_INT, GL_FALSE, (attribute_size * sizeof(int)), (void*)0);
+    glVertexAttribPointer(attribute, attribute_size, GL_INT, GL_FALSE, (attribute_size * sizeof(int)), (void*)offset);
     unbind_vbo(&tmp_vbo);
     vao->attribute_map.insert({ attribute, vao->vbos.size() });
     vao->vbos.push_back(tmp_vbo);
@@ -74,7 +74,7 @@ void create_int_attribute( vao_t* vao, int attribute, int* data, int data_size, 
 void update_index_buffer( vao_t* vao, int* indices, int num_indices, usage_type_t usage_type )
 {
     bind_vbo(&vao->indices_vbo);
-    vbo_store_data(&vao->indices_vbo, indices, (sizeof(int)*num_indices), usage_type);
+    vbo_store_data(&vao->indices_vbo, indices, (sizeof(int) * num_indices), usage_type);
 }
 
 void update_float_attribute( vao_t* vao, int attribute, float* data, int data_size, usage_type_t usage_type )
@@ -95,6 +95,21 @@ void update_int_attribute( vao_t* vao, int attribute, int* data, int data_size, 
         vbo_store_data(&vao->vbos[attr_idx->second], data, data_size, usage_type);
         unbind_vbo(&vao->vbos[attr_idx->second]);
     }
+}
+
+void create_float_instanced_attribute(vao_t* vao, int attribute, float* data, int data_size, int attribute_size,
+                                      int stride, int offset, unsigned int divisor, usage_type_t usage_type )
+{
+    vbo_t tmp_vbo;
+    tmp_vbo.type = GL_ARRAY_BUFFER;
+    allocate_vbo(&tmp_vbo);
+    bind_vbo(&tmp_vbo);
+    vbo_store_data(&tmp_vbo, data, data_size, usage_type);
+    glVertexAttribPointer(attribute, attribute_size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+    glVertexAttribDivisor(attribute, divisor);
+    unbind_vbo(&tmp_vbo);
+    vao->attribute_map.insert({ attribute, vao->vbos.size() });
+    vao->vbos.push_back(tmp_vbo);
 }
 
 } //end namespace core

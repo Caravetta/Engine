@@ -87,9 +87,11 @@ void Shader::load_shader( std::string file_name, shader_type_t type )
 {
     GLint length;
     GLint shader_ok;
-    GLchar *source = (GLchar *)_file_contents(file_name.c_str(), &length);
+    GLchar* source = (GLchar *)_file_contents(file_name.c_str(), &length);
 
     if ( !source ) {
+        CHECK_INFO( 0, "Failed to get source" );
+        LOG_ERROR("Failed to get source");
         return;
     }
 

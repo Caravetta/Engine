@@ -1,21 +1,18 @@
-#if !defined(VBO_H)
+#ifndef __VBO_H__
+#define __VBO_H__
 
 namespace core {
 
-    class CORE_API vbo {
-    public:
-        unsigned int id;
-        int type;
+typedef struct {
+    unsigned int id;
+    int type;
+} vbo_t;
 
-        vbo( int type );
-        ~vbo();
-        void bind();
-        void unbind();
-        void store_data( float* data, int data_size );
-        void store_data( int* data, int data_size );
-    };
+void allocate_vbo( vbo_t* vbo );
+void bind_vbo( vbo_t* vbo );
+void unbind_vbo( vbo_t* vbo );
+void vbo_store_data( vbo_t* vbo, void* data, uint64_t data_size, GLenum usage );
 
 } //end namespace core
 
-#define VBO_H
-#endif
+#endif //__VBO_H__

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "../core/core.h"
+//#include "../core/core.h"
 
 COMPONENT(
           // Name of Component

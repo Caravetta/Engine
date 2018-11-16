@@ -1,7 +1,7 @@
 #ifndef __TEXT_RENDER_SYSTEM_H__
 #define __TEXT_RENDER_SYSTEM_H__
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Text_Render_System : public core::System {
 public:

@@ -1,4 +1,4 @@
-#include <Windows.h>
+//#include <Windows.h>
 #include "timer.h"
 
 namespace core {
@@ -6,7 +6,7 @@ namespace core {
 Timer::Timer()
 {
     delta_time = 0;
-    last_time = 0;
+    //last_time = 0;
 
     last = std::chrono::steady_clock::now();
 }

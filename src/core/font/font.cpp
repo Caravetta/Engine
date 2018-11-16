@@ -100,7 +100,7 @@ void Font::generate_atlas( uint16_t size )
             ox += g->bitmap.width + 1;
     }
 
-    int x = 0;
+    //int x = 0;
 
     font_data.push_back(tmp_vec);
     size_map.insert({ size, (font_data.size() - 1) });

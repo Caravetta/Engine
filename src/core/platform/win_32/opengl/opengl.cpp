@@ -115,6 +115,7 @@ void _load_extension_list()
     OPENGL_LOAD(glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEPROC);
     OPENGL_LOAD(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFERPROC);
     OPENGL_LOAD(glBlitFramebuffer, PFNGLBLITFRAMEBUFFERPROC);
+    OPENGL_LOAD(glVertexAttribDivisor, PFNGLVERTEXATTRIBDIVISOR);
 
     glSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
     if ( !glSwapIntervalEXT ) { LOG_ERROR("Failed to load wglSwapIntervalEXT"); }

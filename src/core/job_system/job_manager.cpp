@@ -17,7 +17,7 @@ typedef struct {
     bool                    full;
     uint16_t                head;
     uint16_t                tail;
-    CRITICAL_SECTION        lock; //TODO(JOSH): need to move this win to platform level
+    lock_t                  lock;
 } job_queue_t;
 
 typedef struct {
@@ -26,28 +26,33 @@ typedef struct {
     std::vector<uint32_t>           _free_handle_vec;
     uint64_t                        _next_handle_idx;
     job_queue_t                     _job_queue;
-    CRITICAL_SECTION                _job_data_lock;   //TODO(JOSH): need to move this win to platform level
-    CRITICAL_SECTION                _job_handle_lock; //TODO(JOSH): need to move this win to platform level
-    CONDITION_VARIABLE              _conditionVar;    //TODO(JOSH): need to move this win to platform level
+    lock_t                          _job_data_lock;
+    lock_t                          _job_handle_lock;
+    //CONDITION_VARIABLE              _conditionVar;    //TODO(JOSH): need to move this win to platform level
 } job_manager_t;
 
 job_manager_t job_manager;
 
 UhRC_t init( void )
 {
-    if ( !InitializeCriticalSectionAndSpinCount(&job_manager._job_data_lock, 0x00000400) ) {
+    UhRC_t rc;
+
+    rc = init_lock(&job_manager._job_data_lock);
+    if ( rc != SUCCESS ) {
         return ENGINE_ERROR;
     }
 
-    if ( !InitializeCriticalSectionAndSpinCount(&job_manager._job_handle_lock, 0x00000400) ) {
+    rc = init_lock(&job_manager._job_handle_lock);
+    if ( rc != SUCCESS ) {
         return ENGINE_ERROR;
     }
 
-    if ( !InitializeCriticalSectionAndSpinCount(&job_manager._job_queue.lock, 0x00000400) ) {
+    rc = init_lock(&job_manager._job_queue.lock);
+    if ( rc != SUCCESS ) {
         return ENGINE_ERROR;
     }
 
-    InitializeConditionVariable (&job_manager._conditionVar);
+    //InitializeConditionVariable (&job_manager._conditionVar);
 
     job_manager._job_queue.head = 0;
     job_manager._job_queue.tail = 0;
@@ -69,7 +74,8 @@ Job_Handle get_job_handle( void )
 {
     Job_Handle handle;
 
-    EnterCriticalSection(&job_manager._job_handle_lock);
+    get_lock(&job_manager._job_handle_lock);
+
     bool set = false;
     if ( !job_manager._free_handle_vec.empty() ) {
         uint32_t free_idx = job_manager._free_handle_vec.back();
@@ -83,12 +89,15 @@ Job_Handle get_job_handle( void )
         job_manager._next_handle_idx += 1;
     }
 
-    LeaveCriticalSection(&job_manager._job_handle_lock);
+    release_lock(&job_manager._job_handle_lock);
+
     if ( set ) {
-    EnterCriticalSection(&job_manager._job_data_lock);
-    job_manager._job_data_vec[handle.index].parts = 0;
-    job_manager._job_data_vec[handle.index].complete_parts = 0;
-    LeaveCriticalSection(&job_manager._job_data_lock);
+        get_lock(&job_manager._job_data_lock);
+
+        job_manager._job_data_vec[handle.index].parts = 0;
+        job_manager._job_data_vec[handle.index].complete_parts = 0;
+
+        release_lock(&job_manager._job_data_lock);
     }
 
     return handle;
@@ -96,12 +105,16 @@ Job_Handle get_job_handle( void )
 
 UhRC_t register_job( Job_Handle job_handle, std::function<void()> execute )
 {
-    EnterCriticalSection(&job_manager._job_queue.lock);
-    EnterCriticalSection(&job_manager._job_data_lock);
+    //EnterCriticalSection(&job_manager._job_queue.lock);
+    //EnterCriticalSection(&job_manager._job_data_lock);
+    get_lock(&job_manager._job_queue.lock);
+    get_lock(&job_manager._job_data_lock);
 
     if ( job_manager._job_queue.full ) {
-        LeaveCriticalSection(&job_manager._job_data_lock);
-        LeaveCriticalSection(&job_manager._job_queue.lock);
+        //LeaveCriticalSection(&job_manager._job_data_lock);
+        //LeaveCriticalSection(&job_manager._job_queue.lock);
+        release_lock(&job_manager._job_data_lock);
+        release_lock(&job_manager._job_queue.lock);
         CHECK_INFO( 0, "Run out of room in the Job queue");
         return ENGINE_ERROR; //TODO(JOSH): need to make a real error return
     }
@@ -121,8 +134,10 @@ UhRC_t register_job( Job_Handle job_handle, std::function<void()> execute )
         job_manager._job_queue.full = true;
     }
 
-    LeaveCriticalSection(&job_manager._job_data_lock);
-    LeaveCriticalSection(&job_manager._job_queue.lock);
+    //LeaveCriticalSection(&job_manager._job_data_lock);
+    //LeaveCriticalSection(&job_manager._job_queue.lock);
+    release_lock(&job_manager._job_data_lock);
+    release_lock(&job_manager._job_queue.lock);
 
     return SUCCESS;
 }
@@ -131,16 +146,20 @@ bool is_job_complete( Job_Handle job_handle )
 {
     bool is_complete = false;
 
-    EnterCriticalSection(&job_manager._job_data_lock);
+    //EnterCriticalSection(&job_manager._job_data_lock);
+    get_lock(&job_manager._job_data_lock);
     if ( job_manager._job_data_vec[job_handle.index].parts == job_manager._job_data_vec[job_handle.index].complete_parts ) {
         is_complete = true;
     }
-    LeaveCriticalSection(&job_manager._job_data_lock);
+    //LeaveCriticalSection(&job_manager._job_data_lock);
+    release_lock(&job_manager._job_data_lock);
 
     if ( is_complete == true ) {
-    EnterCriticalSection(&job_manager._job_handle_lock);
+    //EnterCriticalSection(&job_manager._job_handle_lock);
+    get_lock(&job_manager._job_handle_lock);
     job_manager._free_handle_vec.push_back(job_handle.index);
-    LeaveCriticalSection(&job_manager._job_handle_lock);
+    //LeaveCriticalSection(&job_manager._job_handle_lock);
+    release_lock(&job_manager._job_handle_lock);
     }
 
     return is_complete;
@@ -148,9 +167,11 @@ bool is_job_complete( Job_Handle job_handle )
 
 bool get_next_job( job_node_t* job_node )
 {
-    EnterCriticalSection(&job_manager._job_queue.lock);
+    //EnterCriticalSection(&job_manager._job_queue.lock);
+    get_lock(&job_manager._job_queue.lock);
     if ( job_manager._job_queue.empty ) {
-        LeaveCriticalSection(&job_manager._job_queue.lock);
+        //LeaveCriticalSection(&job_manager._job_queue.lock);
+        release_lock(&job_manager._job_queue.lock);
         return false;
     }
 
@@ -166,16 +187,19 @@ bool get_next_job( job_node_t* job_node )
         job_manager._job_queue.empty = true;
     }
 
-    LeaveCriticalSection(&job_manager._job_queue.lock);
+    //LeaveCriticalSection(&job_manager._job_queue.lock);
+    release_lock(&job_manager._job_queue.lock);
 
     return true;
 }
 
 UhRC_t complete_job( Job_Handle job_handle )
 {
-    EnterCriticalSection(&job_manager._job_data_lock);
+    //EnterCriticalSection(&job_manager._job_data_lock);
+    get_lock(&job_manager._job_data_lock);
     job_manager._job_data_vec[job_handle.index].complete_parts++;
-    LeaveCriticalSection(&job_manager._job_data_lock);
+    //LeaveCriticalSection(&job_manager._job_data_lock);
+    release_lock(&job_manager._job_data_lock);
 
     return SUCCESS;
 }

@@ -7,7 +7,7 @@ namespace core {
 
     class CORE_API Timer {
     private:
-        DWORD last_time;
+        //DWORD last_time;
         float delta_time;
         std::chrono::steady_clock::time_point last;
     public:

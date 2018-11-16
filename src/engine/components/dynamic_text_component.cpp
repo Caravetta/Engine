@@ -93,8 +93,11 @@ void Dynamic_Text_Component::generate_dynamic_text( std::string user_text, uint1
     core::create_vao(vao);
     core::bind_vao(vao);
     core::create_index_buffer(vao, (int*)indices->data(), (int)indices->size(), core::DYNAMIC_DRAW);
-    core::create_float_attribute(vao, 0, vertices->data(), (int)vertices->size() * sizeof(float), 3, core::DYNAMIC_DRAW);
-    core::create_float_attribute(vao, 2, textures->data(), (int)textures->size() * sizeof(float), 2, core::DYNAMIC_DRAW);
+    core::create_float_attribute(vao, 0, vertices->data(), (int)vertices->size() * sizeof(float),
+                                 3, 3 * sizeof(float), 0, core::DYNAMIC_DRAW);
+
+    core::create_float_attribute(vao, 2, textures->data(), (int)textures->size() * sizeof(float),
+                                 2, 2 * sizeof(float), 0, core::DYNAMIC_DRAW);
     core::unbind_vao();
 }
 

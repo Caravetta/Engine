@@ -1,7 +1,7 @@
 #ifndef __MOTION_SYSTEM_H__
 #define __MOTION_SYSTEM_H__
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Motion_System : public core::System {
 public:

@@ -1,4 +1,5 @@
-#if !defined(THREAD_LINUX_H)
+#ifndef __THREAD_LINUX_H__
+#define __THREAD_LINUX_H__
 
 namespace core {
 
@@ -9,9 +10,15 @@ typedef struct {
     void (*function)(void* data);
 } thread_data_window_t;
 
+typedef int platform_lock_t;
+
+UhRC_t platform_init_lock( platform_lock_t* lock );
+void platform_get_lock( platform_lock_t* lock );
+void platform_release_lock( platform_lock_t* lock );
+
 void platform_create_thread( thread_data_window_t* thread_data );
+void platform_set_thread_affinity( uint8_t cpu );
 
 } // end namespace core
 
-#define THREAD_LINUX_H
-#endif
+#endif //__THREAD_LINUX_H__

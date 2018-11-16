@@ -1,0 +1,38 @@
+
+include_list = ['src/',
+                'src/Engine/include/',
+                'src/Engine/application/include/',
+                'src/Engine/event_system/include/',
+                'src/Engine/platform/include/']
+
+print(include_list)
+
+source_files = []
+
+source_files.extend(find_files('src/', '*.cpp', flat=True))
+source_files.extend(find_files('src/Engine/application/', '*.cpp'))
+source_files.extend(find_files('src/Engine/event_system/', '*.cpp'))
+source_files.extend(find_files('src/Engine/ecs/', '*.cpp'))
+source_files.extend(find_files('src/Engine/platform/', '*.cpp', flat=True))
+
+if env.platform.name == 'windows':
+    flags = ['-DWINDOWS', '-DENGINE_EXPORT', '-fp:fast', '-MD', '-Zo', '-Oi', '-W4', '-FC', '-wd4530', '-wd4577']
+    package_list = [package('user32'), package('gdi32'), package('opengl32')]
+    include_list.extend(['src/Engine/platform/win32/include/']);
+    source_files.extend(find_files('src/Engine/platform/win32/', '*.cpp'))
+elif env.platform.name == 'linux':
+    flags = ['-DLINUX', '-Wall', '-O3', '-fPIC', '-fvisibility=hidden']
+    package_list = [package('GL'), package('GLU'), package('glut'), package('GLEW')]
+    include_list.extend(['src/Engine/platform/linux/include/']);
+    source_files.extend(find_files('src/Engine/platform/linux/', '*.cpp'))
+ 
+global_options(flags, lang='c++')
+
+print(source_files)
+   
+objs = object_files(source_files, includes=include_list)
+
+library('Engine', objs, packages=package_list)
+
+project('Engine', version='0.1')
+

@@ -1,7 +1,7 @@
 #ifndef __MOTION_COMPONENT_H__
 #define __MOTION_COMPONENT_H__
 
-#include "../core/core.h"
+//#include "../core/core.h"
 
 COMPONENT(
           Motion_Component,                                         //name of component

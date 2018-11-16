@@ -1,4 +1,5 @@
 #include "tga.h"
+#include <cstring>
 
 namespace core {
 
@@ -13,7 +14,7 @@ typedef union PixelInfo
 
 void load_tga( Image* image, std::string path )
 {
-    bool ImageCompressed;
+    //bool ImageCompressed;
     std::uint32_t width, height, size, BitsPerPixel;
     std::fstream hFile(path, std::ios::in | std::ios::binary);
 
@@ -45,7 +46,7 @@ void load_tga( Image* image, std::string path )
         }
 
         ImageData.resize(size);
-        ImageCompressed = false;
+        //ImageCompressed = false;
         hFile.read(reinterpret_cast<char*>(ImageData.data()), size);
 
     } else if ( !std::memcmp(IsCompressed, &Header, sizeof(IsCompressed)) ) {
@@ -64,7 +65,7 @@ void load_tga( Image* image, std::string path )
         PixelInfo Pixel = {0};
         int CurrentByte = 0;
         std::size_t CurrentPixel = 0;
-        ImageCompressed = true;
+        //ImageCompressed = true;
         std::uint8_t ChunkHeader = {0};
         int BytesPerPixel = (BitsPerPixel / 8);
         ImageData.resize(width * height * sizeof(PixelInfo));

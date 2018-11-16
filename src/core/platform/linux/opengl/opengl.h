@@ -1,10 +1,12 @@
-#if !defined(OPENGL_H)
+#ifndef __OPENGL_H__
+#define __OPENGL_H__
 
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
-
+#if 0
 typedef GLuint(APIENTRY * PFNGLCREATESHADERPROC) ( GLenum type );
 typedef void (APIENTRY * PFNGLSHADERSOURCEPROC) ( GLuint shader, GLsizei count, const char* *string, const GLint *length );
 typedef void (APIENTRY * PFNGLCOMPILESHADERPROC) ( GLuint shader );
@@ -401,3 +403,4 @@ void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc );
 
 #define OPENGL_H
 #endif
+#endif //__OPENGL_H__

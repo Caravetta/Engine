@@ -36,7 +36,7 @@ void _reduce_entity_vec( void )
     CHECK_INFO( 0, "_reduce_entity_vec not implemented" );
 }
 
-UhRC_t Entity_Manager::init( void )
+UhRC_t init( void )
 {
     entity_manager.next_entity_idx = 0;
 
@@ -51,7 +51,7 @@ Entity create_entity( std::string archetype_name )
     uint64_t internal_idx;
 
     // check to see if there is a node in the free vector
-    if ( !entity_manager.free_entity_idx.empty() ) {
+    if ( !entity_manager.free_entity_idx.empty() ) { //TODO(JOSH): should be able to get ride of this branch
         uint32_t free_idx = entity_manager.free_entity_idx.back();
         entity_manager.free_entity_idx.pop_back();
 

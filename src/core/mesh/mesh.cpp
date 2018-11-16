@@ -1,7 +1,7 @@
 #include <vector>
 #include "mesh.h"
 #include "../math/math_utils.h"
-#include "platform/platform.h"
+#include "../platform/platform.h"
 
 namespace core {
 
@@ -76,14 +76,15 @@ UhRC_t Mesh::deserialize( std::ifstream* in_stream )
     create_vao(this->vao);
     bind_vao(this->vao);
     create_index_buffer(this->vao, (int*)this->indices, (int)this->indices_count, STATIC_DRAW); //TODO: need to get ride of this cast
-    create_float_attribute(this->vao, 0, this->vertices, this->vertices_count * sizeof(float), 3, STATIC_DRAW);
-    create_float_attribute(this->vao, 1, this->normals, this->normals_count * sizeof(float), 3, STATIC_DRAW);
-    create_float_attribute(this->vao, 2, this->textures, this->textures_count * sizeof(float), 2, STATIC_DRAW);
+    create_float_attribute(this->vao, 0, this->vertices, this->vertices_count * sizeof(float), 3, 3 * sizeof(float), 0, STATIC_DRAW);
+    create_float_attribute(this->vao, 1, this->normals, this->normals_count * sizeof(float), 3, 3 * sizeof(float), 0, STATIC_DRAW);
+    create_float_attribute(this->vao, 2, this->textures, this->textures_count * sizeof(float), 2, 2 * sizeof(float), 0, STATIC_DRAW);
     unbind_vao();
 
     return SUCCESS;
 }
 
+#if 0
 void Mesh::generate_flat_plane( Mesh* mesh, Vector3f position, uint32_t width, uint32_t height, float vert_scale )
 {
     //TODO: need to add checking to make sure this math does not return floats
@@ -269,5 +270,5 @@ float Mesh::generate_height( float x, float y, Image* height_map )
 
     return final_height;
 }
-
+#endif
 } //end namespace core

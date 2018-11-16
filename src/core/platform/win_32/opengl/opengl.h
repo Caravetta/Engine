@@ -42,6 +42,7 @@ typedef void (APIENTRY * PFNGLUNIFORM1IPROC) ( GLint location, const GLint value
 typedef void (APIENTRY * PFNGLGENERATEMIPMAPPROC) ( GLenum target );
 typedef GLubyte*(APIENTRY * PFNGLGETSTRINGIPROC) ( GLenum name, GLuint index );
 typedef void (APIENTRY * PFNWGLSWAPINTERVALEXTPROC) ( GLint value );
+typedef void (APIENTRY * PFNGLVERTEXATTRIBDIVISOR) ( GLuint index, GLuint divisor );
 
 typedef void (APIENTRY * PFNGLGENFRAMEBUFFERSPROC) ( GLsizei n, GLuint *ids );
 typedef void (APIENTRY * PFNGLBINDFRAMEBUFFERPROC) ( GLenum target, GLuint framebuffer );
@@ -419,6 +420,7 @@ CORE_API PFNGLBINDRENDERBUFFERPROC          glBindRenderbuffer;
 CORE_API PFNGLRENDERBUFFERSTORAGEPROC       glRenderbufferStorage;
 CORE_API PFNGLFRAMEBUFFERRENDERBUFFERPROC   glFramebufferRenderbuffer;
 CORE_API PFNGLBLITFRAMEBUFFERPROC           glBlitFramebuffer;
+CORE_API PFNGLVERTEXATTRIBDIVISOR           glVertexAttribDivisor;
 
 typedef enum {
 	OPENGL_SUCCESS 	= 0,

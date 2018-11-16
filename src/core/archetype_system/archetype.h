@@ -28,7 +28,7 @@ void Archetype::add_component()
 template<typename T>
 bool Archetype::has_component()
 {
-    return has_component(Component_Manager::get_instance()->id<T>());
+    return has_component(Component_Manager::id<T>());
 }
 
 } // end namespace core

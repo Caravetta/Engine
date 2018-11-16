@@ -3,35 +3,24 @@
 
 namespace core {
 
-vbo::vbo( int type )
+void allocate_vbo( vbo_t* vbo )
 {
-    this->type = type;
-    glGenBuffers(1, (GLuint*)&this->id);
+    glGenBuffers(1, (GLuint*)&vbo->id);
 }
 
-vbo::~vbo()
+void bind_vbo( vbo_t* vbo )
 {
-    glDeleteBuffers(1, (GLuint*)&this->id);
+    glBindBuffer(vbo->type, vbo->id);
 }
 
-void vbo::bind()
+void unbind_vbo( vbo_t* vbo )
 {
-    glBindBuffer(type, id);
+    glBindBuffer(vbo->type, 0);
 }
 
-void vbo::unbind()
+void vbo_store_data( vbo_t* vbo, void* data, uint64_t data_size, GLenum usage )
 {
-    glBindBuffer(type, 0);
-}
-
-void vbo::store_data( float* data, int data_size )
-{
-    glBufferData(type, data_size, data, GL_STATIC_DRAW);
-}
-
-void vbo::store_data( int* data, int data_size )
-{
-    glBufferData(type, data_size, data, GL_STATIC_DRAW);
+    glBufferData(vbo->type, data_size, data, usage);
 }
 
 } //end namespace core

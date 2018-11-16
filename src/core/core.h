@@ -1,10 +1,12 @@
 #ifndef __CORE_H__
 #define __CORE_H__
 
-#ifdef CORE_EXPORT
-#define CORE_API __declspec(dllexport)
-#else
-#define CORE_API __declspec(dllimport)
+#ifdef WINDOWS_PLATFORM
+    #ifdef CORE_EXPORT
+        #define CORE_API __declspec(dllexport)
+    #else
+        #define CORE_API __declspec(dllimport)
+    #endif
 #endif
 
 #include "asset_system/asset.h"
@@ -45,5 +47,6 @@
 #include "job_system/job.h"
 #include "job_system/job_manager.h"
 #include "worker_system/worker_manager.h"
+#include "gui/gui_manager.h"
 
 #endif //__CORE_H__

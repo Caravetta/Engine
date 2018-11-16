@@ -32,4 +32,5 @@
 #include "archetype_system/archetype_manager.cpp"
 #include "worker_system/worker_manager.cpp"
 #include "job_system/job_manager.cpp"
+#include "gui/gui_manager.cpp"
 //#include "memory_system/heap.cpp"

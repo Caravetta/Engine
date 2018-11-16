@@ -52,7 +52,7 @@ void Terrain::generate_patches( double frequency, int octaves, int x_scale, int 
 
 void Terrain::generate_patch( Mesh* mesh, Vector3f patch_position, uint32_t patch_width, uint32_t patch_height, int x_scale, int z_scale, FractalNoise* fractal_noise )
 {
-    Mesh::generate_flat_plane(mesh, patch_position, patch_width, patch_height, 1);
+    //Mesh::generate_flat_plane(mesh, patch_position, patch_width, patch_height, 1);
 
     int height_verts = patch_height + 1;
     int width_verts = patch_width + 1;
@@ -69,10 +69,10 @@ void Terrain::generate_patch( Mesh* mesh, Vector3f patch_position, uint32_t patc
     }
     //calculate face normals
     std::vector<mesh_face_t> mesh_face_vector;
-    Mesh::generate_face_normals(mesh, patch_width, patch_height, 1, &mesh_face_vector);
+    //Mesh::generate_face_normals(mesh, patch_width, patch_height, 1, &mesh_face_vector);
 
     //calculate and set vert normals
-    Mesh::generate_and_set_vert_normals(mesh, patch_width, patch_height, 1, &mesh_face_vector); //TODO: need to fix the normal generation
+    //Mesh::generate_and_set_vert_normals(mesh, patch_width, patch_height, 1, &mesh_face_vector); //TODO: need to fix the normal generation
 }
 
 } //end namespace core

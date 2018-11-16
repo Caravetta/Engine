@@ -11,6 +11,13 @@
 
 #define NON_VALID_ID 4294967295
 
+template<typename T>
+UhRC_t component_create( uint8_t* memory )
+{
+    new (memory) T;
+    return SUCCESS;
+}
+
 namespace core {
 namespace Component_Manager {
 
@@ -55,11 +62,4 @@ void register_component( void )
 } // end namespace Component_Manager
 } // end namespace core
 
-template<typename T>
-UhRC_t component_create( uint8_t* memory )
-{
-    new (memory) T;
-    return SUCCESS;
-}
-
-#endif __COMPONENT_MANAGER_H__
+#endif //__COMPONENT_MANAGER_H__

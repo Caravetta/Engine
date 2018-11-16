@@ -1,7 +1,7 @@
 #if !defined(MESH_ASSET_H)
 
 #include <string>
-#include "../core/core.h"
+//#include "../core/core.h"
 
 class Mesh_Asset : public core::Asset {
 public:

@@ -63,14 +63,14 @@ bool System::has_component( uint32_t component_id )
 template<typename T>
 bool System::has_component()
 {
-    return has_component(Component_Manager::get_instance()->id<T>());
+    return has_component(Component_Manager::id<T>());
 }
 
 template<typename T>
 T* System::get_data_at( uint64_t idx )
 {
     //START_TIME_BLOCK(system_get_data_at);
-    uint64_t comp_id = comp_manager->id<T>();
+    uint64_t comp_id = Component_Manager::id<T>();
     uint64_t comp_total = 0;
     T* return_data = NULL;
 
@@ -186,7 +186,7 @@ void System::add_component( uint32_t component_id )
 template<typename T>
 void System::add_component( component_usage_t usage )
 {
-    add_component(Component_Manager::get_instance()->id<T>(), usage);
+    add_component(Component_Manager::id<T>(), usage);
 }
 
 template<typename T>

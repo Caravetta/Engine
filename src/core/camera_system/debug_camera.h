@@ -51,4 +51,4 @@ namespace core {
     };
 } //end namespace core
 
-#endif __DEBUG_CAMERA_H__
+#endif //__DEBUG_CAMERA_H__

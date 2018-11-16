@@ -28,6 +28,8 @@ void Static_Text_Component::generate_static_text( std::string user_text, uint16_
     uint16_t text_width = 0;
     uint16_t text_height = 0;
 
+    uint16_t max_height = 0;
+
     for (int i = 0; i < text.size(); i++) {
          if ( text[i] == '\n' ) {
             text_y -= font_size + new_line_pad;
@@ -43,6 +45,10 @@ void Static_Text_Component::generate_static_text( std::string user_text, uint16_
          h = font->generate_char_data(text[i], size)->map_height;
          text_width = font->get_font_width(font_size);
          text_height = font->get_font_height(font_size);
+
+         if ( text_height > max_height ){
+            max_height = text_height;
+         }
 
          vertices->push_back(x2);
          vertices->push_back(-y2);
@@ -93,7 +99,10 @@ void Static_Text_Component::generate_static_text( std::string user_text, uint16_
     core::create_vao(vao);
     core::bind_vao(vao);
     core::create_index_buffer(vao, (int*)indices->data(), (int)indices->size(), core::STATIC_DRAW);
-    core::create_float_attribute(vao, 0, vertices->data(), (int)vertices->size() * sizeof(float), 3, core::STATIC_DRAW);
-    core::create_float_attribute(vao, 2, textures->data(), (int)textures->size() * sizeof(float), 2, core::STATIC_DRAW);
+    core::create_float_attribute(vao, 0, vertices->data(), (int)vertices->size() * sizeof(float),
+                                 3, 3 * sizeof(float), 0, core::STATIC_DRAW);
+
+    core::create_float_attribute(vao, 2, textures->data(), (int)textures->size() * sizeof(float),
+                                 2, 2 * sizeof(int), 0, core::STATIC_DRAW);
     core::unbind_vao();
 }

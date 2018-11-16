@@ -10,7 +10,8 @@
 #include "linux/opengl/shader.h"
 #include "linux/opengl/vao.h"
 #include "linux/opengl/vbo.h"
-#else
+
+#elif WINDOWS_PLATFORM
 #include "../core_common.h"
 #include "win_32/window/window_win32.h"
 #include "win_32/utils/utils_win32.h"

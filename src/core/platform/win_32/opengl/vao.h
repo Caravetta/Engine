@@ -24,11 +24,16 @@ CORE_API void unbind_vao();
 CORE_API void bind_vao_attributes( vao_t* vao );
 CORE_API void unbind_vao_attributes( vao_t* vao );
 CORE_API void create_index_buffer( vao_t* vao, int* indices, int num_indices, usage_type_t usage_type );
-CORE_API void create_float_attribute( vao_t* vao, int attribute, float* data, int data_size, int attribute_size, usage_type_t usage_type );
-CORE_API void create_int_attribute( vao_t* vao, int attribute, int* data, int data_size, int attribute_size, usage_type_t usage_type );
+CORE_API void create_float_attribute( vao_t* vao, int attribute, float* data, int data_size,
+                                      int attribute_size, int stride, int offset, usage_type_t usage_type );
+CORE_API void create_int_attribute( vao_t* vao, int attribute, int* data, int data_size,
+                                    int attribute_size, int stride, int offset, usage_type_t usage_type );
 CORE_API void update_index_buffer( vao_t* vao, int* indices, int num_indices, usage_type_t usage_type );
 CORE_API void update_float_attribute( vao_t* vao, int attribute, float* data, int data_size, usage_type_t usage_type );
 CORE_API void update_int_attribute( vao_t* vao, int attribute, int* data, int data_size, usage_type_t usage_type );
+
+CORE_API void create_float_instanced_attribute(vao_t* vao, int attribute, float* data, int data_size, int attribute_size,
+                                               int stride, int offset, unsigned int divisor, usage_type_t usage_type );
 
 } //end namespace core
 
