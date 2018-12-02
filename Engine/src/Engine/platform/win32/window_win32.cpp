@@ -115,6 +115,7 @@ void init( struct platform_window_t* window, DWORD dwStyle )
     if ( !RegisterClassEx(&wc) ) {
         //TODO: add in logging
         DWORD dw = GetLastError();
+        UNUSED_ARG(dw);
         return;
     }
 

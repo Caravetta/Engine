@@ -1,68 +1,42 @@
 #include <stdint.h>
 #include <string>
-#include <GL/gl.h>
-#include <GL/glx.h>
-#include <GL/glu.h>
-#include <X11/Xlib.h>
+#include "platform.h"
 #include "input_manager.h"
 
 namespace Engine {
 
-#define DEFAULT_STYLE WS_BORDER | WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
+#define CHECK_SDL_ERROR() {                 \
+    const char* error = SDL_GetError();     \
+    if ( *error != '\0' ) {                 \
+        LOG_ERROR(error);                   \
+        SDL_ClearError();                   \
+        return ENGINE_ERROR;                \
+    }                                       \
+}
 
 struct platform_window_t {
-    int         width;
-    int         height;
-    int         show;
-    Window      instance;
-    //_XDisplay     display;
-    std::string title;
+    int             width;
+    int             height;
+    int             show;
+    std::string     title;
+    SDL_Window*     handle;
+    SDL_GLContext   context;
+    bool            is_closed;
 };
 
-int local_width;
-int local_height;
-
-void init( struct platform_window_t* window );
+Rc_t _init( struct platform_window_t* window );
 
 void platform_window_update( struct platform_window_t* platform_window )
 {
-#if 0
-    XEvent e;
-    XNextEvent(platform_window->display, &e);
-    switch ( e.type ) {
-    case MapNotify:
-	break;
-    case Expose:
-	break;
-    case ConfigureNotify:
-        local_height = e.xconfigure.height;
-        local_width = e.xconfigure.width;
-	break;
-    case VisibilityNotify:
-	break;
-    case DestroyNotify:
-	XCloseDisplay(platform_window->display);
-	break;
-    case ButtonPress:
-    case ButtonRelease:
-        break;
-    case EnterNotify:
-    case MotionNotify:
-    case LeaveNotify:
-        Input_Manager::get_instance()->process_mouse_move(e.xmotion.x, e.xmotion.y);
-	break;
-    case KeyPress:
-        Input_Manager::get_instance()->process_key_down((uint16_t)e.xkey.keycode);
-        break;
-    case KeyRelease:
-        Input_Manager::get_instance()->process_key_up((uint16_t)e.xkey.keycode);
-        break;
-    }
-        
+    SDL_Event event;
 
-    platform_window->width = local_width;
-    platform_window->height = local_height;
-#endif
+    while ( SDL_PollEvent(&event) ) {
+        if ( event.type == SDL_QUIT ) {
+            platform_window->is_closed = true;
+        }
+    }
+
+    return;
 }
 
 struct platform_window_t* platform_window_create( int width, int height, std::string title )
@@ -70,41 +44,50 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
     struct platform_window_t* window = new platform_window_t;
     window->width = width;
     window->height = height;
-    local_width = width;
-    local_height = height;
     window->title = title;
-    init(window);
+    window->is_closed = false;
+
+    Rc_t rc = _init(window);
+    if ( rc != SUCCESS ) {
+        delete window;
+        return NULL;
+    }
 
     return window;
 }
 
-void init( struct platform_window_t* window )
+Rc_t _init( struct platform_window_t* window )
 {
-#if 0
-   int s;
- 
-   window->display = XOpenDisplay(NULL);
-   if (window->display == NULL) {
-      fprintf(stderr, "Cannot open display\n");
-      exit(1);
-   }
- 
-   s = DefaultScreen(window->display);
-   window->instance = XCreateSimpleWindow(window->display, 
-					  RootWindow(window->display, s), 
-					  10, 10, 100, 100, 1,
-                                          BlackPixel(window->display, s), 
-					  WhitePixel(window->display, s));
-   XSelectInput(window->display, window->instance, ExposureMask | KeyPressMask);
-   XMapWindow(window->display, window->instance);
-#endif
+    Rc_t rc = SUCCESS;
+
+    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+        LOG_ERROR("Failed to Init SDL");
+        return ENGINE_ERROR;
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+
+    window->handle = SDL_CreateWindow(window->title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                      window->width, window->height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
+    CHECK_SDL_ERROR();
+    if ( window->handle == NULL ) {
+        LOG_ERROR("Failed to create window");
+    }
+
+    window->context = SDL_GL_CreateContext(window->handle);
+    CHECK_SDL_ERROR();
+
+    return SUCCESS;
 }
 
 void platform_window_swap_buffers( struct platform_window_t* platform_window )
 {
-#if 0
-    glXSwapBuffers(platform_window->display, platform_window->instance);
-#endif
+    SDL_GL_SwapWindow(platform_window->handle);
 }
 
 int platform_window_get_width( struct platform_window_t* platform_window )
@@ -115,6 +98,11 @@ int platform_window_get_width( struct platform_window_t* platform_window )
 int platform_window_get_height( struct platform_window_t* platform_window )
 {
     return platform_window->height;
+}
+
+bool platform_window_is_closed( struct platform_window_t* platform_window )
+{
+    return platform_window->is_closed;
 }
 
 } //end namespace Engine

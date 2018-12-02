@@ -8,21 +8,25 @@
 #include <limits>
 #include "core_common.h"
 #include "component.h"
+#include "Engine.h"
 
-#define NON_VALID_ID 4294967295
+//#define NON_VALID_ID 4294967295
 
+#if 0
 template<typename T>
 UhRC_t component_create( uint8_t* memory )
 {
     new (memory) T;
     return SUCCESS;
 }
+#endif
 
 namespace Engine {
 namespace Component_Manager {
 
-typedef UhRC_t (*component_create_function)( uint8_t* memory );
+//typedef UhRC_t (*component_create_function)( uint8_t* memory );
 
+#if 0
 struct component_info {
     component_create_function create_function;
     size_t size;
@@ -38,7 +42,9 @@ uint32_t type_idx_info<T>::id{NON_VALID_ID};
 
 uint32_t get_max_components();
 uint64_t get_component_size( uint32_t component_id );
+#endif
 component_create_function get_component_create( uint32_t component_id );
+#if 0
 void register_component_info( component_info comp_info );
 
 template<typename T>
@@ -58,7 +64,7 @@ void register_component( void )
     register_component_info(temp_comp);
     LOG("Registered Component: " << typeid(T).name() << " with ID: " << type_idx_info<T>::id << " sizeof " << temp_comp.size);
 }
-
+#endif
 } // end namespace Component_Manager
 } // end namespace Engine
 

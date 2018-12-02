@@ -173,6 +173,9 @@ void CEMS::register_event( std::string event, IEMS* obj_ref, Callback func_point
 
 void CEMS::unregister_event( std::string event, IEMS* obj_ref, Callback func_pointer )
 {
+    UNUSED_ARG(obj_ref);
+    UNUSED_ARG(func_pointer);
+
     //TODO: come up with a better way to do this
 }
 

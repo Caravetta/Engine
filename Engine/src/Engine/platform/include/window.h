@@ -6,25 +6,16 @@
 #include "platform.h"
 
 namespace Engine {
+namespace Window {
 
-class Window {
-public:
+Rc_t create( uint32_t width, uint32_t height, std::string title );
+void update( void );
+void swap_buffers( void );
+uint32_t get_width( void );
+uint32_t get_height( void );
+bool is_closed( void );
 
-    int width;
-    int height;
-    std::string title;
-
-    Window( int width, int height, std::string title );
-    void update();
-    void swap_buffers();
-    int get_width();
-    int get_height();
-    bool is_closed();
-
-private:
-    struct platform_window_t* platform_window;
-};
-
+} //end namespace Window
 } //end namesapce Engine
 
 #endif //__WINDOW_H__

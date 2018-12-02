@@ -164,6 +164,9 @@ void Input_Manager::process_key_up( uint16_t released_key )
 
 void Input_Manager::process_mouse_move( uint64_t x_pos, uint64_t y_pos )
 {
+    UNUSED_ARG(x_pos);
+    UNUSED_ARG(y_pos);
+
     post_event(MOUSE_POS_CHANGE);
 }
 

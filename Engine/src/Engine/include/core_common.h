@@ -5,17 +5,18 @@
 #include <stdint.h>
 #include<typeinfo>
 //#include<cxxabi.h>
-#include "core_return.h"
 #include <vector>
 #include <string>
+#include <cstring>
 #include <ctime>
 #include <ratio>
 #include <chrono>
+#include "Engine.h"
 
 #ifdef WINDOWS
     #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
-    #define __FILENAME__ __FILE__
+    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #endif
 
 #define LOG(...) PRINT("INFO", __VA_ARGS__);
@@ -81,6 +82,19 @@
     #define END_TIME_BLOCK( name ) while(false){}
     #define PRINT_TIME_BLOCKS() while(false){}
 #endif
+
+#define HANDLE_SET_ACTIVE 1
+#define HANDLE_SET_NON_ACTIVE 0
+
+#ifdef WINDOWS
+    #define START_SUPPRESS_WARNING( x, y ) __pragma(warning(suppress: x))
+    #define END_SUPPRESS_WARNING( x, y )
+#else
+    #define START_SUPPRESS_WARNING( x, y )
+    #define END_SUPPRESS_WARNING( x, y )
+#endif
+
+#define UNUSED_ARG( x ) ((void)(x))
 
 typedef std::vector<uint8_t> Array;
 

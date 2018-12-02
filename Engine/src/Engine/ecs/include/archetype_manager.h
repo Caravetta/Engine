@@ -2,14 +2,13 @@
 #define __ARCHETYPE_MANAGER_H__
 
 #include "core_common.h"
-#include "archetype.h"
 #include "entity.h"
 #include "component_manager.h"
 
 namespace Engine {
 namespace Archetype_Manager {
 
-UhRC_t init( void );
+Rc_t init( void );
 
 /**
     Register an archetype to a string name that will allow them to get this archetype back at a later date.
@@ -19,7 +18,7 @@ UhRC_t init( void );
 
     @return UhRC_t returns a return code.
 */
-UhRC_t register_archetype( Archetype archetype, std::string archetype_name );
+//Rc_t register_archetype( Archetype archetype, std::string archetype_name );
 
 /**
     Register and entity with the archetype system.
@@ -29,15 +28,15 @@ UhRC_t register_archetype( Archetype archetype, std::string archetype_name );
 
     @return UhRC_t returns a return code.
 */
-UhRC_t register_entity( Entity entity, internal_entity_id* intern_entity_id, std::string archetype_name );
+Rc_t register_entity( Entity entity, internal_entity_id* intern_entity_id, std::string archetype_name );
 
 uint8_t* get_component_data_generic( internal_entity_id intern_entity_id, uint32_t component_id );
-UhRC_t remove_entity( Entity entity );
+Rc_t remove_entity( Entity entity );
 
 template<typename T>
 T* get_component_data( internal_entity_id id )
 {
-    return (T*)get_component_data_generic(id, Component_Manager::id<T>());
+    return (T*)get_component_data_generic(id, component_id<T>());
 }
 
 } //end namespace Archetype_Manager

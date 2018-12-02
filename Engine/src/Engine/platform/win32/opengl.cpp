@@ -21,7 +21,7 @@ PFNGLBINDVERTEXARRAYPROC             glBindVertexArray;
 PFNGLENABLEVERTEXATTRIBARRAYPROC   glEnableVertexAttribArray;
 PFNGLDISABLEVERTEXATTRIBARRAYPROC    glDisableVertexAttribArray;
 PFNGLVERTEXATTRIBPOINTERPROC         glVertexAttribPointer;
-PFNWGLCHOOSEPIXELFORMATARBPROC   wglChoosePixelFormatARB;
+PFNWGLCHOOSEPIXELFORMATARBPROC   wglChoosePixelFormatARB = NULL;
 PFNWGLCREATECONTEXTATTRIBSARBPROC    wglCreateContextAttribsARB;
 PFNGLGENBUFFERSPROC              glGenBuffers;
 PFNGLDELETEBUFFERSPROC           glDeleteBuffers;
@@ -208,6 +208,7 @@ int load_opengl_extensions()
     if ( !RegisterClassEx(&wc) ) {
         LOG_ERROR("Failed To Register The Window Class.");
         DWORD dw = GetLastError();
+        UNUSED_ARG(dw);
         return 1;
     }
 
@@ -286,6 +287,8 @@ int load_opengl_extensions()
 
 void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc )
 {
+    load_opengl_extensions();
+
 	int attributeListInt[30];
 	int pixelFormat[1];
 	unsigned int formatCount;
@@ -361,6 +364,7 @@ void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc )
 		LOG_ERROR("Failed to set pixel format");
 		return;
 	}
+
 	// Set the 4.0 version of OpenGL in the attribute list.
 	attributeList[0] = WGL_CONTEXT_MAJOR_VERSION_ARB;
     attributeList[1] = 3;
@@ -406,6 +410,5 @@ void init_opengl( HDC* hDC, HWND* hWnd, HGLRC* hglrc )
 		UH_LOG("Ext " << i << " " <<extension << " extension");
 	}
 #endif
-
     return;
 }
