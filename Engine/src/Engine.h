@@ -87,22 +87,7 @@ void register_component( void )
     component_info temp_comp;
     temp_comp.create_function = component_create<T>;
     temp_comp.size = sizeof(T);
-    #if 0
-    switch (typeid(T)) {
-    case typeid(Transform): {
-        type_idx_info<T>::id = TRANSFORM_COMP;
-    } break;
-    case typeid(Mesh_Handle): {
-        type_idx_info<T>::id = MESH_HANDLE_COMP;
-    } break;
-    case typeid(Shader_ID): {
-        type_idx_info<T>::id = SHADER_ID_COMP;
-    } break;
-    default: {
-        type_idx_info<T>::id = get_max_components();
-    }
-    }
-    #endif
+
     if ( typeid(T) == typeid(Transform) ) {
         type_idx_info<T>::id = TRANSFORM_COMP;
     } else if ( typeid(T) == typeid(Mesh_Handle) ) {
@@ -112,6 +97,7 @@ void register_component( void )
     } else {
         type_idx_info<T>::id = get_max_components();
     }
+
     register_component_info(temp_comp);
     //LOG("Registered Component: " << typeid(T).name() << " with ID: " << type_idx_info<T>::id << " sizeof " << temp_comp.size);
 }

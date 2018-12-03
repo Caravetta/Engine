@@ -8,7 +8,7 @@
 #include "archetype_manager.h"
 #include "font_manager.h"
 #include "job_manager.h"
-#include "Entity_Manager.h"
+#include "entity_manager.h"
 #include "worker_manager.h"
 #include "mesh_manager.h"
 
@@ -38,11 +38,31 @@ Rc_t init( engine_config_t* engine_config )
     engine_data->active_camera = NULL;
 
     //TODO(JOSH): need to check the rc from the init functions
-    Job_Manager::init();
-    Worker_Manager::init();
-    Entity_Manager::init();
-    Archetype_Manager::init();
-    Mesh_Manager::init();
+    rc = Job_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
+    rc = Worker_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
+    rc = Entity_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
+    rc = Archetype_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
+    rc = Mesh_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
     Font_Manager::get_instance();
 
     return SUCCESS;

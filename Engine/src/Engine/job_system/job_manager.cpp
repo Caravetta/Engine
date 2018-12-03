@@ -63,10 +63,12 @@ Rc_t init( void )
     job_manager._job_data_vec.resize(MAX_JOB_QUEUE_SIZE);
     job_manager._job_handle_vec.resize(MAX_JOB_QUEUE_SIZE);
     job_manager._job_queue.data.resize(MAX_JOB_QUEUE_SIZE);
-        for (uint64_t ii = 0; ii < job_manager._job_handle_vec.size(); ii++) {
-                job_manager._job_handle_vec[ii].active = HANDLE_SET_NON_ACTIVE;
-                job_manager._job_handle_vec[ii].index = ii;
-        }
+
+    for (uint64_t ii = 0; ii < job_manager._job_handle_vec.size(); ii++) {
+            job_manager._job_handle_vec[ii].active = HANDLE_SET_NON_ACTIVE;
+            job_manager._job_handle_vec[ii].index = ii;
+    }
+
     return SUCCESS;
 }
 
@@ -105,14 +107,10 @@ Job_Handle get_job_handle( void )
 
 Rc_t register_job( Job_Handle job_handle, std::function<void()> execute )
 {
-    //EnterCriticalSection(&job_manager._job_queue.lock);
-    //EnterCriticalSection(&job_manager._job_data_lock);
     get_lock(&job_manager._job_queue.lock);
     get_lock(&job_manager._job_data_lock);
 
     if ( job_manager._job_queue.full ) {
-        //LeaveCriticalSection(&job_manager._job_data_lock);
-        //LeaveCriticalSection(&job_manager._job_queue.lock);
         release_lock(&job_manager._job_data_lock);
         release_lock(&job_manager._job_queue.lock);
         CHECK_INFO( 0, "Run out of room in the Job queue");
@@ -134,8 +132,6 @@ Rc_t register_job( Job_Handle job_handle, std::function<void()> execute )
         job_manager._job_queue.full = true;
     }
 
-    //LeaveCriticalSection(&job_manager._job_data_lock);
-    //LeaveCriticalSection(&job_manager._job_queue.lock);
     release_lock(&job_manager._job_data_lock);
     release_lock(&job_manager._job_queue.lock);
 
@@ -146,20 +142,16 @@ bool is_job_complete( Job_Handle job_handle )
 {
     bool is_complete = false;
 
-    //EnterCriticalSection(&job_manager._job_data_lock);
     get_lock(&job_manager._job_data_lock);
     if ( job_manager._job_data_vec[job_handle.index].parts == job_manager._job_data_vec[job_handle.index].complete_parts ) {
         is_complete = true;
     }
-    //LeaveCriticalSection(&job_manager._job_data_lock);
     release_lock(&job_manager._job_data_lock);
 
     if ( is_complete == true ) {
-    //EnterCriticalSection(&job_manager._job_handle_lock);
-    get_lock(&job_manager._job_handle_lock);
-    job_manager._free_handle_vec.push_back(job_handle.index);
-    //LeaveCriticalSection(&job_manager._job_handle_lock);
-    release_lock(&job_manager._job_handle_lock);
+        get_lock(&job_manager._job_handle_lock);
+        job_manager._free_handle_vec.push_back(job_handle.index);
+        release_lock(&job_manager._job_handle_lock);
     }
 
     return is_complete;
@@ -167,10 +159,8 @@ bool is_job_complete( Job_Handle job_handle )
 
 bool get_next_job( job_node_t* job_node )
 {
-    //EnterCriticalSection(&job_manager._job_queue.lock);
     get_lock(&job_manager._job_queue.lock);
     if ( job_manager._job_queue.empty ) {
-        //LeaveCriticalSection(&job_manager._job_queue.lock);
         release_lock(&job_manager._job_queue.lock);
         return false;
     }
@@ -187,7 +177,6 @@ bool get_next_job( job_node_t* job_node )
         job_manager._job_queue.empty = true;
     }
 
-    //LeaveCriticalSection(&job_manager._job_queue.lock);
     release_lock(&job_manager._job_queue.lock);
 
     return true;
@@ -195,10 +184,8 @@ bool get_next_job( job_node_t* job_node )
 
 Rc_t complete_job( Job_Handle job_handle )
 {
-    //EnterCriticalSection(&job_manager._job_data_lock);
     get_lock(&job_manager._job_data_lock);
     job_manager._job_data_vec[job_handle.index].complete_parts++;
-    //LeaveCriticalSection(&job_manager._job_data_lock);
     release_lock(&job_manager._job_data_lock);
 
     return SUCCESS;
