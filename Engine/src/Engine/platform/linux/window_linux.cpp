@@ -71,16 +71,25 @@ Rc_t _init( struct platform_window_t* window )
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+
     window->handle = SDL_CreateWindow(window->title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                       window->width, window->height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     CHECK_SDL_ERROR();
     if ( window->handle == NULL ) {
         LOG_ERROR("Failed to create window");
+        return ENGINE_ERROR;
     }
 
     window->context = SDL_GL_CreateContext(window->handle);
     CHECK_SDL_ERROR();
+
+    glewExperimental = true;
+    if ( glewInit() != GLEW_OK ) {
+        LOG_ERROR("Failed to map OpenGL function");
+        return ENGINE_ERROR;
+    }
 
     return SUCCESS;
 }
