@@ -2,7 +2,10 @@
 #define __ENGINE_TYPES_H__
 
 #include <stdint.h>
+#include <vector>
 #include <emmintrin.h>
+#include <iostream>
+#include <unordered_map>
 
 #ifdef WINDOWS
     #ifdef ENGINE_EXPORT
@@ -18,7 +21,11 @@
 
 namespace Engine {
 
-/********** Engine Return Codes ***********/
+/******************************************/
+/*                                        */
+/*          Engine Return Codes           */
+/*                                        */
+/******************************************/
 
 typedef enum {
     SUCCESS               = 0,
@@ -28,10 +35,17 @@ typedef enum {
     ARCHETYPE_EXISTS,
     ARCHETYPE_DOES_NOT_EXIST,
     MEMORY_ALLOC_FAILED,
-    ENTITY_NOT_VALID
+    INVALID_EVENT_NAME,
+    NOT_IMPLEMENTED,
+    ENTITY_NOT_VALID,
+    FILE_ERROR,
 } Rc_t;
 
-/********* Math **********/
+/******************************************/
+/*                                        */
+/*          Math Types                    */
+/*                                        */
+/******************************************/
 
 class ENGINE_API Vector2f {
 public:
@@ -116,8 +130,11 @@ public:
     void translate( Vector3f* vec );
     void rotate( float angle, Vector3f* axis );
     void scale( float scale );
+    Matrix4f generate_transform( Vector3f scale, Vector3f position );
 
     friend ENGINE_API std::ostream& operator<<( std::ostream &strm, const Matrix4f &a );
+
+    Matrix4f operator*( const Matrix4f &other ) const;
 };
 
 /************* Asset System **********************/
@@ -142,7 +159,11 @@ public:
     virtual void load( std::string file_path ) = 0;
 };
 
-/************ Entity System *******************/
+/******************************************/
+/*                                        */
+/*          Entity Type                   */
+/*                                        */
+/******************************************/
 
 typedef struct { //TODO(JOSH): hide this in the engine
     union {
@@ -155,7 +176,11 @@ typedef struct { //TODO(JOSH): hide this in the engine
     };
 } Entity;
 
-/************ Component System ****************/
+/******************************************/
+/*                                        */
+/*          Component Type                */
+/*                                        */
+/******************************************/
 
 #define NON_VALID_ID 4294967295
 
@@ -163,6 +188,9 @@ typedef enum {
     TRANSFORM_COMP = 0,
     MESH_HANDLE_COMP,
     SHADER_ID_COMP,
+    TEXT_COMP,
+    FONT_SETTINGS_COMP,
+    TEXTURE_COMP,
     BASE_COMPONENT_COUNT
 } base_comp_types_t;
 
@@ -173,10 +201,23 @@ Rc_t component_create( uint8_t* memory )
     return SUCCESS;
 }
 
+template<typename T>
+Rc_t component_copy( uint8_t* source, uint8_t* dest )
+{
+    T* source_p = (T*)source;
+    T* dest_p = (T*)dest;
+
+    *dest_p = *source_p;
+
+    return SUCCESS;
+}
+
 typedef Rc_t (*component_create_function)( uint8_t* memory );
+typedef Rc_t (*component_copy_function)( uint8_t* source, uint8_t* dest );
 
 struct component_info {
-    component_create_function create_function;
+    component_create_function   create_function;
+    component_copy_function     copy_function;
     size_t size;
 };
 
@@ -189,7 +230,11 @@ struct type_idx_info
 template <typename T>
 uint32_t type_idx_info<T>::id{NON_VALID_ID};
 
-/************ Archetype System ****************/
+/******************************************/
+/*                                        */
+/*          Archetype Type                */
+/*                                        */
+/******************************************/
 
 class ENGINE_API Archetype {
 private:
@@ -208,7 +253,6 @@ public:
 template<typename T>
 uint32_t component_id()
 {
-    //CHECK_INFO( type_idx_info<T>::id != NON_VALID_ID, "This component (" << typeid(T).name() << ") has not been registered" );
     return type_idx_info<T>::id;
 }
 
@@ -224,7 +268,11 @@ bool Archetype::has_component()
     return has_component(component_id<T>());
 }
 
-/************ System Type *******************/
+/********************************************/
+/*                                          */
+/*            System Type                   */
+/*                                          */
+/********************************************/
 
 typedef std::vector<uint8_t> Array;
 
@@ -317,24 +365,7 @@ T* System::get_data_at( uint64_t idx )
 template<typename T>
 std::vector<T*>* System::get_data_vec()
 {
-    //START_TIME_BLOCK(system_get_data_vec);
-    uint64_t comp_id = component_id<T>();
-#if 0
-    std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(comp_id);
-    if ( comp_idx != comp_map.end() ) {
-        //CHECK_INFO( comp_id == component_nodes[comp_idx->second].component_id,
-        //            "comp_id:" << comp_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
-
-        //END_TIME_BLOCK(system_get_data_vec);
-        return (std::vector<T*>*)&component_nodes[comp_idx->second].packed_data;
-    }
-
-    //CHECK_INFO( comp_idx == comp_map.end(), "This comp ID:" << comp_id << " is not tracked by " << name );
-
-    //END_TIME_BLOCK(system_get_data_vec);
-    return NULL;
-#endif
-    return (std::vector<T*>*)get_data_vec(comp_id);
+    return (std::vector<T*>*)get_data_vec(component_id<T>());
 }
 
 template<typename T>
@@ -349,6 +380,12 @@ void System::add_component()
     add_component(component_id<T>(), COMPONENT_READ_AND_WRITE);
 }
 
+/******************************************/
+/*                                        */
+/*          Default Systems               */
+/*                                        */
+/******************************************/
+
 class ENGINE_API Mesh_Render_System : public System {
 public:
     Mesh_Render_System();
@@ -357,7 +394,19 @@ public:
     void shutdown();
 };
 
-/************ Camera System *******************/
+class ENGINE_API Text_Render_System : public System {
+public:
+    Text_Render_System();
+    void init();
+    void update();
+    void shutdown();
+};
+
+/******************************************/
+/*                                        */
+/*          Camera Type                   */
+/*                                        */
+/******************************************/
 
 class ENGINE_API Camera {
 public:
@@ -388,7 +437,15 @@ void set_ortho_matrix( float width, float height );
 void look_at( float eyeX, float eyeY, float eyeZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ );
 };
 
-/******************* Mesh Type ********************/
+/******************************************/
+/*                                        */
+/*        Default Component Types         */
+/*                                        */
+/******************************************/
+
+struct ENGINE_API Texture {
+    uint32_t id;
+};
 
 typedef struct { //TODO(JOSH): hide this in the engine
     union {
@@ -409,8 +466,7 @@ struct ENGINE_API Mesh {
     float* normals;
     uint32_t textures_count;
     float* textures;
-    Mesh_Handle handle; //TODO(JOSH): need to implement this
-    //vao_t* vao;
+    Mesh_Handle handle;
 
     Mesh();
 
@@ -418,18 +474,32 @@ struct ENGINE_API Mesh {
     Rc_t deserialize( std::ifstream* in_stream );
 };
 
-/******************* Transform Type ****************/
-
 struct ENGINE_API Transform {
     Vector3f position;
     Vector3f scale;
     Vector3f rotation;
 };
 
-/******************* Shader Type ****************/
-
 struct ENGINE_API Shader_ID {
     uint32_t program_id;
+};
+
+typedef struct { //TODO(JOSH): hide this in the engine
+    union {
+        struct {
+            uint64_t index  : 32;
+            uint64_t phase  : 32;
+        };
+        uint64_t id;
+    };
+} Font_Handle;
+
+typedef std::string Text;
+
+struct ENGINE_API Font_Settings {
+    uint16_t size;
+    Font_Handle font_handle;
+    uint16_t string_new_line_pad;
 };
 
 } // end namespace Engine

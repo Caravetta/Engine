@@ -9,21 +9,13 @@
 #include <Engine_Assets.h>
 #include <Engine_Types.h>
 
-#ifdef WINDOWS
-    #ifdef ENGINE_EXPORT
-        #define ENGINE_API __declspec(dllexport)
-    #else
-        #define ENGINE_API __declspec(dllimport)
-    #endif
-#elif LINUX
-    #define ENGINE_API __attribute__ ((visibility ("default")))
-#else
-    #define ENGINE_API
-#endif
-
 namespace Engine {
 
-/********** Basic Engine calls **********/
+/****************************************/
+/*                                      */
+/*         Basic Engine Calls           */
+/*                                      */
+/****************************************/
 
 typedef struct {
     uint16_t    window_width;
@@ -37,7 +29,11 @@ ENGINE_API void shutdown();
 ENGINE_API void set_active_camera( Camera* camera );
 ENGINE_API float get_delta_time();
 
-/************* Asset System **********************/
+/****************************************/
+/*                                      */
+/*         Asset Engine Calls           */
+/*                                      */
+/****************************************/
 
 ENGINE_API Rc_t register_asset( std::string asset_name, std::string file_path, Asset* asset );
 ENGINE_API Asset* get_asset( Asset_Handle handle );
@@ -68,13 +64,21 @@ T* get_asset_by_name( std::string asset_name )
     return get_asset_with_handle<T>(asset_handle);
 }
 
-/************ Entity System *******************/
+/****************************************/
+/*                                      */
+/*         Entity Engine Calls          */
+/*                                      */
+/****************************************/
 
 ENGINE_API Entity create_entity( std::string archetype_name );
 ENGINE_API Rc_t delete_entity( Entity entity );
 ENGINE_API bool is_valid_entity( Entity entity );
 
-/************ Component System ****************/
+/****************************************/
+/*                                      */
+/*      Component Engine Calls          */
+/*                                      */
+/****************************************/
 
 ENGINE_API uint32_t get_max_components();
 ENGINE_API uint64_t get_component_size( uint32_t component_id );
@@ -86,50 +90,40 @@ void register_component( void )
 {
     component_info temp_comp;
     temp_comp.create_function = component_create<T>;
+    temp_comp.copy_function = component_copy<T>;
     temp_comp.size = sizeof(T);
-    #if 0
-    switch (typeid(T)) {
-    case typeid(Transform): {
-        type_idx_info<T>::id = TRANSFORM_COMP;
-    } break;
-    case typeid(Mesh_Handle): {
-        type_idx_info<T>::id = MESH_HANDLE_COMP;
-    } break;
-    case typeid(Shader_ID): {
-        type_idx_info<T>::id = SHADER_ID_COMP;
-    } break;
-    default: {
-        type_idx_info<T>::id = get_max_components();
-    }
-    }
-    #endif
+
     if ( typeid(T) == typeid(Transform) ) {
         type_idx_info<T>::id = TRANSFORM_COMP;
     } else if ( typeid(T) == typeid(Mesh_Handle) ) {
         type_idx_info<T>::id = MESH_HANDLE_COMP;
     } else if ( typeid(T) == typeid(Shader_ID) ) {
         type_idx_info<T>::id = SHADER_ID_COMP;
+    } else if ( typeid(T) == typeid(Text) ) {
+        type_idx_info<T>::id = TEXT_COMP;
+    } else if ( typeid(T) == typeid(Font_Settings) ) {
+        type_idx_info<T>::id = FONT_SETTINGS_COMP;
+    } else if ( typeid(T) == typeid(Texture) ) {
+        type_idx_info<T>::id = TEXTURE_COMP;
     } else {
         type_idx_info<T>::id = get_max_components();
     }
+
     register_component_info(temp_comp);
-    //LOG("Registered Component: " << typeid(T).name() << " with ID: " << type_idx_info<T>::id << " sizeof " << temp_comp.size);
 }
 
 template<typename T>
 Rc_t add_component( Entity entity )
 {
     //TODO(JOSH): need to implement.
-    //CHECK_INFO( 0, "entity_manager_add_component not implemented" );
-    return SUCCESS;
+    return NOT_IMPLEMENTED;
 }
 
 template<typename T>
 Rc_t remove_component( Entity entity )
 {
     //TODO(JOSH): need to implement.
-    //CHECK_INFO( 0, "entity_manager_remove_component not implemented" );
-    return SUCCESS;
+    return NOT_IMPLEMENTED;
 }
 
 template<typename T>
@@ -145,7 +139,22 @@ bool is_component_set( Entity entity )
     return false;
 }
 
-/************ Systems ****************/
+/****************************************/
+/*                                      */
+/*         Event Engine Calls           */
+/*                                      */
+/****************************************/
+
+ENGINE_API Rc_t create_event( std::string event_name );
+ENGINE_API Rc_t subscribe_to_event( std::string event_name, void (*callback)(void*, size_t) );
+//ENGINE_API Rc_t unsubscribe_to_event(); //TODO(JOSH): need to implement
+ENGINE_API Rc_t broadcast_event( std::string event_name, void* data, size_t data_size );
+
+/****************************************/
+/*                                      */
+/*        System Engine Calls           */
+/*                                      */
+/****************************************/
 
 void ENGINE_API register_generic_system( System* system );
 
@@ -155,18 +164,39 @@ void register_system( void )
     register_generic_system( new T );
 }
 
-/************ Archetype System ****************/
+/****************************************/
+/*                                      */
+/*      Archetype Engine Calls          */
+/*                                      */
+/****************************************/
 
 ENGINE_API Rc_t register_archetype( Archetype archetype, std::string archetype_name );
 
-/******************* Mesh Type ********************/
+/****************************************/
+/*                                      */
+/*         Mesh Engine Calls            */
+/*                                      */
+/****************************************/
 
 ENGINE_API Mesh_Handle load_to_graphics_api( Mesh* mesh );
 ENGINE_API Rc_t deload_from_graphics_api( Mesh_Handle handle );
 
-/************ Shader System ****************/
+/****************************************/
+/*                                      */
+/*         Shader Engine Calls          */
+/*                                      */
+/****************************************/
 
 ENGINE_API void create_shader_program( unsigned int vertex_id, unsigned int fragment_id, unsigned int* program_id );
+
+/****************************************/
+/*                                      */
+/*          Font Engine Calls           */
+/*                                      */
+/****************************************/
+
+ENGINE_API uint32_t get_font_texture_id( Font_Handle handle, uint16_t font_size );
+ENGINE_API Mesh_Handle generate_text_mesh( Text* text, Font_Settings* font_settings );
 
 } // end namespace Engine
 

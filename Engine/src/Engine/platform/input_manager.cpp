@@ -1,4 +1,5 @@
 #include "input_manager.h"
+#include "event_system.h"
 
 namespace Engine {
 
@@ -8,7 +9,7 @@ Input_Manager* Input_Manager::instance = NULL;
 
 Input_Manager::Input_Manager()
 {
-    //TODO: need to come up with a good way to start all the key events
+    //TODO(JOSH): need to come up with a good way to start all the key events
 
     key_lut[32] = "KEY_SPACE";
     key_lut[39] = "KEY_APOSTROPHE";
@@ -133,12 +134,12 @@ Input_Manager::Input_Manager()
 
     for ( int i = 0; i < 350; i++ ) {
         if ( !key_lut[i].empty() ) {
-            create_event_id(key_lut[i] + "_PRESSED");
-            create_event_id(key_lut[i] + "_RELEASED");
+            Event_Manager::create_event_id(key_lut[i] + "_PRESSED");
+            Event_Manager::create_event_id(key_lut[i] + "_RELEASED");
         }
     }
 
-    create_event_id(MOUSE_POS_CHANGE);
+    Event_Manager::create_event_id(MOUSE_POS_CHANGE);
 }
 
 Input_Manager* Input_Manager::get_instance()
@@ -152,13 +153,13 @@ Input_Manager* Input_Manager::get_instance()
 
 void Input_Manager::process_key_down( uint16_t pressed_key )
 {
-    post_event(key_lut[pressed_key] + "_PRESSED");
+    Event_Manager::broadcast_event(key_lut[pressed_key] + "_PRESSED", NULL, 0);
     return;
 }
 
 void Input_Manager::process_key_up( uint16_t released_key )
 {
-    post_event(key_lut[released_key] + "_RELEASED");
+    Event_Manager::broadcast_event(key_lut[released_key] + "_RELEASED", NULL, 0);
     return;
 }
 
@@ -167,7 +168,7 @@ void Input_Manager::process_mouse_move( uint64_t x_pos, uint64_t y_pos )
     UNUSED_ARG(x_pos);
     UNUSED_ARG(y_pos);
 
-    post_event(MOUSE_POS_CHANGE);
+    Event_Manager::broadcast_event(MOUSE_POS_CHANGE, NULL, 0);
 }
 
 } // end namespace core

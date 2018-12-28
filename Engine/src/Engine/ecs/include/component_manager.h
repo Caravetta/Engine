@@ -10,61 +10,12 @@
 #include "component.h"
 #include "Engine.h"
 
-//#define NON_VALID_ID 4294967295
-
-#if 0
-template<typename T>
-UhRC_t component_create( uint8_t* memory )
-{
-    new (memory) T;
-    return SUCCESS;
-}
-#endif
-
 namespace Engine {
 namespace Component_Manager {
 
-//typedef UhRC_t (*component_create_function)( uint8_t* memory );
-
-#if 0
-struct component_info {
-    component_create_function create_function;
-    size_t size;
-};
-
-template <typename T>
-struct type_idx_info
-{
-    static uint32_t id;
-};
-template <typename T>
-uint32_t type_idx_info<T>::id{NON_VALID_ID};
-
-uint32_t get_max_components();
-uint64_t get_component_size( uint32_t component_id );
-#endif
 component_create_function get_component_create( uint32_t component_id );
-#if 0
-void register_component_info( component_info comp_info );
+component_copy_function get_component_copy( uint32_t component_id );
 
-template<typename T>
-uint32_t id()
-{
-    CHECK_INFO( type_idx_info<T>::id != NON_VALID_ID, "This component (" << typeid(T).name() << ") has not been registered" );
-    return type_idx_info<T>::id;
-}
-
-template<typename T>
-void register_component( void )
-{
-    component_info temp_comp;
-    temp_comp.create_function = component_create<T>;
-    temp_comp.size = sizeof(T);
-    type_idx_info<T>::id = get_max_components();
-    register_component_info(temp_comp);
-    LOG("Registered Component: " << typeid(T).name() << " with ID: " << type_idx_info<T>::id << " sizeof " << temp_comp.size);
-}
-#endif
 } // end namespace Component_Manager
 } // end namespace Engine
 

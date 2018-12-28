@@ -29,9 +29,9 @@ Rc_t init( void );
     @return UhRC_t returns a return code.
 */
 Rc_t register_entity( Entity entity, internal_entity_id* intern_entity_id, std::string archetype_name );
-
-uint8_t* get_component_data_generic( internal_entity_id intern_entity_id, uint32_t component_id );
-Rc_t remove_entity( Entity entity );
+void update_entity_counts();
+uint8_t* get_component_data_generic( internal_entity_id intern_entity_id, u32 component_id );
+Rc_t remove_entity( internal_entity_id intern_entity_id );
 
 template<typename T>
 T* get_component_data( internal_entity_id id )

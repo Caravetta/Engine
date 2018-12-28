@@ -158,20 +158,20 @@ namespace Engine {
 #define KEY_R_RELEASED "KEY_R_RELEASED"
 #define KEY_F_RELEASED "KEY_F_RELEASED"
 
-    class Input_Manager : public IEMS {
-    public:
-        static Input_Manager* get_instance();
-        void process_key_down( uint16_t pressed_key );
-        void process_key_up( uint16_t released_key );
-        void process_mouse_move( uint64_t x_pos, uint64_t y_pos );
-        Input_Manager();
+class Input_Manager {
+public:
+    static Input_Manager* get_instance();
+    void process_key_down( uint16_t pressed_key );
+    void process_key_up( uint16_t released_key );
+    void process_mouse_move( uint64_t x_pos, uint64_t y_pos );
+    Input_Manager();
 
-    private:
-        std::string key_lut[350];
+private:
+    std::string key_lut[350];
 
-    protected:
-        static Input_Manager* instance;
-    };
+protected:
+    static Input_Manager* instance;
+};
 
 } //end namespace Engine
 

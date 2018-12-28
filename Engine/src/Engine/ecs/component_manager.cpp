@@ -13,6 +13,12 @@ component_create_function get_component_create( uint32_t component_id )
     return component_info_vec[component_id].create_function;
 }
 
+component_copy_function get_component_copy( uint32_t component_id )
+{
+    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
+    return component_info_vec[component_id].copy_function;
+}
+
 } // end namespace Component_Manager
 
 uint32_t get_max_components()

@@ -16,6 +16,8 @@ namespace Entity_Manager {
 
 Rc_t init( void );
 internal_entity_id get_internal_id( Entity entity );
+internal_entity_id* get_internal_id_pointer( Entity entity );
+void update();
 
 } // end namespace Entity_Manager
 } // end namespace Engine

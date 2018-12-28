@@ -1,6 +1,7 @@
 #include <math.h>
 #include "Engine.h"
 #include "math_utils.h"
+#include "core_common.h"
 
 namespace Engine {
 
@@ -110,6 +111,7 @@ void Camera::set_projection_matrix( float width, float height )
     float x_scale = y_scale / aspectRatio;
     float frustum_length = far_plane - near_plane;
 
+#if 1
     projection_matrix.identity();
     projection_matrix.m00 = x_scale;
     projection_matrix.m11 = y_scale;
@@ -117,6 +119,14 @@ void Camera::set_projection_matrix( float width, float height )
     projection_matrix.m23 = -1;
     projection_matrix.m32 = -((2 * near_plane * far_plane) / frustum_length);
     projection_matrix.m33 = 0;
+#endif
+#if 0
+    projection_matrix.m00 = x_scale;
+    projection_matrix.m11 = y_scale;
+    projection_matrix.m22 = -(far_plane + near_plane) / (far_plane - near_plane);
+    projection_matrix.m23 = -(2 * far_plane * near_plane)/ (far_plane - near_plane);
+    projection_matrix.m32 = -1;
+#endif
 }
 
 #if 0

@@ -145,6 +145,24 @@ void Matrix4f::scale( float scale )
 #endif
 }
 
+Matrix4f Matrix4f::generate_transform( Vector3f scale, Vector3f position )
+{
+    Matrix4f scale_mat;
+    scale_mat.identity();
+    Matrix4f position_mat;
+    position_mat.identity();
+
+    scale_mat.m00 = scale.x;
+    scale_mat.m11 = scale.y;
+    scale_mat.m22 = scale.z;
+
+    position_mat.m03 = position.x;
+    position_mat.m13 = position.y;
+    position_mat.m23 = position.z;
+
+    return position_mat * scale_mat;
+}
+
 std::ostream& operator<<(std::ostream &strm, const Matrix4f &a)
 {
     strm << "mat4: ( " << a.m00 << " , " << a.m01 << " , " << a.m02 << " , " << a.m03 << " )\n";
@@ -153,6 +171,33 @@ std::ostream& operator<<(std::ostream &strm, const Matrix4f &a)
     strm << std::setw (55) << "( " << a.m30 << " , " << a.m31 << " , " << a.m32 << " , " << a.m33 << " )\n";
 
     return strm;
+}
+
+Matrix4f Matrix4f::operator*( const Matrix4f &other ) const
+{
+    Matrix4f tmp;
+
+    tmp.m00 = (m00 * other.m00) + (m01 * other.m10) + (m02 * other.m20) + (m03 * other.m30);
+    tmp.m01 = (m00 * other.m01) + (m01 * other.m11) + (m02 * other.m21) + (m03 * other.m31);
+    tmp.m02 = (m00 * other.m02) + (m01 * other.m12) + (m02 * other.m22) + (m03 * other.m32);
+    tmp.m03 = (m00 * other.m03) + (m01 * other.m13) + (m02 * other.m23) + (m03 * other.m33);
+
+    tmp.m10 = (m10 * other.m00) + (m11 * other.m10) + (m12 * other.m20) + (m13 * other.m30);
+    tmp.m11 = (m10 * other.m01) + (m11 * other.m11) + (m12 * other.m21) + (m13 * other.m31);
+    tmp.m12 = (m10 * other.m02) + (m11 * other.m12) + (m12 * other.m22) + (m13 * other.m32);
+    tmp.m13 = (m10 * other.m03) + (m11 * other.m13) + (m12 * other.m23) + (m13 * other.m33);
+
+    tmp.m20 = (m20 * other.m00) + (m21 * other.m10) + (m22 * other.m20) + (m23 * other.m30);
+    tmp.m21 = (m20 * other.m01) + (m21 * other.m11) + (m22 * other.m21) + (m23 * other.m31);
+    tmp.m22 = (m20 * other.m02) + (m21 * other.m12) + (m22 * other.m22) + (m23 * other.m32);
+    tmp.m23 = (m20 * other.m03) + (m21 * other.m13) + (m22 * other.m23) + (m23 * other.m33);
+
+    tmp.m30 = (m30 * other.m00) + (m31 * other.m10) + (m32 * other.m20) + (m33 * other.m30);
+    tmp.m31 = (m30 * other.m01) + (m31 * other.m11) + (m32 * other.m21) + (m33 * other.m31);
+    tmp.m32 = (m30 * other.m02) + (m31 * other.m12) + (m32 * other.m22) + (m33 * other.m32);
+    tmp.m33 = (m30 * other.m03) + (m31 * other.m13) + (m32 * other.m23) + (m33 * other.m33);
+
+    return tmp;
 }
 
 } //end namespace Engine

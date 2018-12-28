@@ -11,6 +11,7 @@
 #include "entity_manager.h"
 #include "worker_manager.h"
 #include "mesh_manager.h"
+#include "event_system.h"
 
 namespace Engine {
 
@@ -29,7 +30,10 @@ Rc_t init( engine_config_t* engine_config )
         return ENGINE_ERROR;
     }
 
-    Rc_t rc = Window::create(engine_config->window_width, engine_config->window_height, engine_config->window_title);
+
+    Rc_t rc = Event_Manager::init();
+
+    rc = Window::create(engine_config->window_width, engine_config->window_height, engine_config->window_title);
     if ( rc != SUCCESS ) {
         LOG_ERROR("Failed to create window");
         return ENGINE_ERROR;
@@ -38,6 +42,7 @@ Rc_t init( engine_config_t* engine_config )
     engine_data->active_camera = NULL;
 
     //TODO(JOSH): need to check the rc from the init functions
+
     rc = Job_Manager::init();
     if ( rc != SUCCESS ) {
         return ENGINE_ERROR;
@@ -63,7 +68,7 @@ Rc_t init( engine_config_t* engine_config )
         return ENGINE_ERROR;
     }
 
-    Font_Manager::get_instance();
+    Font_Manager::init();
 
     return SUCCESS;
 }
@@ -77,7 +82,7 @@ void run()
 
         Window::update();
 
-        IEMS::process_event();
+        Event_Manager::process_event();
         System_Manager::update_systems();
 
         //TODO(JOSH): move upading the dims to an event based on window resize
@@ -93,6 +98,8 @@ void run()
         render( engine_data->active_camera, (int)frame_size.x, (int)frame_size.y );
 
         Window::swap_buffers();
+
+        Entity_Manager::update();
     }
 
 }
@@ -110,6 +117,21 @@ void set_active_camera( Camera* camera )
 float get_delta_time()
 {
     return engine_data->frame_time.get_delta();
+}
+
+Rc_t create_event( std::string event_name )
+{
+    return Event_Manager::create_event_id(event_name);
+}
+
+Rc_t subscribe_to_event( std::string event_name, void (*callback)(void*, size_t) )
+{
+    return Event_Manager::subscribe_to_event(event_name, callback);
+}
+
+Rc_t broadcast_event( std::string event_name, void* data, size_t data_size )
+{
+    return Event_Manager::broadcast_event(event_name, data, data_size);
 }
 
 } // end namespace Engine

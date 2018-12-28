@@ -2,24 +2,16 @@
 #define __FONT_MANAGER_H__
 
 #include <string>
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include "core_common.h"
+#include "Engine_Types.h"
 
 namespace Engine {
+namespace Font_Manager {
 
-class Font_Manager {
-private:
-    static Font_Manager* instance;
+void init();
+Font_Handle load_font_file( std::string file_path );
+uint32_t get_texture_id( Font_Handle handle, uint16_t font_size );
 
-    void init();
-
-public:
-    FT_Library ft;
-
-    static Font_Manager* get_instance();
-};
-
+} // end namespace Font_Manager
 } // end namespace Engine
 
 #endif //__FONT_MANAGER_H__

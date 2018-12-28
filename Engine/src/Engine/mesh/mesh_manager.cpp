@@ -83,6 +83,8 @@ Mesh_Handle load_to_graphics_api( Mesh* mesh )
     // create a vao for this mesh
     vao_t* vao = &Mesh_Manager::mesh_manager->vaos[handle_idx];
 
+
+    LOG("vert count " << mesh->vertices_count << " norm count " << mesh->normals_count);
     create_vao(vao);
     bind_vao(vao);
     create_index_buffer(vao, (int*)mesh->indices, (int)mesh->indices_count, STATIC_DRAW); //TODO: need to get ride of this cast

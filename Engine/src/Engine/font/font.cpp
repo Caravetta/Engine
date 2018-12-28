@@ -1,4 +1,5 @@
 #include <algorithm>
+#include "Engine.h"
 #include "font.h"
 #include "font_manager.h"
 #include "platform.h"
@@ -12,9 +13,9 @@ Font::Font()
 
 }
 
-void Font::load_font_file( std::string file_path )
+void Font::load_font_file( std::string file_path, FT_Library* ft )
 {
-    if ( FT_New_Face(Font_Manager::get_instance()->ft, file_path.c_str(), 0, &face) ) {
+    if ( FT_New_Face(*ft, file_path.c_str(), 0, &face) ) {
          LOG_ERROR("Could not open font " << file_path);
     }
 
@@ -100,7 +101,8 @@ void Font::generate_atlas( uint16_t size )
             rowh = (std::max)(rowh, (uint16_t)g->bitmap.rows);
             ox += g->bitmap.width + 1;
     }
-
+    //LOG("HERE");
+    //glBindTexture(GL_TEXTURE_2D, 0);
     //int x = 0;
 
     font_data.push_back(tmp_vec);
@@ -113,6 +115,7 @@ void Font::generate_atlas( uint16_t size )
     texture_width_map.insert({ size, w});
     texture_height_map.insert({ size, h});
     texture_map.insert({ size, tex });
+    //LOG("ID " << tex);
 }
 
 Font::char_data_t* Font::generate_char_data( char value, uint16_t size )
@@ -131,12 +134,18 @@ Font::char_data_t* Font::generate_char_data( char value, uint16_t size )
 
 uint16_t Font::get_font_texture_id( uint16_t font_size )
 {
+#if 1
     std::unordered_map<uint16_t, uint16_t>::const_iterator ele = texture_map.find(font_size);
     if ( ele == texture_map.end() ) {
-        return 0;
+        // need to generate the font texture
+        generate_atlas(font_size);
+        ele = texture_map.find(font_size);
+        return ele->second;
     }
 
     return ele->second;
+#endif
+    return 0;
 }
 
 uint16_t Font::get_font_width( uint16_t font_size )
