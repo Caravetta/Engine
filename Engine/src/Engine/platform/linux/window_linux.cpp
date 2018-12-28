@@ -31,8 +31,17 @@ void platform_window_update( struct platform_window_t* platform_window )
     SDL_Event event;
 
     while ( SDL_PollEvent(&event) ) {
-        if ( event.type == SDL_QUIT ) {
+        switch( event.type ) {
+        case SDL_QUIT: {
             platform_window->is_closed = true;
+        } break;
+        case SDL_KEYDOWN: {
+            Input_Manager::get_instance()->process_key_down(event.key.keysym.sym);
+        } break;
+        case SDL_KEYUP: {
+            Input_Manager::get_instance()->process_key_up(event.key.keysym.sym);
+        } break;
+
         }
     }
 
