@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "core_common.h"
 #include "event_system.h"
+#include "platform.h"
 
 namespace Engine {
 

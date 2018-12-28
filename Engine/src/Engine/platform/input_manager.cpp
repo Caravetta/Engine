@@ -29,10 +29,10 @@ Input_Manager::Input_Manager()
     key_lut[57] = "KEY_9";
     key_lut[59] = "KEY_SEMICOLON";
     key_lut[61] = "KEY_EQUAL";
-    key_lut[65] = "KEY_A";
+    key_lut[A_KEY] = "KEY_A";
     key_lut[66] = "KEY_B";
     key_lut[67] = "KEY_C";
-    key_lut[68] = "KEY_D";
+    key_lut[D_KEY] = "KEY_D";
     key_lut[69] = "KEY_E";
     key_lut[70] = "KEY_F";
     key_lut[71] = "KEY_G";
@@ -47,11 +47,11 @@ Input_Manager::Input_Manager()
     key_lut[80] = "KEY_P";
     key_lut[81] = "KEY_Q";
     key_lut[82] = "KEY_R";
-    key_lut[83] = "KEY_S";
+    key_lut[S_KEY] = "KEY_S";
     key_lut[84] = "KEY_T";
     key_lut[85] = "KEY_U";
     key_lut[86] = "KEY_V";
-    key_lut[87] = "KEY_W";
+    key_lut[W_KEY] = "KEY_W";
     key_lut[88] = "KEY_X";
     key_lut[89] = "KEY_Y";
     key_lut[90] = "KEY_Z";

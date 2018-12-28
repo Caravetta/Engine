@@ -1,7 +1,6 @@
 
 include_list = ['src/',
                 'src/Engine/include/',
-                'src/Engine/application/include/',
                 'src/Engine/event_system/include/',
                 'src/Engine/platform/include/',
                 'src/Engine/ecs/include/',
@@ -19,7 +18,6 @@ include_list = ['src/',
 source_files = []
 
 source_files.extend(find_files('src/', '*.cpp', flat=True))
-source_files.extend(find_files('src/Engine/application/', '*.cpp'))
 source_files.extend(find_files('src/Engine/event_system/', '*.cpp'))
 source_files.extend(find_files('src/Engine/ecs/', '*.cpp'))
 source_files.extend(find_files('src/Engine/time/', '*.cpp'))

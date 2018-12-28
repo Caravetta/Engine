@@ -9,12 +9,14 @@
 #include "window_linux.h"
 #include "thread_linux.h"
 #include "utils_linux.h"
+#include "input_linux.h"
 
 #elif WINDOWS
 #include "window_win32.h"
 #include "thread_win32.h"
 #include "opengl.h"
 #include "utils_win32.h"
+#include "input_win32.h"
 #endif
 
 #endif //__PLATFORM_H__
