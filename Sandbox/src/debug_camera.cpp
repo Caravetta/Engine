@@ -1,5 +1,5 @@
 #include "debug_camera.h"
-
+#include <stdio.h>
 typedef struct {
     Engine::Camera* camera;
 } debug_camera_t;
@@ -15,6 +15,7 @@ void move_up_pressed( void* data, size_t data_size )
 {
     //UNUSED_ARG( data );
     //UNUSED_ARG( data_size );
+    std::cout << camera.camera->position << " " << camera.camera->yaw << " " << camera.camera->pitch << std::endl;
     camera.camera->move(0 , 100 * Engine::get_delta_time(), 0);
 }
 

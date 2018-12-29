@@ -17,7 +17,7 @@ Rc_t get_asset_handle( std::string asset_name, Asset_Handle* handle )
 {
     std::unordered_map<std::string, uint64_t>::const_iterator ele = asset_manager.asset_handle_map.find(asset_name);
     if ( ele == asset_manager.asset_handle_map.end() ) {
-        LOG("Not a valid asset name");
+        LOG("Not a valid asset name: " << asset_name);
         return ENGINE_ERROR;
     }
 

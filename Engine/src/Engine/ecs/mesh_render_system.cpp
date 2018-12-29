@@ -19,6 +19,10 @@ void Mesh_Render_System::init()
     //glSwapIntervalEXT(0);
 }
 
+Vector3f vec_x(1, 0, 0);
+Vector3f vec_y(0, 1, 0);
+Vector3f vec_z(0, 0, 1);
+
 void Mesh_Render_System::update()
 {
     render_command_t render_command;
@@ -48,10 +52,10 @@ void Mesh_Render_System::update()
         Matrix4f transformation_matrix;
         transformation_matrix.identity();
         transformation_matrix.translate(&transform->position);
-        //transformation_matrix.rotate(to_radians(0), &vec_x);
-        //transformation_matrix.rotate(to_radians(0), &vec_y);
-        //transformation_matrix.rotate(to_radians(0), &vec_z);
-        transformation_matrix.scale(0.5);
+        transformation_matrix.rotate(to_radians(transform->rotation.x), &vec_x);
+        transformation_matrix.rotate(to_radians(transform->rotation.y), &vec_y);
+        transformation_matrix.rotate(to_radians(transform->rotation.z), &vec_z);
+        transformation_matrix.scale(transform->scale.x);
 #if 0
         LOG("Current:");
         LOG(transformation_matrix);
