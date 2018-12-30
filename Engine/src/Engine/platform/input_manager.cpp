@@ -3,6 +3,11 @@
 
 namespace Engine {
 
+
+key_input_t key_pressed_inputs[350];
+key_input_t key_released_inputs[350];
+
+
 #define MOUSE_POS_TO_OPENGL( mouse, offset, window ) ((mouse - offset - (window/2)) / (window/2))
 
 Input_Manager* Input_Manager::instance = NULL;
@@ -134,6 +139,9 @@ Input_Manager::Input_Manager()
 
     for ( int i = 0; i < 350; i++ ) {
         if ( !key_lut[i].empty() ) {
+            key_pressed_inputs[i] = { KeyPressed, i, key_lut[i] };
+            key_released_inputs[i] = { KeyReleased, i, key_lut[i] };
+
             Event_Manager::create_event_id(key_lut[i] + "_PRESSED");
             Event_Manager::create_event_id(key_lut[i] + "_RELEASED");
         }
@@ -151,15 +159,22 @@ Input_Manager* Input_Manager::get_instance()
     return instance;
 }
 
+std::string Input_Manager::get_key_name( uint16_t key )
+{
+    return key_lut[key];
+}
+
 void Input_Manager::process_key_down( uint16_t pressed_key )
 {
-    Event_Manager::broadcast_event(key_lut[pressed_key] + "_PRESSED", NULL, 0);
+    Event_Manager::broadcast_event(key_lut[pressed_key] + "_PRESSED",
+        &key_pressed_inputs[pressed_key], sizeof key_pressed_inputs[pressed_key]);
     return;
 }
 
 void Input_Manager::process_key_up( uint16_t released_key )
 {
-    Event_Manager::broadcast_event(key_lut[released_key] + "_RELEASED", NULL, 0);
+    Event_Manager::broadcast_event(key_lut[released_key] + "_RELEASED",
+        &key_released_inputs[released_key], sizeof key_released_inputs[released_key]);
     return;
 }
 

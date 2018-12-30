@@ -162,6 +162,7 @@ namespace Engine {
 class Input_Manager {
 public:
     static Input_Manager* get_instance();
+    std::string get_key_name( uint16_t key );
     void process_key_down( uint16_t pressed_key );
     void process_key_up( uint16_t released_key );
     void process_mouse_move( uint64_t x_pos, uint64_t y_pos );
@@ -173,6 +174,17 @@ private:
 protected:
     static Input_Manager* instance;
 };
+
+typedef enum {
+    KeyReleased,
+    KeyPressed,
+} key_state_t;
+
+typedef struct {
+    key_state_t key_state;
+    uint16_t key_id;
+    std::string key_name;
+} key_input_t;
 
 } //end namespace Engine
 
