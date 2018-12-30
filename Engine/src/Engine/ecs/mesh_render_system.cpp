@@ -55,7 +55,12 @@ void Mesh_Render_System::update()
         transformation_matrix.rotate(to_radians(transform->rotation.x), &vec_x);
         transformation_matrix.rotate(to_radians(transform->rotation.y), &vec_y);
         transformation_matrix.rotate(to_radians(transform->rotation.z), &vec_z);
-        transformation_matrix.scale(transform->scale.x);
+        float scale =
+            transform->scale.x * transform->scale.x +
+            transform->scale.y * transform->scale.y +
+            transform->scale.z * transform->scale.z;
+        if(scale)
+            transformation_matrix.scale(sqrtf(scale));
 #if 0
         LOG("Current:");
         LOG(transformation_matrix);
