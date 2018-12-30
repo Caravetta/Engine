@@ -53,7 +53,7 @@ Rc_t process_event( void )
         // walk down all the subs and call their callback functions
         std::unordered_map<std::string, uint64_t>::const_iterator ele = event_manager.event_map.find(current_event.event_name);
         for ( uint64_t ii = 0; ii <  event_manager.events[ele->second].size(); ++ii ) {
-            event_manager.events[ele->second][ii](NULL, 0);
+            event_manager.events[ele->second][ii](current_event.data, current_event.data_size);
         }
     }
 
