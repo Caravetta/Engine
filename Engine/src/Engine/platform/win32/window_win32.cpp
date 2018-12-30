@@ -9,6 +9,8 @@ namespace Engine {
 
 #define DEFAULT_STYLE WS_BORDER | WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW
 
+#define LPARAM_SCANCODE(P) ((uint8_t)(((P) >> 16) && 0xff))
+
 struct platform_window_t {
     int         width;
     int         height;
@@ -36,10 +38,10 @@ LRESULT CALLBACK _WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             is_closed = true;
         break;
         case WM_KEYDOWN:
-            Input_Manager::get_instance()->process_key_down((uint16_t)wParam);
+            Input_Manager::get_instance()->process_key_down(LPARAM_SCANCODE(lParam), (uint16_t)wParam);
         break;
         case WM_KEYUP:
-            Input_Manager::get_instance()->process_key_up((uint16_t)wParam);
+            Input_Manager::get_instance()->process_key_up(LPARAM_SCANCODE(lParam), (uint16_t)wParam);
         break;
         case WM_MOUSEMOVE:
             Input_Manager::get_instance()->process_mouse_move(LOWORD(lParam), HIWORD(lParam));

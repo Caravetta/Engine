@@ -9,162 +9,116 @@
 
 namespace Engine {
 
-#define KEY_SPACE              32
-#define KEY_APOSTROPHE         39  /* ' */
-#define KEY_COMMA              44  /* , */
-#define KEY_MINUS              45  /* - */
-#define KEY_PERIOD             46  /* . */
-#define KEY_SLASH              47  /* / */
-#define KEY_0                  48
-#define KEY_1                  49
-#define KEY_2                  50
-#define KEY_3                  51
-#define KEY_4                  52
-#define KEY_5                  53
-#define KEY_6                  54
-#define KEY_7                  55
-#define KEY_8                  56
-#define KEY_9                  57
-#define KEY_SEMICOLON          59  /* ; */
-#define KEY_EQUAL              61  /* = */
-#define KEY_A                  65
-#define KEY_B                  66
-#define KEY_C                  67
-#define KEY_D                  68
-#define KEY_E                  69
-#define KEY_F                  70
-#define KEY_G                  71
-#define KEY_H                  72
-#define KEY_I                  73
-#define KEY_J                  74
-#define KEY_K                  75
-#define KEY_L                  76
-#define KEY_M                  77
-#define KEY_N                  78
-#define KEY_O                  79
-#define KEY_P                  80
-#define KEY_Q                  81
-#define KEY_R                  82
-#define KEY_S                  83
-#define KEY_T                  84
-#define KEY_U                  85
-#define KEY_V                  86
-#define KEY_W                  87
-#define KEY_X                  88
-#define KEY_Y                  89
-#define KEY_Z                  90
-#define KEY_LEFT_BRACKET       91  /* [ */
-#define KEY_BACKSLASH          92  /* \ */
-#define KEY_RIGHT_BRACKET      93  /* ] */
-#define KEY_GRAVE_ACCENT       96  /* ` */
-#define KEY_WORLD_1            161 /* non-US #1 */
-#define KEY_WORLD_2            162 /* non-US #2 */
+/* https://www.usb.org/sites/default/files/documents/hut1_12v2.pdf */
 
-/* Function keys */
-#define KEY_ESCAPE             256
-#define KEY_ENTER              257
-#define KEY_TAB                258
-#define KEY_BACKSPACE          259
-#define KEY_INSERT             260
-#define KEY_DELETE             261
-#define KEY_RIGHT              262
-#define KEY_LEFT               263
-#define KEY_DOWN               264
-#define KEY_UP                 265
-#define KEY_PAGE_UP            266
-#define KEY_PAGE_DOWN          267
-#define KEY_HOME               268
-#define KEY_END                269
-#define KEY_CAPS_LOCK          280
-#define KEY_SCROLL_LOCK        281
-#define KEY_NUM_LOCK           282
-#define KEY_PRINT_SCREEN       283
-#define KEY_PAUSE              284
-#define KEY_F1                 290
-#define KEY_F2                 291
-#define KEY_F3                 292
-#define KEY_F4                 293
-#define KEY_F5                 294
-#define KEY_F6                 295
-#define KEY_F7                 296
-#define KEY_F8                 297
-#define KEY_F9                 298
-#define KEY_F10                299
-#define KEY_F11                300
-#define KEY_F12                301
-#define KEY_F13                302
-#define KEY_F14                303
-#define KEY_F15                304
-#define KEY_F16                305
-#define KEY_F17                306
-#define KEY_F18                307
-#define KEY_F19                308
-#define KEY_F20                309
-#define KEY_F21                310
-#define KEY_F22                311
-#define KEY_F23                312
-#define KEY_F24                313
-#define KEY_F25                314
-#define KEY_KP_0               320
-#define KEY_KP_1               321
-#define KEY_KP_2               322
-#define KEY_KP_3               323
-#define KEY_KP_4               324
-#define KEY_KP_5               325
-#define KEY_KP_6               326
-#define KEY_KP_7               327
-#define KEY_KP_8               328
-#define KEY_KP_9               329
-#define KEY_KP_DECIMAL         330
-#define KEY_KP_DIVIDE          331
-#define KEY_KP_MULTIPLY        332
-#define KEY_KP_SUBTRACT        333
-#define KEY_KP_ADD             334
-#define KEY_KP_ENTER           335
-#define KEY_KP_EQUAL           336
-#define KEY_LEFT_SHIFT         340
-#define KEY_LEFT_CONTROL       341
-#define KEY_LEFT_ALT           342
-#define KEY_LEFT_SUPER         343
-#define KEY_RIGHT_SHIFT        344
-#define KEY_RIGHT_CONTROL      345
-#define KEY_RIGHT_ALT          346
-#define KEY_RIGHT_SUPER        347
-#define KEY_MENU               348
+typedef enum {
+    KEY_NONE,
+    KEY_ERR_OVF,
+    KEY_POST_FAIL,
+    KEY_ERROR_UNDEFINED,
+    KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H, KEY_I, KEY_J, KEY_K,
+    KEY_L, KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q, KEY_R, KEY_S, KEY_T, KEY_U, KEY_V,
+    KEY_W, KEY_X, KEY_Y, KEY_Z, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7,
+    KEY_8, KEY_9, KEY_0,
+    KEY_ENTER, KEY_ESCAPE, KEY_BACKSPACE, KEY_TAB, KEY_SPACE,
+    KEY_MINUS, KEY_EQUAL, KEY_LEFT_BRACKET, KEY_RIGHT_BRACKET,
+    KEY_BACKSLASH, KEY_HASH_TILDE, KEY_SEMICOLON, KEY_APOSTROPHE,
+    KEY_GRAVE_ACCENT, KEY_COMMA, KEY_DOT, KEY_SLASH, KEY_CAPS_LOCK,
+    KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9,
+    KEY_F10, KEY_F11, KEY_F12,
+    KEY_SYSRQ, KEY_SCROLL_LOCK, KEY_PAUSE,
+    KEY_INSERT, KEY_HOME, KEY_PAGE_UP, KEY_DELETE, KEY_END, KEY_PAGE_DOWN,
+    KEY_LEFT, KEY_RIGHT, KEY_DOWN, KEY_UP,
+    KEY_NUM_LOCK, KEY_PAD_DIVIDE, KEY_PAD_MULTIPLY, KEY_PAD_SUBTRACT,
+    KEY_PAD_ADD, KEY_PAD_ENTER,
+    KEY_PAD_1, KEY_PAD_2, KEY_PAD_3, KEY_PAD_4, KEY_PAD_5, KEY_PAD_6, KEY_PAD_7,
+    KEY_PAD_8, KEY_PAD_9, KEY_PAD_0, KEY_PAD_DOT,
+    KEY_102, KEY_COMPOSE, KEY_POWER, KEY_PAD_EQUAL,
+    KEY_F13, KEY_F14, KEY_F15, KEY_F16, KEY_F17, KEY_F18, KEY_F19, KEY_F20,
+    KEY_F21, KEY_F22, KEY_F23, KEY_F24,
+    KEY_EXECUTE, KEY_HELP, KEY_MENU, KEY_SELECT, KEY_STOP, KEY_AGAIN, KEY_UNDO,
+    KEY_CUT, KEY_COPY, KEY_PASTE, KEY_FIND, KEY_MUTE,
+    KEY_VOLUME_UP, KEY_VOLUME_DOWN,
+    KEY_LOCKING_CAPS, KEY_LOCKING_NUM, KEY_LOCKING_SCROLL,
+    KEY_PAD_COMMA, KEY_PAD_EQUAL_SIGN,
+    KEY_INTL_1, KEY_INTL_2, KEY_INTL_3, KEY_INTL_4, KEY_INTL_5, KEY_INTL_6,
+    KEY_INTL_7, KEY_INTL_8, KEY_INTL_9,
+    KEY_LANG_1, KEY_LANG_2, KEY_LANG_3, KEY_LANG_4, KEY_LANG_5, KEY_LANG_6,
+    KEY_LANG_7, KEY_LANG_8, KEY_LANG_9,
+    KEY_ALTERNATE_ERASE, KEY_SYSREQ, KEY_CANCEL, KEY_CLEAR, KEY_PRIOR,
+    KEY_RETURN, KEY_SEPARATOR, KEY_OUT, KEY_OPER, KEY_CLEAR_AGAIN,
+    KEY_CRSEL_PROPS, KEY_EXSEL,
+    KEY_RESERVED_A5, KEY_RESERVED_A6, KEY_RESERVED_A7, KEY_RESERVED_A8,
+    KEY_RESERVED_A9, KEY_RESERVED_AA, KEY_RESERVED_AB, KEY_RESERVED_AC,
+    KEY_RESERVED_AD, KEY_RESERVED_AE, KEY_RESERVED_AF,
+    KEY_PAD_00, KEY_PAD_000, KEY_THOUSANDS_SEPARATOR, KEY_DECIMAL_SEPARATOR,
+    KEY_CURRENCY_UNIT, KEY_CURRENCY_SUBUNIT,
+    KEY_PAD_LEFT_PAREN, KEY_PAD_RIGHT_PAREN,
+    KEY_PAD_LEFT_BRACE, KEY_PAD_RIGHT_BRACE,
+    KEY_PAD_TAB, KEY_PAD_BACKSPACE,
+    KEY_PAD_A, KEY_PAD_B, KEY_PAD_C, KEY_PAD_D, KEY_PAD_E, KEY_PAD_F,
+    KEY_PAD_XOR, KEY_PAD_CARET, KEY_PAD_PERCENT,
+    KEY_PAD_LEFT_ANGLE_BRACKET, KEY_PAD_RIGHT_ANGLE_BRACKET,
+    KEY_PAD_AMPERSAND, KEY_PAD_DOUBLE_AMPERSAND,
+    KEY_PAD_PIPE, KEY_PAD_DOUBLE_PIPE,
+    KEY_PAD_COLON, KEY_PAD_OCTOTHORPE,
+    KEY_PAD_SPACE, KEY_PAD_AT, KEY_PAD_EXCLAMATION,
+    KEY_PAD_MEMORY_STORE, KEY_PAD_MEMORY_RECALL, KEY_PAD_MEMORY_CLEAR,
+    KEY_PAD_MEMORY_ADD, KEY_PAD_MEMORY_SUBTRACT, KEY_PAD_MEMORY_MULTIPLY,
+    KEY_PAD_MEMORY_DIVIDE,
+    KEY_PAD_PLUS_MINUS,
+    KEY_PAD_CLEAR, KEY_PAD_CLEAR_ENTRY,
+    KEY_PAD_BINARY, KEY_PAD_OCTAL, KEY_PAD_DECIMAL, KEY_PAD_HEXADECIMAL,
+    KEY_PAD_RESERVED_DE, KEY_PAD_RESERVED_DF,
+    KEY_LEFT_CONTROL, KEY_LEFT_SHIFT, KEY_LEFT_ALT, KEY_LEFT_GUI,
+    KEY_RIGHT_CONTROL, KEY_RIGHT_SHIFT, KEY_RIGHT_ALT, KEY_RIGHT_GUI,
+    KEY_RESERVED_E8, KEY_RESERVED_E9, KEY_RESERVED_EA, KEY_RESERVED_EB,
+    KEY_RESERVED_EC, KEY_RESERVED_ED, KEY_RESERVED_EE, KEY_RESERVED_EF,
+    KEY_RESERVED_F0, KEY_RESERVED_F1, KEY_RESERVED_F2, KEY_RESERVED_F3,
+    KEY_RESERVED_F4, KEY_RESERVED_F5, KEY_RESERVED_F6, KEY_RESERVED_F7,
+    KEY_RESERVED_F8, KEY_RESERVED_F9, KEY_RESERVED_FA, KEY_RESERVED_FB,
+    KEY_RESERVED_FC, KEY_RESERVED_FD, KEY_RESERVED_FE, KEY_RESERVED_FF,
+    KEY_MEDIA_NEXT, KEY_MEDIA_PREVIOUS, KEY_MEDIA_STOP, KEY_MEDIA_MUTE,
+    KEY_MEDIA_SELECT, KEY_MEDIA_WWW, KEY_MEDIA_MAIL, KEY_MEDIA_CALCULATOR,
+    KEY_MEDIA_COMPUTER, KEY_MEDIA_SEARCH, KEY_MEDIA_HOME, KEY_MEDIA_BACK,
+    KEY_MEDIA_FORWARD, KEY_MEDIA_HALT, KEY_MEDIA_REFRESH, KEY_MEDIA_BOOKMARKS,
+    KEY_MEDIA_BRIGHTNESS_DOWN, KEY_MEDIA_BRIGHTNESS_UP,
+    KEY_MEDIA_DISPLAY, KEY_MEDIA_KEYBOARD_ILLUMINATION_TOGGLE,
+    KEY_MEDIA_KEYBOARD_ILLUMINATION_UP, KEY_MEDIA_KEYBOARD_ILLUMINATION_DOWN,
+    KEY_MEDIA_EJECT, KEY_MEDIA_SLEEP, KEY_MEDIA_APP_1, KEY_MEDIA_APP_2,
+    KEY_MEDIA_REWIND, KEY_MEDIA_FASTFORWARD,
+    KEY_ID_MAX
+} key_id_t;
+
+/* C++ doesn't allow postfix increments for enumerations */
+key_id_t operator ++( key_id_t &id, int );
 
 #define MOUSE_POS_CHANGE "MOUSE_POS_CHANGE"
 
-#define KEY_W_PRESSED "KEY_W_PRESSED"
-#define KEY_S_PRESSED "KEY_S_PRESSED"
-#define KEY_A_PRESSED "KEY_A_PRESSED"
-#define KEY_D_PRESSED "KEY_D_PRESSED"
-#define KEY_Q_PRESSED "KEY_Q_PRESSED"
-#define KEY_E_PRESSED "KEY_E_PRESSED"
-#define KEY_X_PRESSED "KEY_X_PRESSED"
-#define KEY_SPACE_PRESSED "KEY_SPACE_PRESSED"
-#define KEY_R_PRESSED "KEY_R_PRESSED"
-#define KEY_F_PRESSED "KEY_F_PRESSED"
-#define KEY_T_PRESSED "KEY_T_PRESSED"
-#define KEY_Y_PRESSED "KEY_Y_PRESSED"
+typedef struct {
+    key_id_t scancode;
+    uint16_t keysym;
+} key_t;
 
+typedef enum {
+    KeyReleased,
+    KeyPressed,
+} key_state_t;
 
-#define KEY_W_RELEASED "KEY_W_RELEASED"
-#define KEY_S_RELEASED "KEY_S_RELEASED"
-#define KEY_A_RELEASED "KEY_A_RELEASED"
-#define KEY_D_RELEASED "KEY_D_RELEASED"
-#define KEY_Q_RELEASED "KEY_Q_RELEASED"
-#define KEY_E_RELEASED "KEY_E_RELEASED"
-#define KEY_X_RELEASED "KEY_X_RELEASED"
-#define KEY_SPACE_RELEASED "KEY_SPACE_RELEASED"
-#define KEY_R_RELEASED "KEY_R_RELEASED"
-#define KEY_F_RELEASED "KEY_F_RELEASED"
+typedef struct {
+    key_id_t scancode;
+    uint16_t keysym;
+    key_state_t state;
+} key_input_t;
+
+key_state_t key_pressed( key_id_t scancode );
 
 class Input_Manager {
 public:
     static Input_Manager* get_instance();
-    std::string get_key_name( uint16_t key );
-    void process_key_down( uint16_t pressed_key );
-    void process_key_up( uint16_t released_key );
+    static std::string get_key_name( key_id_t scancode );
+    void process_key_down( key_id_t scancode, uint16_t keysym );
+    void process_key_up( key_id_t scancode, uint16_t keysym );
     void process_mouse_move( uint64_t x_pos, uint64_t y_pos );
     Input_Manager();
 
@@ -174,17 +128,6 @@ private:
 protected:
     static Input_Manager* instance;
 };
-
-typedef enum {
-    KeyReleased,
-    KeyPressed,
-} key_state_t;
-
-typedef struct {
-    key_state_t key_state;
-    uint16_t key_id;
-    std::string key_name;
-} key_input_t;
 
 } //end namespace Engine
 

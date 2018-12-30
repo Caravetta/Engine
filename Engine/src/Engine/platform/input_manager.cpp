@@ -3,10 +3,22 @@
 
 namespace Engine {
 
+/* computed key_input_t values */
+key_input_t key_pressed_inputs[KEY_ID_MAX];
+key_input_t key_released_inputs[KEY_ID_MAX];
 
-key_input_t key_pressed_inputs[350];
-key_input_t key_released_inputs[350];
+/* key state map */
+key_state_t key_state[KEY_ID_MAX];
 
+#define DEFKEY(K) { key_names[K] = #K; }
+
+std::string key_names[KEY_ID_MAX];
+
+key_id_t operator ++( key_id_t &id, int )
+{
+  id = static_cast<key_id_t>( id + 1 );
+  return id;
+}
 
 #define MOUSE_POS_TO_OPENGL( mouse, offset, window ) ((mouse - offset - (window/2)) / (window/2))
 
@@ -14,137 +26,99 @@ Input_Manager* Input_Manager::instance = NULL;
 
 Input_Manager::Input_Manager()
 {
-    //TODO(JOSH): need to come up with a good way to start all the key events
+    DEFKEY(KEY_A);
+    DEFKEY(KEY_B);
+    DEFKEY(KEY_C);
+    DEFKEY(KEY_D);
+    DEFKEY(KEY_E);
+    DEFKEY(KEY_F);
+    DEFKEY(KEY_G);
+    DEFKEY(KEY_H);
+    DEFKEY(KEY_I);
+    DEFKEY(KEY_J);
+    DEFKEY(KEY_K);
+    DEFKEY(KEY_L);
+    DEFKEY(KEY_M);
+    DEFKEY(KEY_N);
+    DEFKEY(KEY_O);
+    DEFKEY(KEY_P);
+    DEFKEY(KEY_Q);
+    DEFKEY(KEY_R);
+    DEFKEY(KEY_S);
+    DEFKEY(KEY_T);
+    DEFKEY(KEY_U);
+    DEFKEY(KEY_V);
+    DEFKEY(KEY_W);
+    DEFKEY(KEY_X);
+    DEFKEY(KEY_Y);
+    DEFKEY(KEY_Z);
+    DEFKEY(KEY_1);
+    DEFKEY(KEY_2);
+    DEFKEY(KEY_3);
+    DEFKEY(KEY_4);
+    DEFKEY(KEY_5);
+    DEFKEY(KEY_6);
+    DEFKEY(KEY_7);
+    DEFKEY(KEY_8);
+    DEFKEY(KEY_9);
+    DEFKEY(KEY_0);
+    DEFKEY(KEY_ENTER);
+    DEFKEY(KEY_ESCAPE);
+    DEFKEY(KEY_BACKSPACE);
+    DEFKEY(KEY_TAB);
+    DEFKEY(KEY_SPACE);
+    DEFKEY(KEY_MINUS);
+    DEFKEY(KEY_EQUAL);
+    DEFKEY(KEY_LEFT_BRACKET);
+    DEFKEY(KEY_RIGHT_BRACKET);
+    DEFKEY(KEY_BACKSLASH);
+    DEFKEY(KEY_SEMICOLON);
+    DEFKEY(KEY_APOSTROPHE);
+    DEFKEY(KEY_GRAVE_ACCENT);
+    DEFKEY(KEY_COMMA);
+    DEFKEY(KEY_DOT);
+    DEFKEY(KEY_SLASH);
+    DEFKEY(KEY_CAPS_LOCK);
+    DEFKEY(KEY_F1);
+    DEFKEY(KEY_F2);
+    DEFKEY(KEY_F3);
+    DEFKEY(KEY_F4);
+    DEFKEY(KEY_F5);
+    DEFKEY(KEY_F6);
+    DEFKEY(KEY_F7);
+    DEFKEY(KEY_F8);
+    DEFKEY(KEY_F9);
+    DEFKEY(KEY_F10);
+    DEFKEY(KEY_F11);
+    DEFKEY(KEY_F12);
+    DEFKEY(KEY_SYSRQ);
+    DEFKEY(KEY_SCROLL_LOCK);
+    DEFKEY(KEY_PAUSE);
+    DEFKEY(KEY_INSERT);
+    DEFKEY(KEY_HOME);
+    DEFKEY(KEY_PAGE_UP);
+    DEFKEY(KEY_DELETE);
+    DEFKEY(KEY_END);
+    DEFKEY(KEY_PAGE_DOWN);
+    DEFKEY(KEY_LEFT);
+    DEFKEY(KEY_RIGHT);
+    DEFKEY(KEY_DOWN);
+    DEFKEY(KEY_UP);
+    DEFKEY(KEY_LEFT_CONTROL);
+    DEFKEY(KEY_LEFT_SHIFT);
+    DEFKEY(KEY_LEFT_ALT);
+    DEFKEY(KEY_LEFT_GUI);
+    DEFKEY(KEY_RIGHT_CONTROL);
+    DEFKEY(KEY_RIGHT_SHIFT);
+    DEFKEY(KEY_RIGHT_ALT);
+    DEFKEY(KEY_RIGHT_GUI);
 
-    key_lut[32] = "KEY_SPACE";
-    key_lut[39] = "KEY_APOSTROPHE";
-    key_lut[44] = "KEY_COMMA";
-    key_lut[45] = "KEY_MINUS";
-    key_lut[46] = "KEY_PERIOD";
-    key_lut[47] = "KEY_SLASH";
-    key_lut[48] = "KEY_0";
-    key_lut[49] = "KEY_1";
-    key_lut[50] = "KEY_2";
-    key_lut[51] = "KEY_3";
-    key_lut[52] = "KEY_4";
-    key_lut[53] = "KEY_5";
-    key_lut[54] = "KEY_6";
-    key_lut[55] = "KEY_7";
-    key_lut[56] = "KEY_8";
-    key_lut[57] = "KEY_9";
-    key_lut[59] = "KEY_SEMICOLON";
-    key_lut[61] = "KEY_EQUAL";
-    key_lut[A_KEY] = "KEY_A";
-    key_lut[66] = "KEY_B";
-    key_lut[67] = "KEY_C";
-    key_lut[D_KEY] = "KEY_D";
-    key_lut[69] = "KEY_E";
-    key_lut[70] = "KEY_F";
-    key_lut[71] = "KEY_G";
-    key_lut[72] = "KEY_H";
-    key_lut[73] = "KEY_I";
-    key_lut[74] = "KEY_J";
-    key_lut[75] = "KEY_K";
-    key_lut[76] = "KEY_L";
-    key_lut[77] = "KEY_M";
-    key_lut[78] = "KEY_N";
-    key_lut[79] = "KEY_O";
-    key_lut[80] = "KEY_P";
-    key_lut[81] = "KEY_Q";
-    key_lut[82] = "KEY_R";
-    key_lut[S_KEY] = "KEY_S";
-    key_lut[84] = "KEY_T";
-    key_lut[85] = "KEY_U";
-    key_lut[86] = "KEY_V";
-    key_lut[W_KEY] = "KEY_W";
-    key_lut[88] = "KEY_X";
-    key_lut[89] = "KEY_Y";
-    key_lut[90] = "KEY_Z";
-    key_lut[91] = "KEY_LEFT_BRACKET";
-    key_lut[92] = "KEY_BACKSLASH";
-    key_lut[93] = "KEY_RIGHT_BRACKET";
-    key_lut[96] = "KEY_GRAVE_ACCENT";
-    key_lut[161] = "KEY_WORLD_1";
-    key_lut[162] = "KEY_WORLD_2";
-    key_lut[256] = "KEY_ESCAPE";
-    key_lut[257] = "KEY_ENTER";
-    key_lut[258] = "KEY_TAB";
-    key_lut[259] = "KEY_BACKSPACE";
-    key_lut[260] = "KEY_INSERT";
-    key_lut[261] = "KEY_DELETE";
-    key_lut[262] = "KEY_RIGHT";
-    key_lut[263] = "KEY_LEFT";
-    key_lut[264] = "KEY_DOWN";
-    key_lut[265] = "KEY_UP";
-    key_lut[266] = "KEY_PAGE_UP";
-    key_lut[267] = "KEY_PAGE_DOWN";
-    key_lut[268] = "KEY_HOME";
-    key_lut[269] = "KEY_END";
-    key_lut[280] = "KEY_CAPS_LOCK";
-    key_lut[281] = "KEY_SCROLL_LOCK";
-    key_lut[282] = "KEY_NUM_LOCK";
-    key_lut[283] = "KEY_PRINT_SCREEN";
-    key_lut[284] = "KEY_PAUSE";
-    key_lut[290] = "KEY_F1";
-    key_lut[291] = "KEY_F2";
-    key_lut[292] = "KEY_F3";
-    key_lut[293] = "KEY_F4";
-    key_lut[294] = "KEY_F5";
-    key_lut[295] = "KEY_F6";
-    key_lut[296] = "KEY_F7";
-    key_lut[297] = "KEY_F8";
-    key_lut[298] = "KEY_F9";
-    key_lut[299] = "KEY_F10";
-    key_lut[300] = "KEY_F11";
-    key_lut[301] = "KEY_F12";
-    key_lut[302] = "KEY_F13";
-    key_lut[303] = "KEY_F14";
-    key_lut[304] = "KEY_F15";
-    key_lut[305] = "KEY_F16";
-    key_lut[306] = "KEY_F17";
-    key_lut[307] = "KEY_F18";
-    key_lut[308] = "KEY_F19";
-    key_lut[309] = "KEY_F20";
-    key_lut[310] = "KEY_F21";
-    key_lut[311] = "KEY_F22";
-    key_lut[312] = "KEY_F23";
-    key_lut[313] = "KEY_F24";
-    key_lut[314] = "KEY_F25";
-    key_lut[320] = "KEY_KP_0";
-    key_lut[321] = "KEY_KP_1";
-    key_lut[322] = "KEY_KP_2";
-    key_lut[323] = "KEY_KP_3";
-    key_lut[324] = "KEY_KP_4";
-    key_lut[325] = "KEY_KP_5";
-    key_lut[326] = "KEY_KP_6";
-    key_lut[327] = "KEY_KP_7";
-    key_lut[328] = "KEY_KP_8";
-    key_lut[329] = "KEY_KP_9";
-    key_lut[330] = "KEY_KP_DECIMAL";
-    key_lut[331] = "KEY_KP_DIVIDE";
-    key_lut[332] = "KEY_KP_MULTIPLY";
-    key_lut[333] = "KEY_KP_SUBTRACT";
-    key_lut[334] = "KEY_KP_ADD";
-    key_lut[335] = "KEY_KP_ENTER";
-    key_lut[336] = "KEY_KP_EQUAL";
-    key_lut[340] = "KEY_LEFT_SHIFT";
-    key_lut[341] = "KEY_LEFT_CONTROL";
-    key_lut[342] = "KEY_LEFT_ALT";
-    key_lut[343] = "KEY_LEFT_SUPER";
-    key_lut[344] = "KEY_RIGHT_SHIFT";
-    key_lut[345] = "KEY_RIGHT_CONTROL";
-    key_lut[346] = "KEY_RIGHT_ALT";
-    key_lut[347] = "KEY_RIGHT_SUPER";
-    key_lut[348] = "KEY_MENU";
+    for ( key_id_t i = KEY_NONE; i < KEY_ID_MAX; i++ ) {
+        key_pressed_inputs[i] = { i, 0, KeyPressed };
+        key_released_inputs[i] = { i, 0, KeyReleased };
 
-    for ( int i = 0; i < 350; i++ ) {
-        if ( !key_lut[i].empty() ) {
-            key_pressed_inputs[i] = { KeyPressed, i, key_lut[i] };
-            key_released_inputs[i] = { KeyReleased, i, key_lut[i] };
-
-            Event_Manager::create_event_id(key_lut[i] + "_PRESSED");
-            Event_Manager::create_event_id(key_lut[i] + "_RELEASED");
-        }
+        Event_Manager::create_event_id(key_names[i] + "_PRESSED");
+        Event_Manager::create_event_id(key_names[i] + "_RELEASED");
     }
 
     Event_Manager::create_event_id(MOUSE_POS_CHANGE);
@@ -159,22 +133,27 @@ Input_Manager* Input_Manager::get_instance()
     return instance;
 }
 
-std::string Input_Manager::get_key_name( uint16_t key )
+std::string Input_Manager::get_key_name( key_id_t scancode )
 {
-    return key_lut[key];
+    return key_names[scancode];
 }
 
-void Input_Manager::process_key_down( uint16_t pressed_key )
+void Input_Manager::process_key_down( key_id_t scancode, uint16_t keysym )
 {
-    Event_Manager::broadcast_event(key_lut[pressed_key] + "_PRESSED",
-        &key_pressed_inputs[pressed_key], sizeof key_pressed_inputs[pressed_key]);
+    //LOG("KEYDOWN scancode " << (int) scancode << " keysym " << keysym);
+    key_pressed_inputs[scancode].keysym = keysym;
+    key_state[scancode] = KeyPressed;
+    Event_Manager::broadcast_event(key_names[scancode] + "_PRESSED",
+        &key_pressed_inputs[scancode], sizeof key_pressed_inputs[scancode]);
     return;
 }
 
-void Input_Manager::process_key_up( uint16_t released_key )
+void Input_Manager::process_key_up( key_id_t scancode, uint16_t keysym )
 {
-    Event_Manager::broadcast_event(key_lut[released_key] + "_RELEASED",
-        &key_released_inputs[released_key], sizeof key_released_inputs[released_key]);
+    key_released_inputs[scancode].keysym = keysym;
+    key_state[scancode] = KeyReleased;
+    Event_Manager::broadcast_event(key_names[scancode] + "_RELEASED",
+        &key_released_inputs[scancode], sizeof key_released_inputs[scancode]);
     return;
 }
 
@@ -186,4 +165,9 @@ void Input_Manager::process_mouse_move( uint64_t x_pos, uint64_t y_pos )
     Event_Manager::broadcast_event(MOUSE_POS_CHANGE, NULL, 0);
 }
 
-} // end namespace core
+key_state_t key_pressed( key_id_t scancode )
+{
+    return key_state[scancode];
+}
+
+} // end namespace Engine

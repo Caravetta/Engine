@@ -36,10 +36,12 @@ void platform_window_update( struct platform_window_t* platform_window )
             platform_window->is_closed = true;
         } break;
         case SDL_KEYDOWN: {
-            Input_Manager::get_instance()->process_key_down(event.key.keysym.sym);
+            Input_Manager::get_instance()->process_key_down(
+                (key_id_t) event.key.keysym.scancode, (uint16_t) event.key.keysym.sym);
         } break;
         case SDL_KEYUP: {
-            Input_Manager::get_instance()->process_key_up(event.key.keysym.sym);
+            Input_Manager::get_instance()->process_key_up(
+                (key_id_t) event.key.keysym.scancode, (uint16_t) event.key.keysym.sym);
         } break;
 
         }
