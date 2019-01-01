@@ -13,6 +13,7 @@
 namespace Engine {
 namespace Component_Manager {
 
+Rc_t init( void );
 component_create_function get_component_create( uint32_t component_id );
 component_copy_function get_component_copy( uint32_t component_id );
 

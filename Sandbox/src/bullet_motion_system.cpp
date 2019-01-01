@@ -48,7 +48,7 @@ void Bullet_Motion_System::update()
     Bullet_Distance* bullet_distance;
 
     float dt = Engine::get_delta_time();
-
+    std::cout << "ENTITY COUNT " << entity_count << std::endl;
     for(int i = 0; i < entity_count; i++) {
 
         bullet_motion = bullet_motion_vec->at(i);

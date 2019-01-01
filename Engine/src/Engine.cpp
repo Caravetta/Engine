@@ -43,6 +43,11 @@ Rc_t init( engine_config_t* engine_config )
 
     //TODO(JOSH): need to check the rc from the init functions
 
+    rc = Component_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
     rc = Job_Manager::init();
     if ( rc != SUCCESS ) {
         return ENGINE_ERROR;

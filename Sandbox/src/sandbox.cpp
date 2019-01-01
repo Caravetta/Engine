@@ -31,13 +31,13 @@ int main()
         return 1;
     }
 
+    Engine::register_component<Bullet_Spawner>();
     Engine::register_component<Engine::Transform>();
     Engine::register_component<Engine::Mesh_Handle>();
     Engine::register_component<Engine::Shader_ID>();
     Engine::register_component<Player>();
     Engine::register_component<Bullet_Motion>();
     Engine::register_component<Bullet_Distance>();
-    Engine::register_component<Bullet_Spawner>();
     Engine::register_component<Engine::Entity>();
 
     //Engine::register_system<Motion_System>();

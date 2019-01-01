@@ -7,6 +7,12 @@ namespace Component_Manager {
 
 std::vector<component_info> component_info_vec;
 
+Rc_t init( void )
+{
+    component_info_vec.resize( BASE_COMPONENT_COUNT );
+    return SUCCESS;
+}
+
 component_create_function get_component_create( uint32_t component_id )
 {
     CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
@@ -32,9 +38,13 @@ uint64_t get_component_size( uint32_t component_id )
     return Component_Manager::component_info_vec[component_id].size;
 }
 
-void register_component_info( component_info comp_info )
+void register_component_info( uint32_t component_id, component_info comp_info )
 {
-    Component_Manager::component_info_vec.push_back(comp_info);
+    if ( component_id < BASE_COMPONENT_COUNT ) {
+        Component_Manager::component_info_vec[component_id] = comp_info;
+    } else {
+        Component_Manager::component_info_vec.push_back(comp_info);
+    }
 }
 
 uint8_t* get_component_data( Entity entity, uint32_t component_id )

@@ -82,7 +82,7 @@ ENGINE_API bool is_valid_entity( Entity entity );
 
 ENGINE_API uint32_t get_max_components();
 ENGINE_API uint64_t get_component_size( uint32_t component_id );
-ENGINE_API void register_component_info( component_info comp_info );
+ENGINE_API void register_component_info( uint32_t component_id, component_info comp_info );
 ENGINE_API uint8_t* get_component_data( Entity entity, uint32_t component_id );
 
 template<typename T>
@@ -109,7 +109,7 @@ void register_component( void )
         type_idx_info<T>::id = get_max_components();
     }
 
-    register_component_info(temp_comp);
+    register_component_info(type_idx_info<T>::id, temp_comp);
 }
 
 template<typename T>
