@@ -19,7 +19,7 @@ elif env.platform.name == 'linux':
 
 global_options(flags, lang='c++')
 
-objs = object_files(source_files, includes=include_list)
+objs = object_files(source_files, includes=include_list, packages=package_list)
 
 executable('sandbox.exe', objs, packages=package_list, libs=lib)
 

@@ -39,13 +39,11 @@ Rc_t init( void ) {
 
 vao_t* get_mesh_vao( Mesh_Handle handle )
 {
-    UNUSED_ARG(handle);
     return &Mesh_Manager::mesh_manager->vaos[handle.index];
 }
 
 uint32_t get_indices_count( Mesh_Handle handle )
 {
-    UNUSED_ARG(handle);
     return Mesh_Manager::mesh_manager->indice_data[handle.index];;
 }
 

@@ -69,8 +69,6 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
 
 Rc_t _init( struct platform_window_t* window )
 {
-    Rc_t rc = SUCCESS;
-
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
         LOG_ERROR("Failed to Init SDL");
         return ENGINE_ERROR;

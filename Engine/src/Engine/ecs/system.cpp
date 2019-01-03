@@ -53,13 +53,13 @@ bool System::pre_update()
     return false;
 }
 
-void System::add_component_data( uint64_t** enitiy_count, uint32_t component_id, Array** data_array )
+void System::add_component_data( uint64_t** entity_count, uint32_t component_id, Array** data_array )
 {
     std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(component_id);
     if ( comp_idx != comp_map.end() ) {
         CHECK_INFO( component_id == component_nodes[comp_idx->second].component_id,
                     "comp_id:" << component_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
-        component_nodes[comp_idx->second].entity_count_vec.push_back(*enitiy_count);
+        component_nodes[comp_idx->second].entity_count_vec.push_back(*entity_count);
         component_nodes[comp_idx->second].array_data_vec.push_back(*data_array);
     }
 
