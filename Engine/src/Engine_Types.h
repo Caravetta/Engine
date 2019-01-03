@@ -56,6 +56,9 @@ public:
     Vector2f( const float x, const float y );
 
     friend ENGINE_API std::ostream& operator<<(std::ostream& stream, const Vector2f& vector);
+
+    Vector2f operator+( const Vector2f &other ) const;
+    Vector2f operator+=( const Vector2f &other );
 };
 
 struct ENGINE_API Vector3f {
