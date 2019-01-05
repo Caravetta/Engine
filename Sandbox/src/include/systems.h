@@ -24,4 +24,11 @@ struct Bullet_Motion_System : public Engine::System {
     void shutdown();
 };
 
+struct Camera_System : public Engine::System {
+    Camera_System();
+    void init();
+    void update();
+    void shutdown();
+};
+
 #endif //__SYSTEMS_H__

@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include "renderer.h"
 #include "thread.h"
+#include "math_utils.h"
 
 namespace Engine {
 
@@ -275,8 +276,9 @@ void render( Camera* camera, int width, int height )
     int projection_matrix_id = -1;
     int view_matrix_id = -1;
     int transformation_matrix_id = -1;
-    int ortho_matrix_id = -1;
     int pos_id = -1;
+
+    Matrix4f view;
 
 	for (uint64_t i = 0; i < opengl_commands.size(); i++) {
         switch( opengl_commands[i].command_type ) {
@@ -285,7 +287,6 @@ void render( Camera* camera, int width, int height )
             projection_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "projection_matrix");
             view_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "view_matrix");
             transformation_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "transformationMatrix");
-            ortho_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "ortho_matrix");
             pos_id = glGetUniformLocation(opengl_commands[i].shader_id, "pos");
 
             if ( projection_matrix_id != -1 ) {
@@ -293,9 +294,6 @@ void render( Camera* camera, int width, int height )
             }
             if ( view_matrix_id != -1 ) {
                  glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, (GLfloat *)&camera->view_matrix);
-            }
-            if ( ortho_matrix_id != -1 ) {
-                 glUniformMatrix4fv(ortho_matrix_id, 1, GL_FALSE, (GLfloat *)&camera->ortho_matrix);
             }
         } break;
         case UNBIND_SHADER: {
@@ -310,11 +308,7 @@ void render( Camera* camera, int width, int height )
             unbind_vao();
         } break;
         case DRAW_ELEMENTS: {
-            if ( (transformation_matrix_id != -1) && (opengl_commands[i].draw_data.d_type == VAO_3D) ) {
-                 glUniformMatrix4fv(transformation_matrix_id, 1, GL_FALSE, (GLfloat *)&opengl_commands[i].draw_data.transformation_matrix);
-            } else if ( (pos_id != -1) && (opengl_commands[i].draw_data.d_type == VAO_2D) ) {
-                 glUniform2f(pos_id, opengl_commands[i].draw_data.position.x, opengl_commands[i].draw_data.position.y);
-            }
+            glUniformMatrix4fv(transformation_matrix_id, 1, GL_FALSE, (GLfloat *)&opengl_commands[i].draw_data.transformation_matrix);
             glDrawElements(GL_TRIANGLES, opengl_commands[i].draw_data.indices_count, GL_UNSIGNED_INT, 0);
         } break;
         case BIND_TEXTURE: {

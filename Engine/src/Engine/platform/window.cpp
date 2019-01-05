@@ -12,8 +12,7 @@ Rc_t create( uint32_t width, uint32_t height, std::string title )
     if ( platform_window == NULL ) {
         return ENGINE_ERROR;
     }
-
-    Input_Manager::get_instance();
+    //Input_Manager::get_instance();
 
     return SUCCESS;
 }

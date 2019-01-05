@@ -26,8 +26,26 @@ typedef struct {
 ENGINE_API Rc_t init( engine_config_t* engine_config );
 ENGINE_API void run();
 ENGINE_API void shutdown();
-ENGINE_API void set_active_camera( Camera* camera );
 ENGINE_API float get_delta_time();
+
+/****************************************/
+/*                                      */
+/*          Time Engine Calls           */
+/*                                      */
+/****************************************/
+
+ENGINE_API float get_delta_time();
+
+/****************************************/
+/*                                      */
+/*         Camera Engine Calls          */
+/*                                      */
+/****************************************/
+
+ENGINE_API void set_active_camera( Camera* camera );
+ENGINE_API Camera* get_active_camera( void );
+ENGINE_API void generate_perspective_matrix( Camera* camera );
+ENGINE_API void generate_FPS_view_matrix( Camera* camera );
 
 /****************************************/
 /*                                      */
@@ -197,6 +215,23 @@ ENGINE_API void create_shader_program( unsigned int vertex_id, unsigned int frag
 
 ENGINE_API uint32_t get_font_texture_id( Font_Handle handle, uint16_t font_size );
 ENGINE_API Mesh_Handle generate_text_mesh( Text* text, Font_Settings* font_settings );
+
+/****************************************/
+/*                                      */
+/*         Input Engine Calls           */
+/*                                      */
+/****************************************/
+
+ENGINE_API bool is_key_pressed( key_t key );
+
+/****************************************/
+/*                                      */
+/*      Math Util Engine Calls          */
+/*                                      */
+/****************************************/
+
+ENGINE_API Matrix4f translate( Matrix4f matrix, Vector3f vector );
+ENGINE_API Matrix4f scale( Matrix4f matrix, Vector3f vector );
 
 } // end namespace Engine
 

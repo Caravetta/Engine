@@ -19,10 +19,6 @@ void Mesh_Render_System::init()
     //glSwapIntervalEXT(0);
 }
 
-Vector3f vec_x(1, 0, 0);
-Vector3f vec_y(0, 1, 0);
-Vector3f vec_z(0, 0, 1);
-
 void Mesh_Render_System::update()
 {
     render_command_t render_command;
@@ -49,13 +45,12 @@ void Mesh_Render_System::update()
         transform = transforms->at(i);
         shader_component = shader_vec->at(i);
         mesh_component = mesh_vec->at(i);
-        Matrix4f transformation_matrix;
-        transformation_matrix.identity();
-        transformation_matrix.translate(&transform->position);
-        transformation_matrix.rotate(to_radians(transform->rotation.x), &vec_x);
-        transformation_matrix.rotate(to_radians(transform->rotation.y), &vec_y);
-        transformation_matrix.rotate(to_radians(transform->rotation.z), &vec_z);
-        transformation_matrix.scale(transform->scale.x);
+
+        Engine::Matrix4f base;
+        base.identity();
+        Engine::Matrix4f translate_matrix = Engine::translate(base, transform->position);
+        Engine::Matrix4f scale_matrix = Engine::scale(base, transform->scale);
+        render_command.transformation_matrix = scale_matrix * translate_matrix;
 #if 0
         LOG("Current:");
         LOG(transformation_matrix);
@@ -72,7 +67,7 @@ void Mesh_Render_System::update()
         render_command.transformation_matrix = test;
         }
 #endif
-        render_command.transformation_matrix = transformation_matrix;
+        //render_command.transformation_matrix = transformation_matrix;
 
         render_command.command_type = RENDER_MESH;
         render_command.shader_id = shader_component->program_id;

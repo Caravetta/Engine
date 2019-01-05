@@ -127,7 +127,7 @@ u8* get_component_data_generic( internal_entity_id intern_entity_id, u32 compone
 
 Rc_t remove_entity( internal_entity_id intern_entity_id )
 {
-    LOG("Want to remove index: " << intern_entity_id.index);
+    //LOG("Want to remove index: " << intern_entity_id.index);
 
     archetype_node_t* tmp_archetype_node = archetype_manager->archetype_nodes->at(intern_entity_id.archetype);
     u32 num_comps = (u32)tmp_archetype_node->comp_nodes_vec->size();
@@ -157,7 +157,7 @@ Rc_t remove_entity( internal_entity_id intern_entity_id )
             end_idx = comp_node->empty_idx - 1;
             component_copy_function copy_func = Component_Manager::get_component_copy(comp_node->component_id);
 
-            LOG("Moving comp_id " << comp_node->component_id << " from: " << end_idx << " to " << intern_entity_id.index);
+            //LOG("Moving comp_id " << comp_node->component_id << " from: " << end_idx << " to " << intern_entity_id.index);
 
             copy_func(&(comp_data->at(end_idx * comp_size)), &(comp_data->at(intern_entity_id.index * comp_size)));
             comp_node->empty_idx = comp_node->empty_idx - 1;

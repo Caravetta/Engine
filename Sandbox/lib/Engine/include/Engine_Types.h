@@ -134,6 +134,7 @@ public:
 
     friend ENGINE_API std::ostream& operator<<( std::ostream &strm, const Matrix4f &a );
 
+    Vector3f operator*( const Vector3f &vector ) const;
     Matrix4f operator*( const Matrix4f &other ) const;
 };
 
@@ -404,41 +405,6 @@ public:
 
 /******************************************/
 /*                                        */
-/*          Camera Type                   */
-/*                                        */
-/******************************************/
-
-class ENGINE_API Camera {
-public:
-Vector3f position;
-Vector3f l_position;
-Matrix4f projection_matrix;
-Matrix4f view_matrix;
-Matrix4f transformation_matrix;
-Matrix4f ortho_matrix;
-float pitch;
-float yaw;
-float roll;
-float fov;
-float near_plane;
-float far_plane;
-
-Camera( Vector3f position, Vector2f frame_dimesions );
-void set_transformation( Vector3f* translation, float rx, float ry, float rz, float scale );
-void set_view_matrix();
-void move( float dx, float dy, float dz );
-void rotate( float dyaw, float dpitch );
-void update_projection_matrix( Vector2f frame_dimesions );
-void update_ortho_matrix( Vector2f frame_dimesions );
-
-private:
-void set_projection_matrix( float width, float height );
-void set_ortho_matrix( float width, float height );
-void look_at( float eyeX, float eyeY, float eyeZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ );
-};
-
-/******************************************/
-/*                                        */
 /*        Default Component Types         */
 /*                                        */
 /******************************************/
@@ -501,6 +467,118 @@ struct ENGINE_API Font_Settings {
     Font_Handle font_handle;
     uint16_t string_new_line_pad;
 };
+
+/******************************************/
+/*                                        */
+/*          Camera Type                   */
+/*                                        */
+/******************************************/
+
+struct ENGINE_API Camera {
+    Transform   transform;
+    Matrix4f    view_matrix;
+    Matrix4f    projection_matrix;
+    float       field_of_view; //Note: This is in degrees;
+    float       near_plane;
+    float       far_plane;
+    float       aspect_ratio;
+};
+
+/******************************************/
+/*                                        */
+/*              Key Codes                 */
+/*                                        */
+/******************************************/
+
+typedef enum {
+    KEY_ESCAPE,
+    KEY_1,
+    KEY_2,
+    KEY_3,
+    KEY_4,
+    KEY_5,
+    KEY_6,
+    KEY_7,
+    KEY_8,
+    KEY_9,
+    KEY_0,
+    KEY_MINUS,
+    KEY_EQUALS,
+    KEY_BACKSPACE,
+    KEY_TAB,
+    KEY_Q,
+    KEY_W,
+    KEY_E,
+    KEY_R,
+    KEY_T,
+    KEY_Y,
+    KEY_U,
+    KEY_I,
+    KEY_O,
+    KEY_P,
+    KEY_BRACKETLEFT,
+    KEY_BRACKETRIGHT,
+    KEY_ENTER,
+    KEY_CONTROLLEFT,
+    KEY_A,
+    KEY_S,
+    KEY_D,
+    KEY_F,
+    KEY_G,
+    KEY_H,
+    KEY_J,
+    KEY_K,
+    KEY_L,
+    KEY_SEMICOLON,
+    KEY_APOSTROPHE,
+    KEY_GRAVE,
+    KEY_SHIFTLEFT,
+    KEY_BACKSLASH,
+    KEY_Z,
+    KEY_X,
+    KEY_C,
+    KEY_V,
+    KEY_B,
+    KEY_N,
+    KEY_M,
+    KEY_COMMA,
+    KEY_PREIOD,
+    KEY_SLASH,
+    KEY_SHIFTRIGHT,
+    KEY_NUMPAD_MULTIPLY,
+    KEY_ALTLEFT,
+    KEY_SPACE,
+    KEY_CAPSLOCK,
+    KEY_F1,
+    KEY_F2,
+    KEY_F3,
+    KEY_F4,
+    KEY_F5,
+    KEY_F6,
+    KEY_F7,
+    KEY_F8,
+    KEY_F9,
+    KEY_F10,
+    KEY_NUMLOCK,
+    KEY_SCROLLLOCK,
+    KEY_NUMPAD_7,
+    KEY_NUMPAD_8,
+    KEY_NUMPAD_9,
+    KEY_NUMPAD_MINUS,
+    KEY_NUMPAD_4,
+    KEY_NUMPAD_5,
+    KEY_NUMPAD_6,
+    KEY_NUMPAD_PLUS,
+    KEY_NUMPAD_1,
+    KEY_NUMPAD_2,
+    KEY_NUMPAD_3,
+    KEY_NUMPAD_0,
+    KEY_NUMPAD_PERIOD,
+    KEY_ALT_PRINTSCREEN,
+    KEY_BRACKETANGLE,
+    KEY_F11,
+    KEY_F12,
+} key_t;
 
 } // end namespace Engine
 

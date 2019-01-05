@@ -30,9 +30,9 @@ typedef struct {
     int text;
 } indice_data;
 
-int _get_indice( int vert , int text, int norm, std::vector<indice_data*>* temp_data )
+u32 _get_indice( int vert , int text, int norm, std::vector<indice_data*>* temp_data )
 {
-    for ( u64 i = 0; i < temp_data->size(); i++ ) {
+    for ( u32 i = 0; i < temp_data->size(); i++ ) {
         indice_data* data = (*temp_data)[i];
         if ( vert == data->vert && text == data->text && norm == data->norm ) {
             return i;
@@ -45,7 +45,7 @@ int _get_indice( int vert , int text, int norm, std::vector<indice_data*>* temp_
     temp->text = text;
     temp_data->push_back(temp);
 
-    return (int)(temp_data->size() - 1);
+    return (u32)(temp_data->size() - 1);
 }
 
 Rc_t load_obj_file( std::string file_path, Mesh* mesh )
@@ -55,7 +55,7 @@ Rc_t load_obj_file( std::string file_path, Mesh* mesh )
     std::vector<Vector3f> vert_vector(1000);
     std::vector<Vector3f> norm_vector(1000);
     std::vector<Vector3f> text_vector(1000);
-    std::vector<int> indice_vector(1000);
+    std::vector<u32> indice_vector(1000);
     std::vector<indice_data*> temp_data;
     vert_vector.clear();
     norm_vector.clear();

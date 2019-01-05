@@ -1,6 +1,5 @@
 #include "systems.h"
 #include "components.h"
-#include "input_tracker.h"
 
 Player_System::Player_System()
 {
@@ -24,20 +23,34 @@ void Player_System::update()
 
     float dt = Engine::get_delta_time();
 
-    for( uint32_t ii = 0; ii < entity_count; ++ii ) {
+    for ( uint32_t ii = 0; ii < entity_count; ++ii ) {
 
         transform = transform_vec->at(ii);
+        player = player_vec->at(ii);
 
-        if (is_key_pressed(Input_Tracker::W_KEY_STATE)) {
+        if ( Engine::is_key_pressed(Engine::KEY_W) ) {
             transform->position.z = transform->position.z + (-1 * dt);
-        } else if (is_key_pressed(Input_Tracker::S_KEY_STATE)) {
+        } else if ( Engine::is_key_pressed(Engine::KEY_S) ) {
             transform->position.z = transform->position.z + (1 * dt);
         }
 
-        if (is_key_pressed(Input_Tracker::A_KEY_STATE)) {
+        if ( Engine::is_key_pressed(Engine::KEY_A) ) {
             transform->position.x = transform->position.x + (-1 * dt);
-        } else if (is_key_pressed(Input_Tracker::D_KEY_STATE)) {
+        } else if ( Engine::is_key_pressed(Engine::KEY_D) ) {
             transform->position.x = transform->position.x + (1 * dt);
+        }
+
+        if ( Engine::is_key_pressed(Engine::KEY_C) ) {
+            transform->position.y = transform->position.y + (1 * dt);
+        } else if ( Engine::is_key_pressed(Engine::KEY_V) ) {
+            transform->position.y = transform->position.y + (-1 * dt);
+        }
+
+        if ( Engine::is_key_pressed(Engine::KEY_F) ) {
+            //Engine::rotate_active_camera( 0, 2 * dt);
+        }
+        if ( Engine::is_key_pressed(Engine::KEY_R) ) {
+            //Engine::rotate_active_camera( 0, -2 * dt);
         }
     }
 }

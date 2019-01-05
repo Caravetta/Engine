@@ -1,28 +1,12 @@
 #include <Engine.h>
 #include <iostream>
-#include "debug_camera.h"
 #include "components.h"
 #include "systems.h"
-#include "input_tracker.h"
-
-template<typename T, typename U>
-static T lerp(const T& val1, const T& val2, const U& amt)
-{
-    return (T)(val1 * ((U)(1) - amt) + val2 * amt);
-}
-
-inline float randf()
-{
-    return ::rand()/(float)RAND_MAX;
-}
-inline float randf(float min, float max) {
-    return lerp(min, max, randf());
-}
 
 int main()
 {
     Engine::engine_config_t engine_config;
-    engine_config.window_width = 1000;
+    engine_config.window_width = 800;
     engine_config.window_height = 800;
     engine_config.window_title = "Test Window";
 
@@ -39,11 +23,12 @@ int main()
     Engine::register_component<Bullet_Motion>();
     Engine::register_component<Bullet_Distance>();
     Engine::register_component<Engine::Entity>();
+    Engine::register_component<Camera_Info>();
 
-    //Engine::register_system<Motion_System>();
     Engine::register_system<Player_System>();
     Engine::register_system<Bullet_Spawn_System>();
     Engine::register_system<Bullet_Motion_System>();
+    Engine::register_system<Camera_System>();
     Engine::register_system<Engine::Mesh_Render_System>();
 
     Engine::register_asset<Engine::Mesh_Asset>("cube_mesh", "res/cube.mesh");
@@ -75,9 +60,16 @@ int main()
     bullet_arche.add_component<Bullet_Distance>();
     Engine::register_archetype(bullet_arche, "bullet_entity");
 
+    Engine::Archetype camera_arche;
+    camera_arche.add_component<Camera_Info>();
+    Engine::register_archetype(camera_arche, "camera_entity");
+
     Engine::Transform* transform;
     Engine::Mesh_Handle* mesh_handle;
     Engine::Shader_ID* shader_id;
+    Player* player;
+    Camera_Info* camera_info;
+
 
     Engine::Mesh_Asset* dagger_mesh = Engine::get_asset_by_name<Engine::Mesh_Asset>("dagger_mesh");
     Engine::Mesh_Handle dagger_handle = Engine::load_to_graphics_api(&dagger_mesh->mesh);
@@ -92,23 +84,29 @@ int main()
     transform = Engine::get_component<Engine::Transform>(ship);
     mesh_handle = Engine::get_component<Engine::Mesh_Handle>(ship);
     shader_id = Engine::get_component<Engine::Shader_ID>(ship);
+    player = Engine::get_component<Player>(ship);
+    player->name = "square";
 
-    transform->position = Engine::Vector3f(0, 0, 0);
-    transform->scale = Engine::Vector3f(0.5, 0, 0);
+    transform->position = Engine::Vector3f(0, 0, -1);
+    transform->scale = Engine::Vector3f(0.25, 0.25, 0.25);
 
     *mesh_handle = cube_mesh->mesh.handle;
 
     shader_id->program_id = default_program;
 
-    Engine::Camera camera(Engine::Vector3f(0, 2.6212, 1.21776), Engine::Vector2f(800, 800));
-    camera.rotate(0, -0.89);
+    Engine::Entity camera = Engine::create_entity("camera_entity");
+    camera_info = Engine::get_component<Camera_Info>(camera);
+    camera_info->camera.field_of_view = 90.0f;
+    camera_info->camera.field_of_view = 90.0f;
+    camera_info->camera.aspect_ratio = 4 / 3;
+    camera_info->camera.near_plane = 0.01f;
+    camera_info->camera.far_plane = 10000.0f;
 
-    //debug_camera_init();
-    //Engine::Camera* camera = get_debug_camera();
+    camera_info->camera_type = MAIN_CAM_TYPE;
 
-    Engine::set_active_camera(&camera);
+    camera_info->camera.transform.position = Engine::Vector3f(0, 0.5, 0);
 
-    Input_Tracker::init();
+    Engine::set_active_camera(&camera_info->camera);
 
     Engine::run();
 

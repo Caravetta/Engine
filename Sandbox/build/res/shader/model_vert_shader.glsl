@@ -11,10 +11,13 @@ out vec3 toCameraVector;
 uniform mat4 view_matrix;
 uniform mat4 transformationMatrix;
 uniform mat4 projection_matrix;
-
+uniform mat4 MVP;
 void main(void){
     vec4 worldPosition = transformationMatrix * vec4(position,1.0);
-	gl_Position = projection_matrix * view_matrix *  worldPosition;
+
+	mat4 mvp = projection_matrix * view_matrix * transformationMatrix;
+
+	gl_Position = mvp * vec4(position,1.0);
 
     surfaceNormal = (transformationMatrix * vec4(normal,0.0)).xyz;
 

@@ -33,6 +33,8 @@ Rc_t init( engine_config_t* engine_config )
 
     Rc_t rc = Event_Manager::init();
 
+    rc = Input_Manager::init();
+
     rc = Window::create(engine_config->window_width, engine_config->window_height, engine_config->window_title);
     if ( rc != SUCCESS ) {
         LOG_ERROR("Failed to create window");
@@ -93,12 +95,12 @@ void run()
         //TODO(JOSH): move upading the dims to an event based on window resize
         Vector2f frame_size((float)Window::get_width(), (float)Window::get_height());
 
-        if ( engine_data->active_camera != NULL ) {
-            //TODO(JOSH): move upading the proj and ortho to an event based on window resize
-            engine_data->active_camera->update_projection_matrix(frame_size);
-            engine_data->active_camera->update_ortho_matrix(frame_size);
-            engine_data->active_camera->set_view_matrix();
-        }
+        //if ( engine_data->active_camera != NULL ) {
+        //    //TODO(JOSH): move upading the proj and ortho to an event based on window resize
+        //    engine_data->active_camera->update_projection_matrix(frame_size);
+        //    engine_data->active_camera->update_ortho_matrix(frame_size);
+        //    engine_data->active_camera->set_view_matrix();
+        //}
 
         render( engine_data->active_camera, (int)frame_size.x, (int)frame_size.y );
 
@@ -119,6 +121,11 @@ void set_active_camera( Camera* camera )
     engine_data->active_camera = camera;
 }
 
+Camera* get_active_camera( void )
+{
+    return engine_data->active_camera;
+}
+
 float get_delta_time()
 {
     return engine_data->frame_time.get_delta();
@@ -137,6 +144,11 @@ Rc_t subscribe_to_event( std::string event_name, void (*callback)(void*, size_t)
 Rc_t broadcast_event( std::string event_name, void* data, size_t data_size )
 {
     return Event_Manager::broadcast_event(event_name, data, data_size);
+}
+
+bool is_key_pressed( key_t key )
+{
+    return Input_Manager::is_key_pressed(key);
 }
 
 } // end namespace Engine

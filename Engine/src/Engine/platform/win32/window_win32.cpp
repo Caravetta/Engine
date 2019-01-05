@@ -35,14 +35,17 @@ LRESULT CALLBACK _WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             DestroyWindow(hwnd);
             is_closed = true;
         break;
-        case WM_KEYDOWN:
-            Input_Manager::get_instance()->process_key_down((uint16_t)wParam);
+        case WM_KEYDOWN: {
+            //Input_Manager::process_key_down((uint16_t)wParam);
+            Input_Manager::process_key_down(get_key_id((key_scancode_t)((lParam >> 16) & 0xff)));
+            }
         break;
         case WM_KEYUP:
-            Input_Manager::get_instance()->process_key_up((uint16_t)wParam);
+            //Input_Manager::get_instance()->process_key_up((uint16_t)wParam);
+            Input_Manager::process_key_up(get_key_id((key_scancode_t)((lParam >> 16) & 0xff)));
         break;
         case WM_MOUSEMOVE:
-            Input_Manager::get_instance()->process_mouse_move(LOWORD(lParam), HIWORD(lParam));
+            //Input_Manager::get_instance()->process_mouse_move(LOWORD(lParam), HIWORD(lParam));
         break;
         case WM_SIZE: {
             local_width = LOWORD(lParam);

@@ -1,6 +1,5 @@
 #include "systems.h"
 #include "components.h"
-#include "input_tracker.h"
 
 Bullet_Spawn_System::Bullet_Spawn_System()
 {
@@ -30,9 +29,8 @@ void Bullet_Spawn_System::update()
         transform = transform_vec->at(ii);
         shader_id = shader_vec->at(ii);
 
-        if ( is_key_pressed(Input_Tracker::D_KEY_STATE) ) {
+        if ( Engine::is_key_pressed(Engine::KEY_SPACE) ) {
             Engine::Entity bullet = Engine::create_entity("bullet_entity");
-
             Engine::Transform* bullet_transform;
             Engine::Mesh_Handle* mesh_handle;
             Engine::Shader_ID* bullet_shader_id;
@@ -49,8 +47,8 @@ void Bullet_Spawn_System::update()
             bullet_distance = Engine::get_component<Bullet_Distance>(bullet);
             bullet_entity_id = Engine::get_component<Engine::Entity>(bullet);
 
-            bullet_transform->position = transform->position;
-            bullet_transform->scale = Engine::Vector3f(0.005, 0, 0);
+            bullet_transform->position = Engine::Vector3f(transform->position.x, transform->position.y, transform->position.z);
+            bullet_transform->scale = Engine::Vector3f(0.005, 0.005, 0.005);
             bullet_transform->rotation = Engine::Vector3f(-90, 0, 0);
             *mesh_handle = dagger_mesh->mesh.handle;
             bullet_motion->acceleration = Engine::Vector3f(0, 0, -1);
