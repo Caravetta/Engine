@@ -4,5 +4,5 @@
 
 ## Useful links
 
- - [Engine Demos](https://github.com/Caravetta/Engine-Demos)
+ - [Engine Demo](https://github.com/Caravetta/Engine-Demo)
  - [bfg9000 build file generator](https://github.com/jimporter/bfg9000)
