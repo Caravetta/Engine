@@ -30,6 +30,8 @@ build_script:
 
     sudo apt-get --yes install libglew-dev
 
+    sudo apt-get --yes install freeglut3-dev
+
     9k build/
 
     cd build/
