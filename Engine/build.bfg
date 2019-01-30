@@ -49,8 +49,8 @@ if env.platform.name == 'windows':
     source_files.extend(find_files('src/Engine/platform/win32/', '*.cpp'))
 elif env.platform.name == 'linux':
     flags = ['-DLINUX', '-Wall', '-O3', '-fPIC', '-fvisibility=hidden', '-ffunction-sections']
-    link_flags = [ '-Wl,--gc-sections' ]
-    package_list = [package('GL'), package('GLU'), package('glut'), package('GLEW'), package('sdl2'), package('freetype2')]
+    link_flags = [ '-Wl,--gc-sections', '-Wl,--no-undefined' ]
+    package_list = [package('GL'), package('GLU'), package('glut'), package('GLEW'), package('sdl2'), package('freetype2'), package('pthread')]
     include_list.extend(['src/Engine/platform/linux/include/', '/usr/include/freetype2/']);
     source_files.extend(find_files('src/Engine/platform/linux/', '*.cpp'))
 
