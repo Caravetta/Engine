@@ -22,13 +22,13 @@ build_script:
 - sh: >-
     sudo pip install bfg9000
 
-    sudo apt-get install libfreetype6-dev
+    sudo apt-get --yes install libfreetype6-dev
 
-    sudo apt-get install build-essential libgl1-mesa-dev
+    sudo apt-get --yes install build-essential libgl1-mesa-dev
 
-    sudo apt-get install libsdl2-dev
+    sudo apt-get --yes install libsdl2-dev
 
-    sudo apt-get install libglew-dev
+    sudo apt-get --yes install libglew-dev
 
     9k build/
 
