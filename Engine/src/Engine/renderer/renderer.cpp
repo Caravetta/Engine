@@ -2,6 +2,9 @@
 #include "renderer.h"
 #include "thread.h"
 #include "math_utils.h"
+#include "mesh_manager.h"
+#include "material_manager.h"
+#include "texture_manager.h"
 
 namespace Engine {
 
@@ -26,17 +29,42 @@ void release_render_queue()
 
 }
 
-void _generate_commands(std::vector<opengl_command_t>* opengl_commands)
+typedef struct {
+    std::vector<uint32_t> material_idx;
+    uint32_t shader_id;
+} shader_info_list_t;
+
+typedef struct {
+    std::vector<Matrix4f> transformation_matrix_vec;
+    uint64_t enabled_state;
+} mesh_group_info_t;
+
+typedef struct {
+    vao_t* vao;
+    uint32_t indices_count;
+    std::unordered_map<uint64_t, uint32_t> enable_state_map;
+    std::vector<mesh_group_info_t> mesh_group_vec;
+} mesh_entry_t;
+
+typedef struct {
+    Material* material;
+    std::unordered_map<uint64_t, uint32_t> mesh_handle_map;
+    std::vector<mesh_entry_t> mesh_entry_vec;
+} material_entry_t;
+
+void _generate_commands(std::vector<opengl_command_t>* opengl_commands, Camera* camera)
 {
     uint64_t enabled_state = 0;
 
-    std::vector<enabled_state_info_t> enable_state_info;
-    std::unordered_map<uint64_t, uint64_t> enabled_state_map;  //<enabled_state, enable_state_info idx>
+    std::vector<material_entry_t> material_entry_vec;
+    std::unordered_map<uint64_t, uint32_t> material_handle_map; // key = material handle id | value = material_entry_vec index
+
+    std::vector<shader_info_list_t> shader_info_list;
+    std::unordered_map<uint32_t, uint32_t> shader_id_map;
 
     /*
      * We first need to loop through all commands to sort them.
      * Sort Order:
-     *  - Enable state
      *  - Shader
      *  - Texture
      *  - Mesh / vao
@@ -78,71 +106,73 @@ void _generate_commands(std::vector<opengl_command_t>* opengl_commands)
         } break;
         case RENDER_TEXT:
 		case RENDER_MESH: {
-            /*
-             * Steps
-             * - get map for enable_state
-             * - get map for shader/texture key
-             * - see if mesh has been seen if not add mesh if has been seen add new position to position array for mesh
-             */
-            //uint64_t shader_texture_key = SHADER_TEXTURE_KEY(render_command_queue[i].texture_id, render_command_queue[i].shader_id);
-            enabled_state_info_t* enabled_statep = NULL;
-            shader_info_t* shader_infop = NULL;
-            texture_info_t* texture_infop = NULL;
-            vao_info_t* vao_infop = NULL;
 
-            std::unordered_map<uint64_t, uint64_t>::const_iterator ele = enabled_state_map.find(enabled_state);
-            if ( ele != enabled_state_map.end() ) {
-                 enabled_statep = &enable_state_info[ele->second];
+            uint32_t material_vec_idx;
+
+            std::unordered_map<uint64_t, uint32_t>::const_iterator ele = material_handle_map.find(render_command_queue[i].material_handle.id);
+            if ( ele == material_handle_map.end() ) {
+                // we have not seen this material
+
+                material_entry_t material_entry;
+                material_entry.material = Material_Manager::get_material(render_command_queue[i].material_handle);
+                material_entry_vec.push_back(material_entry);
+
+                material_handle_map.insert({ render_command_queue[i].material_handle.id, (uint32_t)material_entry_vec.size() - 1 });
+
+                material_vec_idx = (uint32_t)material_entry_vec.size() - 1;
             } else {
-                 enabled_state_info_t temp_enable_state;
-                 enable_state_info.push_back(temp_enable_state);
-                 enabled_state_map.insert({ enabled_state, enable_state_info.size() - 1 });
-                 enabled_statep = &enable_state_info[enable_state_info.size() - 1];
-                 enabled_statep->enable_state = enabled_state;
-            }
-            ele = enabled_statep->shader_map.find(render_command_queue[i].shader_id);
-            if ( ele != enabled_statep->shader_map.end() ) {
-                 shader_infop = &enabled_statep->shader_info[ele->second];
-            } else {
-                 shader_info_t temp_shader;
-                 enabled_statep->shader_info.push_back(temp_shader);
-                 enabled_statep->shader_map.insert({ render_command_queue[i].shader_id, enabled_statep->shader_info.size() - 1 });
-                 shader_infop = &enabled_statep->shader_info[enabled_statep->shader_info.size() - 1];
-                 shader_infop->shader_id = render_command_queue[i].shader_id;
-            }
-            ele = shader_infop->texture_map.find(render_command_queue[i].texture_id);
-            if ( ele != shader_infop->texture_map.end() ) {
-                 texture_infop = &shader_infop->texture_info[ele->second];
-            } else {
-                 texture_info_t temp_texture;
-                 shader_infop->texture_info.push_back(temp_texture);
-                 shader_infop->texture_map.insert({ render_command_queue[i].texture_id, shader_infop->texture_info.size() - 1 });
-                 texture_infop = &shader_infop->texture_info[shader_infop->texture_info.size() - 1];
-                 texture_infop->texture_id = render_command_queue[i].texture_id;
+                material_vec_idx = ele->second;
             }
 
-			uint64_t vao_id = render_command_queue[i].vao->id;
-            ele = texture_infop->vao_map.find(vao_id);
-            if (  ele != texture_infop->vao_map.end() ) {
-                  vao_infop = &texture_infop->vao_info[ele->second];
+            uint32_t shader_vec_idx;
+
+            std::unordered_map<uint32_t, uint32_t>::const_iterator shader_ele = shader_id_map.find(material_entry_vec[material_vec_idx].material->shader_id);
+            if ( shader_ele == shader_id_map.end() ) {
+                shader_info_list_t shader_info;
+                shader_info.shader_id = material_entry_vec[material_vec_idx].material->shader_id;
+                shader_info_list.push_back(shader_info);
+                shader_id_map.insert({ material_entry_vec[material_vec_idx].material->shader_id, (uint32_t)shader_info_list.size() - 1 });
+                shader_vec_idx = (uint32_t)shader_info_list.size() - 1;
             } else {
-                  vao_info_t temp_vao;
-                  texture_infop->vao_info.push_back(temp_vao);
-                  texture_infop->vao_map.insert({ vao_id, texture_infop->vao_info.size() - 1 });
-                  vao_infop = &texture_infop->vao_info[texture_infop->vao_info.size() - 1];
-                  vao_infop->vao = render_command_queue[i].vao;
-                  vao_infop->indices_count = render_command_queue[i].indices_count;
-                  if ( render_command_queue[i].command_type == RENDER_MESH ) {
-                       vao_infop->d_type = VAO_3D;
-                  } else {
-                       vao_infop->d_type = VAO_2D;
-                  }
+                shader_vec_idx = shader_ele->second;
             }
-            if ( render_command_queue[i].command_type == RENDER_MESH ) {
-                 vao_infop->vao_pos.push_back(render_command_queue[i].transformation_matrix);
+
+            shader_info_list[shader_vec_idx].material_idx.push_back(material_vec_idx);
+
+            uint32_t mesh_vec_idx;
+
+            // check to see if we have seen this mesh along with this material
+            ele = material_entry_vec[material_vec_idx].mesh_handle_map.find(render_command_queue[i].mesh_handle.id);
+            if ( ele == material_entry_vec[material_vec_idx].mesh_handle_map.end() ) {
+                // we have not seen this mesh yet
+
+                mesh_entry_t mesh_entry;
+                mesh_entry.vao = Mesh_Manager::get_mesh_vao(render_command_queue[i].mesh_handle);
+                mesh_entry.indices_count = Mesh_Manager::get_indices_count(render_command_queue[i].mesh_handle);
+
+                material_entry_vec[material_vec_idx].mesh_entry_vec.push_back(mesh_entry);
+
+                material_entry_vec[material_vec_idx].mesh_handle_map.insert({ render_command_queue[i].mesh_handle.id, (uint32_t)material_entry_vec[material_vec_idx].mesh_entry_vec.size() - 1});
+                mesh_vec_idx = (uint32_t)material_entry_vec[material_vec_idx].mesh_entry_vec.size() - 1;
             } else {
-                 vao_infop->vao_pos_3f.push_back(render_command_queue[i].position);
+                mesh_vec_idx = ele->second;
             }
+
+            uint32_t enable_idx;
+
+            ele = material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].enable_state_map.find(enabled_state);
+            if ( ele == material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].enable_state_map.end() ) {
+                mesh_group_info_t mesh_group;
+                mesh_group.enabled_state = enabled_state;
+                material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].mesh_group_vec.push_back(mesh_group);
+
+                material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].enable_state_map.insert({ enabled_state, (uint32_t)material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].mesh_group_vec.size() - 1 });
+                enable_idx = (uint32_t)material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].mesh_group_vec.size() - 1;
+            } else {
+                enable_idx = ele->second;
+            }
+
+            material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].mesh_group_vec[enable_idx].transformation_matrix_vec.push_back(render_command_queue[i].transformation_matrix);
 
         } break;
         case RESERVED: {
@@ -154,112 +184,176 @@ void _generate_commands(std::vector<opengl_command_t>* opengl_commands)
         };
     }
 
-	for (uint64_t i = 0; i < enable_state_info.size(); i++) {
-        if ( (enable_state_info[i].enable_state & BLEND_ENABLED) > 0 ) {
-             opengl_command_t new_command;
-             new_command.command_type = GL_ENABLE;
-             new_command.type = BLEND_TYPE;
-             opengl_commands->push_back(new_command);
-        } else {
-             opengl_command_t new_command;
-             new_command.command_type = GL_DISABLE;
-             new_command.type = BLEND_TYPE;
-             opengl_commands->push_back(new_command);
+    uint64_t current_enable_state = 0;
+    int transform_uniform_id = -1;
+
+    for ( uint32_t ii = 0; ii < shader_info_list.size(); ++ii ) {
+        // change shader here
+        {
+            opengl_command_t new_command;
+            new_command.command_type = BIND_SHADER;
+            new_command.shader_id = shader_info_list[ii].shader_id;
+            opengl_commands->push_back(new_command);
+        }
+        {
+            opengl_command_t new_command;
+            new_command.command_type = UNIFORM_MAT4;
+            new_command.uniform_info.matrix4f = camera->projection_matrix;
+            new_command.uniform_info.id = glGetUniformLocation(shader_info_list[ii].shader_id, "projection_matrix");
+
+            if ( new_command.uniform_info.id == -1 ) {
+                LOG_ERROR("projection_matrix is not a uniform in shader id " << shader_info_list[ii].shader_id);
+            } else {
+                opengl_commands->push_back(new_command);
+            }
+        }
+        {
+            opengl_command_t new_command;
+            new_command.command_type = UNIFORM_MAT4;
+            new_command.uniform_info.matrix4f = camera->view_matrix;
+            new_command.uniform_info.id = glGetUniformLocation(shader_info_list[ii].shader_id, "view_matrix");
+
+            if ( new_command.uniform_info.id == -1 ) {
+                LOG_ERROR("view_matrix is not a uniform in shader id " << shader_info_list[ii].shader_id);
+            } else {
+                opengl_commands->push_back(new_command);
+            }
         }
 
-        if ( (enable_state_info[i].enable_state & DEPTH_TEST_ENABLED) > 0 ) {
-             opengl_command_t new_command;
-             new_command.command_type = GL_ENABLE;
-             new_command.type = DEPTH_TEST_TYPE;
-             opengl_commands->push_back(new_command);
-        } else {
-             opengl_command_t new_command;
-             new_command.command_type = GL_DISABLE;
-             new_command.type = DEPTH_TEST_TYPE;
-             opengl_commands->push_back(new_command);
-        }
+        transform_uniform_id = glGetUniformLocation(shader_info_list[ii].shader_id, "transformationMatrix");
 
-        if ( (enable_state_info[i].enable_state & CULL_FACE_ENABLED) > 0 ) {
-             opengl_command_t new_command;
-             new_command.command_type = GL_ENABLE;
-             new_command.type = CULL_FACE_TYPE;
-             opengl_commands->push_back(new_command);
-        } else {
-             opengl_command_t new_command;
-             new_command.command_type = GL_DISABLE;
-             new_command.type = CULL_FACE_TYPE;
-             opengl_commands->push_back(new_command);
-        }
+        for ( uint32_t jj = 0; jj < shader_info_list[ii].material_idx.size(); ++jj ) {
 
-		std::vector<shader_info_t>* shader_info_vecp = &enable_state_info[i].shader_info;
+            uint32_t material_index = shader_info_list[ii].material_idx[jj];
 
-        for (uint64_t j = 0; j < shader_info_vecp->size(); j++) {
-            opengl_command_t bind_shader_command;
-            bind_shader_command.command_type = BIND_SHADER;
-            bind_shader_command.shader_id = shader_info_vecp->at(j).shader_id;
-            opengl_commands->push_back(bind_shader_command);
+            Material* current_material = material_entry_vec[material_index].material;
 
-            std::vector<texture_info_t>* texture_info_vecp = &shader_info_vecp->at(j).texture_info;
-            for (uint64_t k = 0; k < texture_info_vecp->size(); k++) {
-                opengl_command_t bind_texture_command;
-                bind_texture_command.command_type = BIND_TEXTURE;
-                bind_texture_command.texture_id = texture_info_vecp->at(k).texture_id;
-                opengl_commands->push_back(bind_texture_command);
+            uint32_t current_texture_unit = 0;
+            for ( uint32_t tt = 0; tt < current_material->element_info_vec.size(); ++tt ) {
+                switch( current_material->element_info_vec[tt].type ) {
+                case VEC3_ELEMENT: {
+                    opengl_command_t new_command;
+                    new_command.command_type = UNIFORM_VEC3;
+                    new_command.uniform_info.vector3f = *current_material->get_element<Vector3f>(current_material->element_info_vec[tt].element_name);
+                    new_command.uniform_info.id = glGetUniformLocation(shader_info_list[ii].shader_id, current_material->element_info_vec[tt].element_name.c_str());
 
-                std::vector<vao_info_t>* vao_info_vecp = &texture_info_vecp->at(k).vao_info;
-
-                for (uint64_t m = 0; m < vao_info_vecp->size(); m++) {
-                    opengl_command_t bind_vao_command;
-                    bind_vao_command.command_type = BIND_VAO;
-                    bind_vao_command.vao_info.vao = vao_info_vecp->at(m).vao;
-                    opengl_commands->push_back(bind_vao_command);
-
-                    if (vao_info_vecp->at(m).d_type == VAO_3D) {
-                    for (uint64_t l = 0; l < vao_info_vecp->at(m).vao_pos.size(); l++) {
-                        opengl_command_t draw_vao_command;
-                        draw_vao_command.command_type = DRAW_ELEMENTS;
-                        draw_vao_command.draw_data.indices_count = vao_info_vecp->at(m).indices_count;
-                        if ( vao_info_vecp->at(m).d_type == VAO_3D ) {
-                             draw_vao_command.draw_data.d_type = VAO_3D;
-                             draw_vao_command.draw_data.transformation_matrix = vao_info_vecp->at(m).vao_pos[l];
-                        } else {
-                             draw_vao_command.draw_data.d_type = VAO_2D;
-                             draw_vao_command.draw_data.position = vao_info_vecp->at(m).vao_pos_3f[l];
-                        }
-                        opengl_commands->push_back(draw_vao_command);
-                    }
+                    if ( new_command.uniform_info.id == -1 ) {
+                        LOG_ERROR(current_material->element_info_vec[tt].element_name << " is not a uniform in shader id " << shader_info_list[ii].shader_id);
                     } else {
-                    for (uint64_t l = 0; l < vao_info_vecp->at(m).vao_pos_3f.size(); l++) {
-                        opengl_command_t draw_vao_command;
-                        draw_vao_command.command_type = DRAW_ELEMENTS;
-                        draw_vao_command.draw_data.indices_count = vao_info_vecp->at(m).indices_count;
-                             draw_vao_command.draw_data.d_type = VAO_2D;
-                             draw_vao_command.draw_data.position = vao_info_vecp->at(m).vao_pos_3f[l];
-                        opengl_commands->push_back(draw_vao_command);
+                        opengl_commands->push_back(new_command);
                     }
+                } break;
+                case MATRIX4_ELEMENT: {
+                    opengl_command_t new_command;
+                    new_command.command_type = UNIFORM_MAT4;
+                    new_command.uniform_info.matrix4f = *current_material->get_element<Matrix4f>(current_material->element_info_vec[tt].element_name);
+                    new_command.uniform_info.id = glGetUniformLocation(shader_info_list[ii].shader_id, current_material->element_info_vec[tt].element_name.c_str());
 
+                    if ( new_command.uniform_info.id == -1 ) {
+                        LOG_ERROR(current_material->element_info_vec[tt].element_name << " is not a uniform in shader id " << shader_info_list[ii].shader_id);
+                    } else {
+                        opengl_commands->push_back(new_command);
                     }
+                } break;
+                case TEXT_HANDLE_ELEMENT: {
+                    opengl_command_t new_command;
+                    new_command.command_type = UNIFORM_TEXT;
+                    Texture_Handle texture_handle = *current_material->get_element<Texture_Handle>(current_material->element_info_vec[tt].element_name);
+                    new_command.uniform_info.texture_id = Texture_Manager::get_texture_id(texture_handle);
+                    new_command.uniform_info.id = glGetUniformLocation(shader_info_list[ii].shader_id, current_material->element_info_vec[tt].element_name.c_str());
+                    new_command.uniform_info.texture_unit = current_texture_unit++;
 
-					opengl_command_t unbind_vao_command;
-                    unbind_vao_command.command_type = UNBIND_VAO;
-                    unbind_vao_command.vao_info.vao = vao_info_vecp->at(m).vao;
-                    opengl_commands->push_back(unbind_vao_command);
+                    if ( new_command.uniform_info.id == -1 ) {
+                        LOG_ERROR(current_material->element_info_vec[tt].element_name << " is not a uniform in shader id " << shader_info_list[ii].shader_id);
+                    } else {
+                        opengl_commands->push_back(new_command);
+                    }
+                } break;
+                default: {
+                    LOG_ERROR("Unsupported data type");
+                } break;
                 }
-
-                opengl_command_t unbind_texture_command;
-                unbind_texture_command.command_type = UNBIND_TEXTURE;
-                unbind_texture_command.texture_id = 0;
-                opengl_commands->push_back(unbind_texture_command);
             }
 
-            opengl_command_t unbind_shader_command;
-            unbind_shader_command.command_type = UNBIND_SHADER;
-            unbind_shader_command.shader_id = 0;
-            opengl_commands->push_back(unbind_shader_command);
+            for ( uint32_t kk = 0; kk < material_entry_vec[material_index].mesh_entry_vec.size(); ++kk ) {
+
+                // bind the vao here
+                {
+                    opengl_command_t new_command;
+                    new_command.command_type = BIND_VAO;
+                    new_command.vao_info.vao = material_entry_vec[material_index].mesh_entry_vec[kk].vao;
+                    opengl_commands->push_back(new_command);
+                }
+
+                for ( uint32_t ll = 0; ll < material_entry_vec[material_index].mesh_entry_vec[kk].mesh_group_vec.size(); ++ll ) {
+                    if ( material_entry_vec[material_index].mesh_entry_vec[kk].mesh_group_vec[ll].enabled_state != current_enable_state ) {
+                        current_enable_state = material_entry_vec[material_index].mesh_entry_vec[kk].mesh_group_vec[ll].enabled_state;
+
+                        if ( (current_enable_state & BLEND_ENABLED) > 0 ) {
+                            opengl_command_t new_command;
+                            new_command.command_type = GL_ENABLE;
+                            new_command.type = BLEND_TYPE;
+                            opengl_commands->push_back(new_command);
+                        } else {
+                            opengl_command_t new_command;
+                            new_command.command_type = GL_DISABLE;
+                            new_command.type = BLEND_TYPE;
+                            opengl_commands->push_back(new_command);
+                        }
+
+                        if ( (current_enable_state & DEPTH_TEST_ENABLED) > 0 ) {
+                            opengl_command_t new_command;
+                            new_command.command_type = GL_ENABLE;
+                            new_command.type = DEPTH_TEST_TYPE;
+                            opengl_commands->push_back(new_command);
+
+                        } else {
+                            opengl_command_t new_command;
+                            new_command.command_type = GL_DISABLE;
+                            new_command.type = DEPTH_TEST_TYPE;
+                            opengl_commands->push_back(new_command);
+                        }
+
+                        if ( (current_enable_state & CULL_FACE_ENABLED) > 0 ) {
+                            opengl_command_t new_command;
+                            new_command.command_type = GL_ENABLE;
+                            new_command.type = CULL_FACE_TYPE;
+                            opengl_commands->push_back(new_command);
+
+                        } else {
+                            opengl_command_t new_command;
+                            new_command.command_type = GL_DISABLE;
+                            new_command.type = CULL_FACE_TYPE;
+                            opengl_commands->push_back(new_command);
+                        }
+                    }
+
+                    for ( uint32_t pp = 0; pp < material_entry_vec[material_index].mesh_entry_vec[kk].mesh_group_vec[ll].transformation_matrix_vec.size(); ++pp ) {
+                        //set mesh transform here
+                        {
+                            opengl_command_t new_command;
+                            new_command.command_type = UNIFORM_MAT4;
+                            new_command.uniform_info.id = transform_uniform_id;
+                            new_command.uniform_info.matrix4f = material_entry_vec[material_index].mesh_entry_vec[kk].mesh_group_vec[ll].transformation_matrix_vec[pp];
+
+                            if ( new_command.uniform_info.id == -1 ) {
+                                LOG_ERROR( "transformationMatrix is not a uniform in shader id " << shader_info_list[ii].shader_id );
+                            } else {
+                                opengl_commands->push_back(new_command);
+                            }
+                        }
+                        // add a draw command
+                        {
+                            opengl_command_t new_command;
+                            new_command.command_type = DRAW_ELEMENTS;
+                            new_command.draw_data.indices_count = material_entry_vec[material_index].mesh_entry_vec[kk].indices_count;
+                            opengl_commands->push_back(new_command);
+                        }
+                    }
+                }
+            }
         }
-
     }
-
 }
 
 void render( Camera* camera, int width, int height )
@@ -271,23 +365,17 @@ void render( Camera* camera, int width, int height )
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     std::vector<opengl_command_t> opengl_commands;
-    _generate_commands(&opengl_commands);
-
-    int projection_matrix_id = -1;
-    int view_matrix_id = -1;
-    int transformation_matrix_id = -1;
-    int pos_id = -1;
-
-    Matrix4f view;
+    _generate_commands(&opengl_commands, camera);
 
 	for (uint64_t i = 0; i < opengl_commands.size(); i++) {
         switch( opengl_commands[i].command_type ) {
         case BIND_SHADER: {
             glUseProgram(opengl_commands[i].shader_id);
+            #if 0
             projection_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "projection_matrix");
             view_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "view_matrix");
             transformation_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "transformationMatrix");
-            pos_id = glGetUniformLocation(opengl_commands[i].shader_id, "pos");
+            color_id = glGetUniformLocation(opengl_commands[i].shader_id, "color");
 
             if ( projection_matrix_id != -1 ) {
                  glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, (GLfloat *)&camera->projection_matrix);
@@ -295,6 +383,7 @@ void render( Camera* camera, int width, int height )
             if ( view_matrix_id != -1 ) {
                  glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, (GLfloat *)&camera->view_matrix);
             }
+            #endif
         } break;
         case UNBIND_SHADER: {
             glUseProgram(0);
@@ -308,7 +397,8 @@ void render( Camera* camera, int width, int height )
             unbind_vao();
         } break;
         case DRAW_ELEMENTS: {
-            glUniformMatrix4fv(transformation_matrix_id, 1, GL_FALSE, (GLfloat *)&opengl_commands[i].draw_data.transformation_matrix);
+            //glUniformMatrix4fv(transformation_matrix_id, 1, GL_FALSE, (GLfloat *)&opengl_commands[i].draw_data.transformation_matrix);
+            //glUniform3fv(color_id, 1, (GLfloat *)&color);
             glDrawElements(GL_TRIANGLES, opengl_commands[i].draw_data.indices_count, GL_UNSIGNED_INT, 0);
         } break;
         case BIND_TEXTURE: {
@@ -349,6 +439,19 @@ void render( Camera* camera, int width, int height )
                 LOG_ERROR("Unknown OpenGL disable type " << opengl_commands[i].type);
             }
             }
+        } break;
+        case UNIFORM_VEC3: {
+            glUniform3fv(opengl_commands[i].uniform_info.id, 1, (GLfloat *)&opengl_commands[i].uniform_info.vector3f);
+        } break;
+        case UNIFORM_MAT4: {
+            glUniformMatrix4fv(opengl_commands[i].uniform_info.id, 1, GL_FALSE, (GLfloat *)&opengl_commands[i].uniform_info.matrix4f);
+        } break;
+        case UNIFORM_TEXT: {
+            glUniform1i(opengl_commands[i].uniform_info.id, opengl_commands[i].uniform_info.texture_unit);
+
+            glActiveTexture(GL_TEXTURE0 + opengl_commands[i].uniform_info.texture_unit);
+
+            glBindTexture(GL_TEXTURE_2D, opengl_commands[i].uniform_info.texture_id);
         } break;
         default: {
             LOG_ERROR("Unknown OpenGL command " << opengl_commands[i].command_type);

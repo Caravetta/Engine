@@ -50,7 +50,7 @@ void Bullet_Motion_System::update()
 
     float dt = Engine::get_delta_time();
 
-    for(int i = 0; i < entity_count; i++) {
+    for( uint32_t i = 0; i < entity_count; ++i ) {
 
         bullet_motion = bullet_motion_vec->at(i);
         transform = transforms->at(i);

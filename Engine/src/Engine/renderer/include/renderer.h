@@ -44,6 +44,9 @@ typedef enum {
     DRAW_ELEMENTS,
     BIND_TEXTURE,
     UNBIND_TEXTURE,
+    UNIFORM_VEC3,
+    UNIFORM_MAT4,
+    UNIFORM_TEXT,
 } opengl_command_type_t;
 
 typedef enum {
@@ -66,11 +69,15 @@ typedef enum {
 
 struct render_command_t {
     render_command_type_t   command_type;
+    Material_Handle         material_handle;
+    Mesh_Handle             mesh_handle;
+//TODO(JOSH): remove unused vars
     unsigned int            shader_id;
-    vao_t*            vao;
+    Vector3f                color;
+    vao_t*                  vao;
     uint32_t                indices_count;
     unsigned int            texture_id;
-    Vector3f          position;
+    Vector3f                position;
     union {
         Matrix4f projection_matrix;
         Matrix4f view_matrix;
@@ -85,6 +92,7 @@ struct opengl_command_t {
     union {
         opengl_type type;
         uint32_t shader_id;
+        Vector3f                color;
         struct {
             vao_t*   vao;
         } vao_info;
@@ -98,6 +106,15 @@ struct opengl_command_t {
             Vector3f position;
         } draw_data;
         Matrix4f ortho_projection_matrix;
+        struct {
+            int         id;
+            Vector3f    vector3f;
+            Matrix4f    matrix4f;
+            struct {
+                uint32_t texture_id;
+                uint32_t texture_unit;
+            };
+        } uniform_info;
     };
     opengl_command_t(){}
 };

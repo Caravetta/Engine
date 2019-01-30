@@ -5,7 +5,8 @@ in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec3 toCameraVector;
 
-uniform sampler2D test;
+uniform sampler2D a;
+uniform sampler2D second;
 uniform vec3 color;
 
 out vec4 out_Color;
@@ -39,5 +40,6 @@ void main(void){
    
     totalDiffuse = max(totalDiffuse, 0.1);
 
-	out_Color = vec4(totalDiffuse,1.0) * (texture(test, text) * vec4(color, 1));
+    vec4 t1 = texture(second, text);
+	out_Color = vec4(totalDiffuse,1.0) * texture(second, text) * texture(a, text)* vec4(color, 1);
 }

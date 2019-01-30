@@ -24,7 +24,7 @@ void bind_vao_attributes( vao_t* vao )
 
     //TODO(JOSH): need to fix how this is done
     glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(5);
     glEnableVertexAttribArray(2);
 }
 
@@ -34,7 +34,7 @@ void unbind_vao_attributes( vao_t* vao )
 
     //TODO(JOSH): need to fix how this is done
     glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(5);
     glDisableVertexAttribArray(2);
 
 }

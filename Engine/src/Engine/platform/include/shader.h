@@ -38,6 +38,10 @@ public:
 
     Shader( std::string vert_file, std::string frag_file );
     Shader( std::string vert_file, std::string frag_file, std::string geom_file );
+    Rc_t set_value( std::string variable_name, float value);
+    //Rc_t set_value( std::string variable_name, Vector2f value);
+    Rc_t set_value( std::string variable_name, Vector3f value);
+    Rc_t set_value( std::string variable_name, Matrix4f value);
 private:
     void load_shader( std::string file_name, shader_type_t type );
     void create_program( bool has_geom );

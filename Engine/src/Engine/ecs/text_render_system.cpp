@@ -10,7 +10,7 @@ Text_Render_System::Text_Render_System()
     add_component(TRANSFORM_COMP);
     add_component(MESH_HANDLE_COMP);
     add_component(SHADER_ID_COMP);
-    add_component(TEXTURE_COMP);
+    //add_component(TEXTURE_COMP);
     add_component(TEXT_COMP);
     add_component(FONT_SETTINGS_COMP);
 }

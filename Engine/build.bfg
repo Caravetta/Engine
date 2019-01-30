@@ -11,8 +11,12 @@ include_list = ['src/',
                 'src/Engine/camera/include/',
                 'src/Engine/mesh/include/',
                 'src/Engine/font/include/',
+                'src/Engine/texture/include/',
                 'src/Engine/worker_system/include/',
                 'src/Engine/math/include/',
+                'src/Engine/tokenizer/include/',
+                'src/Engine/introspection_system/include/',
+                'src/Engine/material_system/include/',
                 'src/Engine/file_loaders/include']
 
 source_files = []
@@ -26,10 +30,14 @@ source_files.extend(find_files('src/Engine/renderer/', '*.cpp'))
 source_files.extend(find_files('src/Engine/math/', '*.cpp'))
 source_files.extend(find_files('src/Engine/asset_system/', '*.cpp'))
 source_files.extend(find_files('src/Engine/mesh/', '*.cpp'))
+source_files.extend(find_files('src/Engine/texture/', '*.cpp'))
 source_files.extend(find_files('src/Engine/font/', '*.cpp'))
 source_files.extend(find_files('src/Engine/worker_system/', '*.cpp'))
 source_files.extend(find_files('src/Engine/camera/', '*.cpp'))
 source_files.extend(find_files('src/Engine/file_loaders/', '*.cpp'))
+source_files.extend(find_files('src/Engine/tokenizer/', '*.cpp'))
+source_files.extend(find_files('src/Engine/introspection_system/', '*.cpp'))
+source_files.extend(find_files('src/Engine/material_system/', '*.cpp'))
 source_files.extend(find_files('src/Engine/platform/', '*.cpp', flat=True))
 
 if env.platform.name == 'windows':

@@ -13,6 +13,14 @@ public:
     void load( std::string file_path );
 };
 
+class ENGINE_API Texture_Asset : public Asset {
+public:
+    Texture texture;
+
+    Texture_Asset();
+    void load( std::string file_path );
+};
+
 class ENGINE_API Vertex_Shader_Asset : public Asset {
 public:
     unsigned int id;

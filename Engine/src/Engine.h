@@ -121,8 +121,8 @@ void register_component( void )
         type_idx_info<T>::id = TEXT_COMP;
     } else if ( typeid(T) == typeid(Font_Settings) ) {
         type_idx_info<T>::id = FONT_SETTINGS_COMP;
-    } else if ( typeid(T) == typeid(Texture) ) {
-        type_idx_info<T>::id = TEXTURE_COMP;
+    } else if ( typeid(T) == typeid(Material_Handle) ) {
+        type_idx_info<T>::id = MATERIAL_HANDLE_COMP;
     } else {
         type_idx_info<T>::id = get_max_components();
     }
@@ -197,7 +197,17 @@ ENGINE_API Rc_t register_archetype( Archetype archetype, std::string archetype_n
 /****************************************/
 
 ENGINE_API Mesh_Handle load_to_graphics_api( Mesh* mesh );
+ENGINE_API Mesh_Handle load_to_graphics_api( Mesh* mesh , mesh_usage_t usage_type );
+ENGINE_API Rc_t update_mesh( Mesh_Handle handle, Mesh* mesh );
 ENGINE_API Rc_t deload_from_graphics_api( Mesh_Handle handle );
+
+/****************************************/
+/*                                      */
+/*       Texture Engine Calls           */
+/*                                      */
+/****************************************/
+
+ENGINE_API Texture_Handle load_texture_to_graphics_api( Texture* texture );
 
 /****************************************/
 /*                                      */
@@ -232,6 +242,16 @@ ENGINE_API bool is_key_pressed( key_t key );
 
 ENGINE_API Matrix4f translate( Matrix4f matrix, Vector3f vector );
 ENGINE_API Matrix4f scale( Matrix4f matrix, Vector3f vector );
+
+/****************************************/
+/*                                      */
+/*      Material Engine Calls           */
+/*                                      */
+/****************************************/
+
+ENGINE_API Material_Handle register_material( std::string material_name, Material material );
+ENGINE_API Material_Handle get_material_handle( std::string material_name );
+ENGINE_API Material* get_material( std::string material_name );
 
 } // end namespace Engine
 

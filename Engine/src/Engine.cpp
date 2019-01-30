@@ -12,6 +12,10 @@
 #include "worker_manager.h"
 #include "mesh_manager.h"
 #include "event_system.h"
+#include "texture_manager.h"
+#include "token_parser.h"
+#include "header_parser.h"
+#include "material_manager.h"
 
 namespace Engine {
 
@@ -30,6 +34,10 @@ Rc_t init( engine_config_t* engine_config )
         return ENGINE_ERROR;
     }
 
+    //std::vector<std::string> files;
+    //files.push_back("res/test.txt");
+    //Token_Parser::tokenize_file("res/test.txt" );
+    //Introspection::parse_headers(&files);
 
     Rc_t rc = Event_Manager::init();
 
@@ -44,6 +52,12 @@ Rc_t init( engine_config_t* engine_config )
     engine_data->active_camera = NULL;
 
     //TODO(JOSH): need to check the rc from the init functions
+
+    rc = Material_Manager::init();
+    if ( rc != SUCCESS ) {
+        LOG("Failed to init Material_Manager");
+        return ENGINE_ERROR;
+    }
 
     rc = Component_Manager::init();
     if ( rc != SUCCESS ) {
@@ -75,6 +89,11 @@ Rc_t init( engine_config_t* engine_config )
         return ENGINE_ERROR;
     }
 
+    rc = Texture_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
     Font_Manager::init();
 
     return SUCCESS;
@@ -94,13 +113,6 @@ void run()
 
         //TODO(JOSH): move upading the dims to an event based on window resize
         Vector2f frame_size((float)Window::get_width(), (float)Window::get_height());
-
-        //if ( engine_data->active_camera != NULL ) {
-        //    //TODO(JOSH): move upading the proj and ortho to an event based on window resize
-        //    engine_data->active_camera->update_projection_matrix(frame_size);
-        //    engine_data->active_camera->update_ortho_matrix(frame_size);
-        //    engine_data->active_camera->set_view_matrix();
-        //}
 
         render( engine_data->active_camera, (int)frame_size.x, (int)frame_size.y );
 
@@ -149,6 +161,59 @@ Rc_t broadcast_event( std::string event_name, void* data, size_t data_size )
 bool is_key_pressed( key_t key )
 {
     return Input_Manager::is_key_pressed(key);
+}
+
+/****************************************/
+/*                                      */
+/*        Mesh Engine Calls             */
+/*                                      */
+/****************************************/
+
+Mesh_Handle load_to_graphics_api( Mesh* mesh )
+{
+    return Mesh_Manager::load_to_graphics_api(mesh, MESH_STATIC_DRAW);
+}
+
+Mesh_Handle load_to_graphics_api( Mesh* mesh , mesh_usage_t usage_type )
+{
+    return Mesh_Manager::load_to_graphics_api(mesh, usage_type);
+}
+
+Rc_t update_mesh( Mesh_Handle handle, Mesh* mesh )
+{
+    return Mesh_Manager::update_mesh(handle, mesh);
+}
+
+/****************************************/
+/*                                      */
+/*       Texture Engine Calls           */
+/*                                      */
+/****************************************/
+
+Texture_Handle load_texture_to_graphics_api( Texture* texture )
+{
+    return Texture_Manager::load_to_graphics_api(texture);
+}
+
+/****************************************/
+/*                                      */
+/*      Material Engine Calls           */
+/*                                      */
+/****************************************/
+
+Material_Handle register_material( std::string material_name, Material material )
+{
+    return Material_Manager::register_material(material_name, material);
+}
+
+Material_Handle get_material_handle( std::string material_name )
+{
+    return Material_Manager::get_material_handle(material_name);
+}
+
+Material* get_material( std::string material_name )
+{
+    return Material_Manager::get_material(material_name);
 }
 
 } // end namespace Engine

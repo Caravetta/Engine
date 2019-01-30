@@ -21,12 +21,11 @@ void Mesh_Asset::load( std::string file_path )
         input_file.clear();
         input_file.close();
     } else if ( file_type == "obj" ) {
-        Rc_t rc = load_obj_file(file_path, &mesh);
-        if ( rc != SUCCESS ) {
+        if ( load_obj_file(file_path, &mesh) != SUCCESS ) {
             LOG_ERROR("Failed to Load obj file: " << file_path);
         }
     } else {
-        LOG_ERROR("Format not supported");
+        LOG_ERROR("Format (" << file_type << ") not supported");
     }
 }
 

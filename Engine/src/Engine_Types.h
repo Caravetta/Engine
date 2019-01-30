@@ -39,6 +39,9 @@ typedef enum {
     NOT_IMPLEMENTED,
     ENTITY_NOT_VALID,
     FILE_ERROR,
+    ASSET_NAME_ALREADY_USED,
+    INVALID_HANDLE,
+    MESH_IS_NOT_DYNAMIC,
 } Rc_t;
 
 /******************************************/
@@ -62,10 +65,11 @@ struct ENGINE_API Vector3f {
 public:
     union {
         struct {
-            float pad;
+            //float pad;
             float x;
             float y;
             float z;
+            float pad;
         };
         __m128 data;
     };
@@ -191,7 +195,7 @@ typedef enum {
     SHADER_ID_COMP,
     TEXT_COMP,
     FONT_SETTINGS_COMP,
-    TEXTURE_COMP,
+    MATERIAL_HANDLE_COMP,
     BASE_COMPONENT_COUNT
 } base_comp_types_t;
 
@@ -409,9 +413,96 @@ public:
 /*                                        */
 /******************************************/
 
+typedef struct { //TODO(JOSH): hide this in the engine
+    union {
+        struct {
+            uint64_t index  : 32;
+            uint64_t phase  : 32;
+        };
+        uint64_t id;
+    };
+} Texture_Handle;
+
 struct ENGINE_API Texture {
-    uint32_t id;
+    uint32_t width;
+    uint32_t height;
+    uint32_t bits_per_pixel;
+    std::vector<uint8_t> pixel_data;
+    Texture_Handle handle;
 };
+
+/********************************************/
+/*                                          */
+/*           Material Type                  */
+/*                                          */
+/********************************************/
+
+typedef struct { //TODO(JOSH): hide this in the engine
+    union {
+        struct {
+            uint64_t index  : 32;
+            uint64_t phase  : 32;
+        };
+        uint64_t id;
+    };
+} Material_Handle;
+
+typedef enum {
+    VEC3_ELEMENT,
+    MATRIX4_ELEMENT,
+    TEXT_HANDLE_ELEMENT,
+} material_element_type_t;
+
+typedef struct {
+    std::string element_name;
+    uint32_t data_offset;
+    material_element_type_t type;
+} material_element_info_t;
+
+struct ENGINE_API Material {
+private:
+    uint8_t* data;
+    uint64_t data_size = 0;
+    std::unordered_map<std::string, uint64_t> element_map;
+public:
+    std::vector<material_element_info_t> element_info_vec;
+    uint32_t shader_id;
+    Rc_t add_element( std::string name, material_element_type_t type );
+    template<typename T> Rc_t set_element( std::string name, T data );
+    template<typename T> T* get_element( std::string name );
+};
+
+template<typename T>
+Rc_t Material::set_element( std::string name, T data )
+{
+    std::unordered_map<std::string, uint64_t>::const_iterator ele = element_map.find(name);
+    if ( ele != element_map.end() ) {
+        //TODO(JOSH): This is really bad need to find a better way of doing this
+        material_element_info_t* ele_info = &element_info_vec[ele->second];
+        T* ele_data = (T*)(this->data + ele_info->data_offset);
+        *ele_data = data;
+    }
+
+    return ENGINE_ERROR;
+}
+
+template<typename T>
+T* Material::get_element( std::string name )
+{
+    std::unordered_map<std::string, uint64_t>::const_iterator ele = element_map.find(name);
+    if ( ele != element_map.end() ) {
+        material_element_info_t* ele_info = &element_info_vec[ele->second];
+        return (T*)(this->data + ele_info->data_offset);
+    }
+
+    return NULL;
+}
+
+/********************************************/
+/*                                          */
+/*             Mesh Type                    */
+/*                                          */
+/********************************************/
 
 typedef struct { //TODO(JOSH): hide this in the engine
     union {
@@ -422,6 +513,11 @@ typedef struct { //TODO(JOSH): hide this in the engine
         uint64_t id;
     };
 } Mesh_Handle;
+
+typedef enum {
+    MESH_STATIC_DRAW    = 0x88E4,
+    MESH_DYNAMIC_DRAW   = 0x88E8,
+} mesh_usage_t;
 
 struct ENGINE_API Mesh {
     uint32_t indices_count;

@@ -30,26 +30,31 @@ Rc_t register_asset_generic( std::string asset_name, std::string file_path, Asse
 {
     uint64_t handle_;
 
-    if ( asset_manager.asset_handles.empty() ) { //there are no released handles
-        Asset_Handle handle;
-        handle.id = asset_manager.next_handle_idx;
-        handle_ = handle.id;
-        asset_manager.asset_handle_map.insert({asset_name, handle.id});
-        asset_manager.next_handle_idx++;
-    } else { //there is a free handle
-        Asset_Handle handle = asset_manager.asset_handles[asset_manager.asset_handles.size() - 1];
-        handle.id = asset_manager.asset_handles[asset_manager.asset_handles.size() - 1].id;
-        handle_ = handle.id;
-        asset_manager.asset_handles.pop_back();
-        asset_manager.asset_handle_map.insert({asset_name, handle.id});
+    std::unordered_map<std::string, uint64_t>::const_iterator ele = asset_manager.asset_handle_map.find(asset_name);
+    if ( ele == asset_manager.asset_handle_map.end() ) {
+        if ( asset_manager.asset_handles.empty() ) { //there are no released handles
+            Asset_Handle handle;
+            handle.id = asset_manager.next_handle_idx;
+            handle_ = handle.id;
+            asset_manager.asset_handle_map.insert({asset_name, handle.id});
+            asset_manager.next_handle_idx++;
+        } else { //there is a free handle
+            Asset_Handle handle = asset_manager.asset_handles[asset_manager.asset_handles.size() - 1];
+            handle.id = asset_manager.asset_handles[asset_manager.asset_handles.size() - 1].id;
+            handle_ = handle.id;
+            asset_manager.asset_handles.pop_back();
+            asset_manager.asset_handle_map.insert({asset_name, handle.id});
+        }
+
+        asset->load(file_path);
+        asset_manager.assets.push_back(asset);
+
+        asset_manager.asset_idx_map.insert({handle_, (asset_manager.assets.size() - 1)});
+
+        return SUCCESS;
     }
 
-    asset->load(file_path);
-    asset_manager.assets.push_back(asset);
-
-    asset_manager.asset_idx_map.insert({handle_, (asset_manager.assets.size() - 1)});
-
-    return SUCCESS;
+    return ASSET_NAME_ALREADY_USED;
 }
 
 bool valid_asset_handle( Asset_Handle handle )
