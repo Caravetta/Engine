@@ -25,4 +25,10 @@ build_script:
     ninja
 
 - sh: >-
-    pip install bfg9000
+    sudo pip install bfg9000
+
+    9k build/
+
+    cd build/
+
+    make
