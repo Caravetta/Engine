@@ -6,19 +6,32 @@ image:
 build_script:
 - cmd: >-
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+    
     pip install bfg9000
+    
     9k build/
+    
     cd build/
+    
     appveyor DownloadFile https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-win.zip
+    
     7z e ninja-win.zip
+    
     ninja
 
 - sh: >-
     sudo pip install bfg9000
+    
     sudo apt-get install libfreetype6-dev
+    
     sudo apt-get install build-essential libgl1-mesa-dev
+    
     sudo apt-get install libsdl2-dev
+    
     sudo apt-get install libglew-dev
+    
     9k build/
+    
     cd build/
+    
     make
