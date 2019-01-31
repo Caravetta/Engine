@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <typeinfo>
 
 #include <Engine_Assets.h>
 #include <Engine_Types.h>
