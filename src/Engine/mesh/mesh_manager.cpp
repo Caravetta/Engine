@@ -109,8 +109,13 @@ Mesh_Handle load_to_graphics_api( Mesh* mesh, mesh_usage_t usage_type )
     bind_vao(vao);
     create_index_buffer(vao, (int*)mesh->indices, (int)mesh->indices_count, (usage_type_t)usage_type); //TODO: need to get ride of this cast
     create_float_attribute(vao, 0, mesh->vertices, mesh->vertices_count * sizeof(float), 3, 3 * sizeof(float), 0, (usage_type_t)usage_type);
-    create_float_attribute(vao, 2, mesh->normals, mesh->normals_count * sizeof(float), 3, 3 * sizeof(float), 0, (usage_type_t)usage_type);
-    create_float_attribute(vao, 5, mesh->textures, mesh->textures_count * sizeof(float), 2, 2 * sizeof(float), 0, (usage_type_t)usage_type);
+    if ( mesh->normals != NULL ) {
+        create_float_attribute(vao, 2, mesh->normals, mesh->normals_count * sizeof(float), 3, 3 * sizeof(float), 0, (usage_type_t)usage_type);
+    }
+
+    if ( mesh->textures != NULL ) {
+        create_float_attribute(vao, 5, mesh->textures, mesh->textures_count * sizeof(float), 2, 2 * sizeof(float), 0, (usage_type_t)usage_type);
+    }
     unbind_vao();
 
     return mesh_manager->mesh_handles[handle_idx];
@@ -121,7 +126,7 @@ Rc_t update_mesh( Mesh_Handle handle, Mesh* mesh )
     if ( handle.id == mesh_manager->mesh_handles[handle.index].id ) {
         if ( mesh_manager->is_dynamic_vec[handle.index] ) {
             vao_t* vao = &mesh_manager->vaos[handle.index];
-
+            mesh_manager->indice_data[handle.index] = mesh->indices_count;
             update_index_buffer(vao, (int*)mesh->indices, (int)mesh->indices_count, DYNAMIC_DRAW);
             update_float_attribute(vao, 0, mesh->vertices, mesh->vertices_count * sizeof(float), DYNAMIC_DRAW);
             update_float_attribute(vao, 2, mesh->normals, mesh->normals_count * sizeof(float), DYNAMIC_DRAW);

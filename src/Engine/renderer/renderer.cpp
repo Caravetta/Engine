@@ -106,7 +106,6 @@ void _generate_commands(std::vector<opengl_command_t>* opengl_commands, Camera* 
         } break;
         case RENDER_TEXT:
 		case RENDER_MESH: {
-
             uint32_t material_vec_idx;
 
             std::unordered_map<uint64_t, uint32_t>::const_iterator ele = material_handle_map.find(render_command_queue[i].material_handle.id);
@@ -133,18 +132,16 @@ void _generate_commands(std::vector<opengl_command_t>* opengl_commands, Camera* 
                 shader_info_list.push_back(shader_info);
                 shader_id_map.insert({ material_entry_vec[material_vec_idx].material->shader_id, (uint32_t)shader_info_list.size() - 1 });
                 shader_vec_idx = (uint32_t)shader_info_list.size() - 1;
+                shader_info_list[shader_vec_idx].material_idx.push_back(material_vec_idx);
             } else {
                 shader_vec_idx = shader_ele->second;
             }
-
-            shader_info_list[shader_vec_idx].material_idx.push_back(material_vec_idx);
 
             uint32_t mesh_vec_idx;
 
             // check to see if we have seen this mesh along with this material
             ele = material_entry_vec[material_vec_idx].mesh_handle_map.find(render_command_queue[i].mesh_handle.id);
             if ( ele == material_entry_vec[material_vec_idx].mesh_handle_map.end() ) {
-                // we have not seen this mesh yet
 
                 mesh_entry_t mesh_entry;
                 mesh_entry.vao = Mesh_Manager::get_mesh_vao(render_command_queue[i].mesh_handle);
@@ -171,7 +168,6 @@ void _generate_commands(std::vector<opengl_command_t>* opengl_commands, Camera* 
             } else {
                 enable_idx = ele->second;
             }
-
             material_entry_vec[material_vec_idx].mesh_entry_vec[mesh_vec_idx].mesh_group_vec[enable_idx].transformation_matrix_vec.push_back(render_command_queue[i].transformation_matrix);
 
         } break;
@@ -186,7 +182,6 @@ void _generate_commands(std::vector<opengl_command_t>* opengl_commands, Camera* 
 
     uint64_t current_enable_state = 0;
     int transform_uniform_id = -1;
-
     for ( uint32_t ii = 0; ii < shader_info_list.size(); ++ii ) {
         // change shader here
         {
@@ -371,19 +366,6 @@ void render( Camera* camera, int width, int height )
         switch( opengl_commands[i].command_type ) {
         case BIND_SHADER: {
             glUseProgram(opengl_commands[i].shader_id);
-            #if 0
-            projection_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "projection_matrix");
-            view_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "view_matrix");
-            transformation_matrix_id = glGetUniformLocation(opengl_commands[i].shader_id, "transformationMatrix");
-            color_id = glGetUniformLocation(opengl_commands[i].shader_id, "color");
-
-            if ( projection_matrix_id != -1 ) {
-                 glUniformMatrix4fv(projection_matrix_id, 1, GL_FALSE, (GLfloat *)&camera->projection_matrix);
-            }
-            if ( view_matrix_id != -1 ) {
-                 glUniformMatrix4fv(view_matrix_id, 1, GL_FALSE, (GLfloat *)&camera->view_matrix);
-            }
-            #endif
         } break;
         case UNBIND_SHADER: {
             glUseProgram(0);
@@ -397,8 +379,6 @@ void render( Camera* camera, int width, int height )
             unbind_vao();
         } break;
         case DRAW_ELEMENTS: {
-            //glUniformMatrix4fv(transformation_matrix_id, 1, GL_FALSE, (GLfloat *)&opengl_commands[i].draw_data.transformation_matrix);
-            //glUniform3fv(color_id, 1, (GLfloat *)&color);
             glDrawElements(GL_TRIANGLES, opengl_commands[i].draw_data.indices_count, GL_UNSIGNED_INT, 0);
         } break;
         case BIND_TEXTURE: {
@@ -448,9 +428,7 @@ void render( Camera* camera, int width, int height )
         } break;
         case UNIFORM_TEXT: {
             glUniform1i(opengl_commands[i].uniform_info.id, opengl_commands[i].uniform_info.texture_unit);
-
             glActiveTexture(GL_TEXTURE0 + opengl_commands[i].uniform_info.texture_unit);
-
             glBindTexture(GL_TEXTURE_2D, opengl_commands[i].uniform_info.texture_id);
         } break;
         default: {

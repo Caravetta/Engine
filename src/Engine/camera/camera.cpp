@@ -26,7 +26,7 @@ void generate_FPS_view_matrix( Camera* camera )
                   camera->transform.position.z);
 
     Vector3f x_axis( cos_yaw, 0, -sin_yaw );
-    Vector3f y_axis( sin_yaw * cos_pitch, cos_pitch, cos_yaw * sin_pitch);
+    Vector3f y_axis( sin_yaw * sin_pitch, cos_pitch, cos_yaw * sin_pitch);
     Vector3f z_axis( sin_yaw * cos_pitch, -sin_pitch, cos_pitch * cos_yaw);
 
     camera->view_matrix.m00 = x_axis.x;

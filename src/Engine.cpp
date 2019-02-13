@@ -16,6 +16,7 @@
 #include "token_parser.h"
 #include "header_parser.h"
 #include "material_manager.h"
+#include "asset_manager.h"
 
 namespace Engine {
 
@@ -60,6 +61,11 @@ Rc_t init( engine_config_t* engine_config )
     }
 
     rc = Component_Manager::init();
+    if ( rc != SUCCESS ) {
+        return ENGINE_ERROR;
+    }
+
+    rc = Asset_Manager::init();
     if ( rc != SUCCESS ) {
         return ENGINE_ERROR;
     }
@@ -128,6 +134,41 @@ void shutdown()
     System_Manager::shutdown_systems();
 }
 
+/****************************************/
+/*                                      */
+/*       Window Engine Calls            */
+/*                                      */
+/****************************************/
+
+uint16_t get_window_width()
+{
+    //TODO(JOSH): need to fix this type
+    return (uint16_t)Window::get_width();
+}
+
+uint16_t get_window_height()
+{
+    //TODO(JOSH): need to fix this type
+    return (uint16_t)Window::get_height();
+}
+
+/****************************************/
+/*                                      */
+/*         Time Engine Calls            */
+/*                                      */
+/****************************************/
+
+float get_delta_time()
+{
+    return engine_data->frame_time.get_delta();
+}
+
+/****************************************/
+/*                                      */
+/*       Camera Engine Calls            */
+/*                                      */
+/****************************************/
+
 void set_active_camera( Camera* camera )
 {
     engine_data->active_camera = camera;
@@ -138,10 +179,32 @@ Camera* get_active_camera( void )
     return engine_data->active_camera;
 }
 
-float get_delta_time()
+/****************************************/
+/*                                      */
+/*        Asset Engine Calls            */
+/*                                      */
+/****************************************/
+
+Rc_t register_asset( const std::string asset_name, const std::string file_path, Asset* asset )
 {
-    return engine_data->frame_time.get_delta();
+    return Asset_Manager::register_asset_generic(asset_name, file_path, asset);
 }
+
+Asset* get_asset( const Asset_Handle handle )
+{
+    return Asset_Manager::get_asset_generic(handle);
+}
+
+Rc_t get_asset_handle( const std::string asset_name, Asset_Handle* handle )
+{
+    return Asset_Manager::get_asset_handle(asset_name, handle);
+}
+
+/****************************************/
+/*                                      */
+/*        Event Engine Calls            */
+/*                                      */
+/****************************************/
 
 Rc_t create_event( std::string event_name )
 {
@@ -158,9 +221,20 @@ Rc_t broadcast_event( std::string event_name, void* data, size_t data_size )
     return Event_Manager::broadcast_event(event_name, data, data_size);
 }
 
+/****************************************/
+/*                                      */
+/*        Input Engine Calls            */
+/*                                      */
+/****************************************/
+
 bool is_key_pressed( key_t key )
 {
     return Input_Manager::is_key_pressed(key);
+}
+
+Rc_t set_mouse_position( int x, int y)
+{
+    return Window::set_mouse_position(x, y);
 }
 
 /****************************************/

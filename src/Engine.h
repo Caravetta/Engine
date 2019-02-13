@@ -27,7 +27,15 @@ typedef struct {
 ENGINE_API Rc_t init( engine_config_t* engine_config );
 ENGINE_API void run();
 ENGINE_API void shutdown();
-ENGINE_API float get_delta_time();
+
+/****************************************/
+/*                                      */
+/*        Window Engine Calls           */
+/*                                      */
+/****************************************/
+
+ENGINE_API uint16_t get_window_width();
+ENGINE_API uint16_t get_window_height();
 
 /****************************************/
 /*                                      */
@@ -54,25 +62,25 @@ ENGINE_API void generate_FPS_view_matrix( Camera* camera );
 /*                                      */
 /****************************************/
 
-ENGINE_API Rc_t register_asset( std::string asset_name, std::string file_path, Asset* asset );
-ENGINE_API Asset* get_asset( Asset_Handle handle );
-ENGINE_API Rc_t get_asset_handle( std::string asset_name, Asset_Handle* handle );
+ENGINE_API Rc_t register_asset( const std::string asset_name, const std::string file_path, Asset* asset );
+ENGINE_API Asset* get_asset( const Asset_Handle handle );
+ENGINE_API Rc_t get_asset_handle( const std::string asset_name, Asset_Handle* handle );
 
 template<typename T>
-Rc_t register_asset( std::string asset_name, std::string file_path )
+Rc_t register_asset( const std::string asset_name, const std::string file_path )
 {
     //TODO(JOSH): need to check if that name has already been used for another asset
 	return register_asset(asset_name, file_path, new T);
 }
 
 template<typename T>
-T* get_asset_with_handle( Asset_Handle asset_handle )
+T* get_asset_with_handle( const Asset_Handle asset_handle )
 {
     return (T*)get_asset(asset_handle);
 }
 
 template<typename T>
-T* get_asset_by_name( std::string asset_name )
+T* get_asset_by_name( const std::string asset_name )
 {
     Asset_Handle asset_handle;
     Rc_t rc = get_asset_handle(asset_name, &asset_handle);
@@ -234,6 +242,7 @@ ENGINE_API Mesh_Handle generate_text_mesh( Text* text, Font_Settings* font_setti
 /****************************************/
 
 ENGINE_API bool is_key_pressed( key_t key );
+ENGINE_API Rc_t set_mouse_position( int x, int y);
 
 /****************************************/
 /*                                      */

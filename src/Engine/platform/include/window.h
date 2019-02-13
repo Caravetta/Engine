@@ -15,6 +15,8 @@ uint32_t get_width( void );
 uint32_t get_height( void );
 bool is_closed( void );
 
+Rc_t set_mouse_position( int x, int y );
+
 } //end namespace Window
 } //end namesapce Engine
 
