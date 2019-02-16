@@ -249,9 +249,9 @@ private:
 public:
     std::vector<uint32_t> used_component_ids;
 
-    Archetype();
-    void add_component( uint32_t component_id );
-    bool has_component( uint32_t component_id );
+    Archetype( void );
+    void add_component( const uint32_t component_id );
+    bool has_component( const uint32_t component_id );
     template<typename T> void add_component();
     template<typename T> bool has_component();
 };
@@ -305,27 +305,27 @@ private:
 protected:
     uint64_t entity_count = 0;
 
-    void add_component( uint32_t component_id, component_usage_t usage );
-    void add_component( uint32_t component_id );
-    template<typename T> void add_component( component_usage_t usage );
-    template<typename T> void add_component();
-    template<typename T> T* get_data_at( uint64_t idx );
-    template<typename T> std::vector<T*>* get_data_vec();
-    std::vector<uint8_t*>* get_data_vec( uint32_t component_id );
+    void add_component( const uint32_t component_id, const component_usage_t usage );
+    void add_component( const uint32_t component_id );
+    template<typename T> void add_component( const component_usage_t usage );
+    template<typename T> void add_component( void );
+    template<typename T> T* get_data_at( const uint64_t idx );
+    template<typename T> std::vector<T*>* get_data_vec( void );
+    std::vector<uint8_t*>* get_data_vec( const uint32_t component_id );
 
 public:
     std::string             name;
     std::vector<uint64_t>   component_list;
 
     System(){};
-    void add_component_data( uint64_t** enitiy_count, uint32_t comp_id, Array** data_array );
-    bool has_component( uint32_t component_id );
-    template<typename T> bool has_component();
+    void add_component_data( uint64_t** enitiy_count, const uint32_t comp_id, Array** data_array );
+    bool has_component( const uint32_t component_id );
+    template<typename T> bool has_component( void );
     bool pre_update();
 
-    virtual void init() = 0;
-    virtual void update() = 0;
-    virtual void shutdown() = 0;
+    virtual void init( void ) = 0;
+    virtual void update( void ) = 0;
+    virtual void shutdown( void ) = 0;
 };
 
 template<typename T>

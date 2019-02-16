@@ -17,6 +17,7 @@
 #include "header_parser.h"
 #include "material_manager.h"
 #include "asset_manager.h"
+#include "component_manager.h"
 
 namespace Engine {
 
@@ -202,6 +203,64 @@ Rc_t get_asset_handle( const std::string asset_name, Asset_Handle* handle )
 
 /****************************************/
 /*                                      */
+/*        Entity Engine Calls           */
+/*                                      */
+/****************************************/
+
+Entity create_entity( const std::string archetype_name )
+{
+    return Entity_Manager::create_entity(archetype_name);
+}
+
+Rc_t delete_entity( const Entity entity )
+{
+    return Entity_Manager::delete_entity(entity);
+}
+
+bool is_valid_entity( const Entity entity )
+{
+    return Entity_Manager::is_valid_entity(entity);
+}
+
+/****************************************/
+/*                                      */
+/*      Component Engine Calls          */
+/*                                      */
+/****************************************/
+
+uint32_t get_max_components( void )
+{
+    return Component_Manager::get_max_components();
+}
+
+uint64_t get_component_size( const uint32_t component_id )
+{
+    return Component_Manager::get_component_size(component_id);
+}
+
+void register_component_info( const uint32_t component_id, const component_info comp_info )
+{
+    Component_Manager::register_component_info(component_id, comp_info);
+}
+
+uint8_t* get_component_data( const Entity entity, const uint32_t component_id )
+{
+    return Component_Manager::get_component_data(entity, component_id);
+}
+
+/****************************************/
+/*                                      */
+/*        System Engine Calls           */
+/*                                      */
+/****************************************/
+
+void register_generic_system( System* system )
+{
+    System_Manager::register_generic_system(system);
+}
+
+/****************************************/
+/*                                      */
 /*        Event Engine Calls            */
 /*                                      */
 /****************************************/
@@ -235,6 +294,17 @@ bool is_key_pressed( key_t key )
 Rc_t set_mouse_position( int x, int y)
 {
     return Window::set_mouse_position(x, y);
+}
+
+/****************************************/
+/*                                      */
+/*       Archetype Engine Calls         */
+/*                                      */
+/****************************************/
+
+Rc_t register_archetype( Archetype archetype, std::string archetype_name )
+{
+    return Archetype_Manager::register_archetype(archetype, archetype_name);
 }
 
 /****************************************/

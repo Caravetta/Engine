@@ -8,15 +8,15 @@ namespace Entity_Manager {
 
 typedef struct {
     std::string archetype_name;
-    uint32_t    add_count;
+    u32         add_count;
 } entity_add_node_t;
 
 typedef struct {
-    uint32_t                                    next_entity_idx;
-    std::vector<Entity>                         entity_ids;       // Vector of all Entity ids
-    std::vector<internal_entity_id>             internal_entity_ids;
-    std::vector<uint32_t>                       free_entity_idx;
-    std::vector<Entity>                         entities_to_free;
+    u32                             next_entity_idx;
+    std::vector<Entity>             entity_ids; // Vector of all Entity ids
+    std::vector<internal_entity_id> internal_entity_ids;
+    std::vector<u32>                free_entity_idx;
+    std::vector<Entity>             entities_to_free;
 } entity_manager_t;
 
 entity_manager_t entity_manager;
@@ -31,7 +31,7 @@ void _increase_entity_vec( void )
     entity_manager.internal_entity_ids.resize( current_size + ENTITY_RESIZE_SIZE );
 
     // loop through new nodes and set them up
-    for (; current_size < entity_manager.entity_ids.size(); current_size++ ) {
+    for (; current_size < entity_manager.entity_ids.size(); ++current_size ) {
         entity_manager.entity_ids[current_size].active = 0;
         entity_manager.entity_ids[current_size].index = current_size;
     }
@@ -52,15 +52,19 @@ Rc_t init( void )
     return SUCCESS;
 }
 
-void update()
+void update( void )
 {
     // check to see if entities need to be cleaned up
     if ( !entity_manager.entities_to_free.empty() ) {
-        for ( uint32_t ii = 0; ii < entity_manager.entities_to_free.size(); ++ii ) {
-            Archetype_Manager::remove_entity(entity_manager.internal_entity_ids[entity_manager.entities_to_free[ii].index]);
-            entity_manager.entity_ids[entity_manager.entities_to_free[ii].index].phase++;
-            entity_manager.entity_ids[entity_manager.entities_to_free[ii].index].active = HANDLE_SET_NON_ACTIVE;
-            entity_manager.free_entity_idx.push_back(entity_manager.entities_to_free[ii].index);
+        u32 current_idx = 0;
+
+        for ( u32 ii = 0; ii < entity_manager.entities_to_free.size(); ++ii ) {
+            current_idx = entity_manager.entities_to_free[ii].index;
+
+            Archetype_Manager::remove_entity(entity_manager.internal_entity_ids[current_idx]);
+            entity_manager.entity_ids[current_idx].phase++;
+            entity_manager.entity_ids[current_idx].active = HANDLE_SET_NON_ACTIVE;
+            entity_manager.free_entity_idx.push_back(current_idx);
         }
 
         entity_manager.entities_to_free.clear();
@@ -69,69 +73,90 @@ void update()
     Archetype_Manager::update_entity_counts();
 }
 
-bool is_valid_entity( Entity entity )
+bool is_valid_entity( const Entity entity )
 {
-    return (entity.id == entity_manager.entity_ids[entity.index].id);
-}
-
-internal_entity_id get_internal_id( Entity entity )
-{
-    return entity_manager.internal_entity_ids[entity.index];
-}
-
-internal_entity_id* get_internal_id_pointer( Entity entity )
-{
-    return &entity_manager.internal_entity_ids[entity.index];
-}
-
-} // end namespace Entity_Manager
-
-Entity create_entity( std::string archetype_name )
-{
-    Entity return_entity = {0};
-    uint64_t internal_idx;
-
-    // check to see if there is a node in the free vector
-    if ( !Entity_Manager::entity_manager.free_entity_idx.empty() ) { //TODO(JOSH): should be able to get ride of this branch
-        uint32_t free_idx = Entity_Manager::entity_manager.free_entity_idx.back();
-        Entity_Manager::entity_manager.free_entity_idx.pop_back();
-
-        Entity_Manager::entity_manager.entity_ids[free_idx].active = HANDLE_SET_ACTIVE;
-        internal_idx = free_idx;
-        return_entity = Entity_Manager::entity_manager.entity_ids[free_idx];
-    } else {
-        // check to see if we have run out of entities in the vector
-        if ( Entity_Manager::entity_manager.entity_ids.size() == Entity_Manager::entity_manager.next_entity_idx ) {
-            Entity_Manager::_increase_entity_vec();
-        }
-        internal_idx = Entity_Manager::entity_manager.next_entity_idx;
-        Entity_Manager::entity_manager.entity_ids[Entity_Manager::entity_manager.next_entity_idx].active = HANDLE_SET_ACTIVE;
-        return_entity.id = Entity_Manager::entity_manager.entity_ids[Entity_Manager::entity_manager.next_entity_idx].id;
-        Entity_Manager::entity_manager.next_entity_idx++;
+    if ( entity.index < entity_manager.entity_ids.size() ) {
+        return (entity.id == entity_manager.entity_ids[entity.index].id);
     }
 
-    Archetype_Manager::register_entity(return_entity, &Entity_Manager::entity_manager.internal_entity_ids[internal_idx], archetype_name);
+    CHECK_INFO(0, "Entity ID: " << entity.id << " is not a valid enitiy");
+
+    return false;
+}
+
+internal_entity_id get_internal_id( const Entity entity )
+{
+    if ( entity.index < entity_manager.internal_entity_ids.size() ) {
+        return entity_manager.internal_entity_ids[entity.index];
+    }
+
+    internal_entity_id tmp_id;
+    tmp_id.id = 0;
+
+    CHECK_INFO(0, "Entity ID: " << entity.id << " is not a valid enitiy");
+
+    return tmp_id;
+}
+
+internal_entity_id* get_internal_id_pointer( const Entity entity )
+{
+    if ( entity.index < entity_manager.internal_entity_ids.size() ) {
+        return &entity_manager.internal_entity_ids[entity.index];
+    }
+
+    CHECK_INFO(0, "Entity ID: " << entity.id << " is not a valid enitiy");
+
+    return NULL;
+}
+
+Entity create_entity( const std::string archetype_name )
+{
+    Entity return_entity = {0};
+    u64 internal_idx;
+
+    //TODO(JOSH): need to check to see if passed archetype_name is valid
+
+    // check to see if there is a node in the free vector
+    if ( !entity_manager.free_entity_idx.empty() ) { //TODO(JOSH): should be able to get ride of this branch
+        u32 free_idx = entity_manager.free_entity_idx.back();
+        entity_manager.free_entity_idx.pop_back();
+
+        entity_manager.entity_ids[free_idx].active = HANDLE_SET_ACTIVE;
+        internal_idx = free_idx;
+        return_entity = entity_manager.entity_ids[free_idx];
+    } else {
+        // check to see if we have run out of entities in the vector
+        if ( entity_manager.entity_ids.size() == entity_manager.next_entity_idx ) {
+            _increase_entity_vec();
+        }
+        internal_idx = entity_manager.next_entity_idx;
+        entity_manager.entity_ids[entity_manager.next_entity_idx].active = HANDLE_SET_ACTIVE;
+        return_entity.id = entity_manager.entity_ids[entity_manager.next_entity_idx].id;
+        entity_manager.next_entity_idx++;
+    }
+
+    Archetype_Manager::register_entity(return_entity, &entity_manager.internal_entity_ids[internal_idx], archetype_name);
 
     return return_entity;
 }
 
-Rc_t delete_entity( Entity entity )
+Rc_t delete_entity( const Entity entity )
 {
-    // check to see if the Entity is valid
-    if ( entity.id == Entity_Manager::entity_manager.entity_ids[entity.index].id ) {
-        // we defer the free of an entity until the end of the frame
-        Entity_Manager::entity_manager.entities_to_free.push_back(entity);
+    Rc_t rc = ERROR_INVALID_ENTITY;
 
-        return SUCCESS;
+    // check to see if the Entity is valid
+    if ( entity.index < entity_manager.entity_ids.size() ) {
+        if ( entity.id == entity_manager.entity_ids[entity.index].id ) {
+            // we defer the free of an entity until the end of the frame
+            entity_manager.entities_to_free.push_back(entity);
+
+            rc = SUCCESS;
+        }
     }
 
-    return ERROR_INVALID_ENTITY;
+    return rc;
 }
 
-bool is_valid_entity( Entity entity )
-{
-    return (entity.id == Entity_Manager::entity_manager.entity_ids[entity.index].id);
-}
-
+} // end namespace Entity_Manager
 } // end namespace Engine
 

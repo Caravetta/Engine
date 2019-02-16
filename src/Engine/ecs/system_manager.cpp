@@ -16,19 +16,17 @@ void init_systems( void )
 
 void update_systems( void )
 {
-    START_TIME_BLOCK( update_systems );
-    for ( uint32_t i = 0; i < systems.size(); i++ ) {
-        if ( systems[i]->pre_update() ) {
-            systems[i]->update();
+    for ( u32 ii = 0; ii < systems.size(); ++ii ) {
+        if ( systems[ii]->pre_update() ) {
+            systems[ii]->update();
         }
     }
-    END_TIME_BLOCK( update_systems );
 }
 
 void shutdown_systems( void )
 {
-    for ( uint32_t i = 0; i < systems.size(); i++ ) {
-        systems[i]->shutdown();
+    for ( u32 ii = 0; ii < systems.size(); ++ii ) {
+        systems[ii]->shutdown();
     }
 }
 
@@ -43,11 +41,5 @@ std::vector<System*>* get_system_vec( void )
 }
 
 } //end namespace System_Manager
-
-void register_generic_system( System* system )
-{
-    System_Manager::systems.push_back(system);
-}
-
 } //end namespace Engine
 

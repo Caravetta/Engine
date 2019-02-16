@@ -97,9 +97,9 @@ T* get_asset_by_name( const std::string asset_name )
 /*                                      */
 /****************************************/
 
-ENGINE_API Entity create_entity( std::string archetype_name );
-ENGINE_API Rc_t delete_entity( Entity entity );
-ENGINE_API bool is_valid_entity( Entity entity );
+ENGINE_API Entity create_entity( const std::string archetype_name );
+ENGINE_API Rc_t delete_entity( const Entity entity );
+ENGINE_API bool is_valid_entity( const Entity entity );
 
 /****************************************/
 /*                                      */
@@ -107,10 +107,10 @@ ENGINE_API bool is_valid_entity( Entity entity );
 /*                                      */
 /****************************************/
 
-ENGINE_API uint32_t get_max_components();
-ENGINE_API uint64_t get_component_size( uint32_t component_id );
-ENGINE_API void register_component_info( uint32_t component_id, component_info comp_info );
-ENGINE_API uint8_t* get_component_data( Entity entity, uint32_t component_id );
+ENGINE_API uint32_t get_max_components( void );
+ENGINE_API uint64_t get_component_size( const uint32_t component_id );
+ENGINE_API void register_component_info( const uint32_t component_id, const component_info comp_info );
+ENGINE_API uint8_t* get_component_data( const Entity entity, const uint32_t component_id );
 
 template<typename T>
 void register_component( void )
@@ -183,7 +183,7 @@ ENGINE_API Rc_t broadcast_event( std::string event_name, void* data, size_t data
 /*                                      */
 /****************************************/
 
-void ENGINE_API register_generic_system( System* system );
+ENGINE_API void register_generic_system( System* system );
 
 template<typename T>
 void register_system( void )

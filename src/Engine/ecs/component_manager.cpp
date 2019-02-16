@@ -5,51 +5,88 @@
 namespace Engine {
 namespace Component_Manager {
 
-std::vector<component_info> component_info_vec;
+std::vector<component_info>* component_info_vec = NULL;
 
 Rc_t init( void )
 {
-    component_info_vec.resize( BASE_COMPONENT_COUNT );
+    component_info_vec = new (std::nothrow) std::vector<component_info>;
+    if ( component_info_vec == NULL ) {
+        LOG_ERROR("Failed to allocate memory for component_info_vec");
+        return MEMORY_ALLOC_FAILED;
+    }
+
+    component_info_vec->resize( BASE_COMPONENT_COUNT );
+
     return SUCCESS;
 }
 
-component_create_function get_component_create( uint32_t component_id )
+component_create_function get_component_create( const u32 component_id )
 {
-    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
-    return component_info_vec[component_id].create_function;
+    CHECK( component_info_vec != NULL );
+
+    if ( component_id < component_info_vec->size() ) {
+        return component_info_vec->at(component_id).create_function;
+    }
+
+    CHECK_INFO(0, "Comp ID: " << component_id << " not a valid component");
+
+    return NULL;
 }
 
-component_copy_function get_component_copy( uint32_t component_id )
+component_copy_function get_component_copy( const u32 component_id )
 {
-    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
-    return component_info_vec[component_id].copy_function;
+    CHECK( component_info_vec != NULL );
+    if ( component_id < component_info_vec->size() ) {
+        return component_info_vec->at(component_id).copy_function;
+    }
+
+    CHECK_INFO(0, "Comp ID: " << component_id << " not a valid component");
+
+    return NULL;
 }
 
-} // end namespace Component_Manager
-
-uint32_t get_max_components()
+u32 get_max_components( void )
 {
-    return (uint32_t)Component_Manager::component_info_vec.size();
+    CHECK( component_info_vec != NULL );
+    return (u32)component_info_vec->size();
 }
 
-uint64_t get_component_size( uint32_t component_id )
+u64 get_component_size( const u32 component_id )
 {
-    CHECK_INFO( component_id != NON_VALID_ID, "This component has not been registered" );
-    return Component_Manager::component_info_vec[component_id].size;
+    CHECK( component_info_vec != NULL );
+
+    if ( component_id < component_info_vec->size() ) {
+        return component_info_vec->at(component_id).size;
+    }
+
+    CHECK_INFO(0, "Comp ID: " << component_id << " not a valid component");
+
+    return 0;
 }
 
-void register_component_info( uint32_t component_id, component_info comp_info )
+void register_component_info( const u32 component_id, const component_info comp_info )
 {
+    CHECK( component_info_vec != NULL );
+
     if ( component_id < BASE_COMPONENT_COUNT ) {
-        Component_Manager::component_info_vec[component_id] = comp_info;
+        component_info_vec->at(component_id) = comp_info;
     } else {
-        Component_Manager::component_info_vec.push_back(comp_info);
+        component_info_vec->push_back(comp_info);
     }
 }
 
-uint8_t* get_component_data( Entity entity, uint32_t component_id )
+u8* get_component_data( const Entity entity, const u32 component_id )
 {
-    return Archetype_Manager::get_component_data_generic(Entity_Manager::get_internal_id(entity), component_id);
+    CHECK( component_info_vec != NULL );
+
+    if ( component_id < component_info_vec->size() ) {
+        return Archetype_Manager::get_component_data_generic(Entity_Manager::get_internal_id(entity), component_id);
+    }
+
+    CHECK_INFO(0, "Comp ID: " << component_id << " not a valid component");
+
+    return NULL;
 }
 
+} // end namespace Component_Manager
 } // end namespace Engine

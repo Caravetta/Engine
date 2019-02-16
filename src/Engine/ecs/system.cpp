@@ -2,111 +2,113 @@
 
 namespace Engine {
 
-bool System::has_component( uint32_t component_id )
+bool System::has_component( const u32 component_id )
 {
-    std::unordered_map<uint64_t, uint64_t>::const_iterator ele = comp_map.find(component_id);
+    UNORDERED_MAP_ITERATOR(u64, u64) iter = comp_map.find(component_id);
 
-    return (ele == comp_map.end() ? false : true);
+    return (iter == comp_map.end() ? false : true);
 }
 
-struct pre_update_job : public Job_Loop {
-    std::vector<component_node_t>* volatile component_nodes;
-    uint64_t ll;
-    uint64_t oo;
-    uint64_t current_idx;
-    void Execute( uint64_t index ) {
-        component_nodes->at(ll).packed_data[current_idx + index] = &(component_nodes->at(ll).array_data_vec[oo]->at(component_nodes->at(ll).size * index));
-    }
-
-};
-
-bool System::pre_update()
+bool System::pre_update( void )
 {
-    START_TIME_BLOCK(system_pre_update);
+    bool should_run = false;
     entity_count = 0;
 
     // check to see if this system is tracking any comps
     if ( component_nodes.size() > 0 ) {
-        uint64_t total_count = 0;
-        uint64_t current_idx = 0;
-        for (uint64_t ii = 0; ii < component_nodes.size(); ii++) {
+        u64 total_count = 0;
+        u64 current_idx = 0;
+        component_node_t* current_comp = NULL;
+
+        for (u64 ii = 0; ii < component_nodes.size(); ++ii) {
             total_count = 0;
-            component_nodes[ii].packed_data.clear();
             current_idx = 0;
-            for (uint64_t jj = 0; jj < component_nodes[ii].entity_count_vec.size(); jj++) {
-                total_count += *(component_nodes[ii].entity_count_vec[jj]);
-                component_nodes[ii].packed_data.resize(total_count);
-                for (uint64_t kk = 0; kk < *(component_nodes[ii].entity_count_vec[jj]); kk++) {
-                    component_nodes[ii].packed_data[current_idx++] = &(component_nodes[ii].array_data_vec[jj]->at(component_nodes[ii].size * kk));
+            current_comp = &component_nodes[ii];
+
+            current_comp->packed_data.clear();
+            for ( u64 jj = 0; jj < current_comp->entity_count_vec.size(); ++jj ) {
+                total_count += *(current_comp->entity_count_vec[jj]);
+                current_comp->packed_data.resize(total_count);
+
+                for ( u64 kk = 0; kk < *(current_comp->entity_count_vec[jj]); ++kk ) {
+                    current_comp->packed_data[current_idx++] = &(current_comp->array_data_vec[jj]->at(current_comp->size * kk));
                 }
             }
             entity_count = total_count;
         }
 
         if ( entity_count > 0 ) {
-            END_TIME_BLOCK(system_pre_update);
-            return true;
+            should_run = true;
         }
     }
 
-    END_TIME_BLOCK(system_pre_update);
-    return false;
+    return should_run;
 }
 
-void System::add_component_data( uint64_t** enitiy_count, uint32_t component_id, Array** data_array )
+void System::add_component_data( u64** enitiy_count, const u32 component_id, Array** data_array )
 {
-    std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(component_id);
-    if ( comp_idx != comp_map.end() ) {
-        CHECK_INFO( component_id == component_nodes[comp_idx->second].component_id,
-                    "comp_id:" << component_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
-        component_nodes[comp_idx->second].entity_count_vec.push_back(*enitiy_count);
-        component_nodes[comp_idx->second].array_data_vec.push_back(*data_array);
+    UNORDERED_MAP_ITERATOR(u64, u64) comp_iter = comp_map.find(component_id);
+    if ( comp_iter != comp_map.end() ) {
+
+        CHECK_INFO( component_id == component_nodes[comp_iter->second].component_id,
+                    "comp_id:" << component_id << " component_nodes[comp_idx->second].component_id:"
+                    << component_nodes[comp_iter->second].component_id);
+
+        component_nodes[comp_iter->second].entity_count_vec.push_back(*enitiy_count);
+        component_nodes[comp_iter->second].array_data_vec.push_back(*data_array);
     }
 
-    CHECK_INFO( comp_idx != comp_map.end(), "This comp ID:" << component_id << " is not tracked by " << name );
+    CHECK_INFO( comp_iter != comp_map.end(), "This comp ID:" << component_id << " is not tracked by " << name );
 }
 
-void System::add_component( uint32_t component_id )
+void System::add_component( const u32 component_id )
 {
     add_component(component_id, COMPONENT_READ_AND_WRITE);
 }
 
-void System::add_component( uint32_t component_id, component_usage_t usage )
+void System::add_component( const u32 component_id, const component_usage_t usage )
 {
-    std::unordered_map<uint64_t, uint64_t>::const_iterator ele = comp_map.find(component_id);
-    if ( ele == comp_map.end() ) {
+    if ( component_id < Component_Manager::get_max_components() ) {
 
-        comp_map.insert({ component_id, component_nodes.size() });
+        UNORDERED_MAP_ITERATOR(u64, u64) iter = comp_map.find(component_id);
+        if ( iter == comp_map.end() ) {
+            comp_map.insert({ component_id, component_nodes.size() });
 
-        DEBUG_LOG("Adding comp ID " << component_id << " to " << name << " at " << component_nodes.size());
+            DEBUG_LOG("Adding comp ID " << component_id << " to " << name << " at " << component_nodes.size());
 
-        component_node_t tmp_comp_node;
-        tmp_comp_node.component_id = component_id;
-        tmp_comp_node.usage = usage;
-        tmp_comp_node.size = get_component_size(component_id);
-        component_nodes.push_back(tmp_comp_node);
-        component_list.push_back(component_id);
+            component_node_t tmp_comp_node;
+            tmp_comp_node.component_id = component_id;
+            tmp_comp_node.usage = usage;
+            tmp_comp_node.size = get_component_size(component_id);
+            component_nodes.push_back(tmp_comp_node);
+            component_list.push_back(component_id);
 
-
-        return;
+        } else {
+            CHECK_INFO( 0, "Component ID:" << component_id << "already added" );
+        }
+    } else {
+        LOG_ERROR("Component ID: " << component_id << " is not a valid component");
     }
 
-    CHECK_INFO( ele != comp_map.end(), "Component ID:" << component_id << "already added" );
+    return;
 }
 
-std::vector<uint8_t*>* System::get_data_vec( uint32_t component_id )
+std::vector<u8*>* System::get_data_vec( const u32 component_id )
 {
-    std::unordered_map<uint64_t, uint64_t>::const_iterator comp_idx = comp_map.find(component_id);
-    if ( comp_idx != comp_map.end() ) {
-        CHECK_INFO( comp_id == component_nodes[comp_idx->second].component_id,
-                    "comp_id:" << comp_id << " component_nodes[comp_idx->second].component_id:" << component_nodes[comp_idx->second].component_id);
+    std::vector<u8*>* data = NULL;
 
-        return &component_nodes[comp_idx->second].packed_data;
+    UNORDERED_MAP_ITERATOR(u64, u64) comp_iter = comp_map.find(component_id);
+    if ( comp_iter != comp_map.end() ) {
+        CHECK_INFO( comp_id == component_nodes[comp_iter->second].component_id,
+                    "comp_id:" << comp_id << " component_nodes[comp_idx->second].component_id:"
+                    << component_nodes[comp_idx->second].component_id );
+
+        data = &component_nodes[comp_iter->second].packed_data;
+    } else {
+        CHECK_INFO( 0, "This comp ID:" << component_id << " is not tracked by " << name );
     }
 
-    CHECK_INFO( comp_idx == comp_map.end(), "This comp ID:" << component_id << " is not tracked by " << name );
-
-    return NULL;
+    return data;
 }
 
 } // end namespace Engine
