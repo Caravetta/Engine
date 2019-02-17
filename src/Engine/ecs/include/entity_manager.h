@@ -18,6 +18,9 @@ Rc_t init( void );
 internal_entity_id get_internal_id( Entity entity );
 internal_entity_id* get_internal_id_pointer( Entity entity );
 void update();
+Entity create_entity( const std::string archetype_name );
+Rc_t delete_entity( const Entity entity );
+bool is_valid_entity( const Entity entity );
 
 } // end namespace Entity_Manager
 } // end namespace Engine

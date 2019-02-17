@@ -42,5 +42,11 @@ bool is_closed( void )
     return platform_window_is_closed(platform_window);
 }
 
+Rc_t set_mouse_position( int x, int y )
+{
+    return platformset_set_mouse_position(platform_window, x, y);
+}
+
+
 } //end namespace Window
 } //end namespace Engine

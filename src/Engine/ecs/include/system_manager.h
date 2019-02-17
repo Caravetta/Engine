@@ -13,6 +13,7 @@ namespace System_Manager {
 void init_systems( void );
 void update_systems( void );
 void shutdown_systems( void );
+void register_generic_system( System* system );
 
 std::vector<System*>* get_system_vec( void );
 

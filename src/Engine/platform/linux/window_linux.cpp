@@ -67,8 +67,6 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
 
 Rc_t _init( struct platform_window_t* window )
 {
-    Rc_t rc = SUCCESS;
-
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
         LOG_ERROR("Failed to Init SDL");
         return ENGINE_ERROR;
@@ -121,6 +119,12 @@ int platform_window_get_height( struct platform_window_t* platform_window )
 bool platform_window_is_closed( struct platform_window_t* platform_window )
 {
     return platform_window->is_closed;
+}
+
+Rc_t platformset_set_mouse_position( struct platform_window_t* platform_window, int x, int y )
+{
+    SDL_WarpMouseInWindow( platform_window->handle, x, y);
+    return SUCCESS;
 }
 
 } //end namespace Engine

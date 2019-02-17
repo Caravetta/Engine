@@ -96,6 +96,8 @@
 
 #define UNUSED_ARG( x ) ((void)(x))
 
+#define UNORDERED_MAP_ITERATOR( x, y ) std::unordered_map<x, y>::const_iterator
+
 typedef std::vector<uint8_t> Array;
 
 template<typename T>

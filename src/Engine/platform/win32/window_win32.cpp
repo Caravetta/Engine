@@ -177,4 +177,12 @@ int platform_window_get_height( struct platform_window_t* platform_window )
     return platform_window->height;
 }
 
+Rc_t platformset_set_mouse_position( struct platform_window_t* platform_window, int x, int y )
+{
+    RECT rect;
+    GetWindowRect(platform_window->hWnd, &rect);
+    SetCursorPos( rect.left + x, rect.top + y);
+    return SUCCESS;
+}
+
 } //end namespace core

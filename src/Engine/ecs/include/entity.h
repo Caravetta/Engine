@@ -8,10 +8,10 @@ namespace Engine {
 typedef struct {
     union {
         struct {
-            uint64_t archetype : 32;
-            uint64_t index     : 32;
+            u64 archetype : 32;
+            u64 index     : 32;
         };
-        uint64_t id;
+        u64 id;
     };
 } internal_entity_id;
 
