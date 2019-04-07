@@ -1,0 +1,32 @@
+
+if env.platform.name == 'windows':
+    flags = ['-DWINDOWS', '-DENGINE_EXPORT', '-D_CRT_SECURE_NO_WARNINGS', '-fp:fast', '-MD', '-Zo', '-Oi', '-W4', '-FC',
+             '-Ox', '-Ot', '-wd4530', '-wd4577', '-wd4201', '-wd4251']
+    link_flags = ['/LIBPATH:../lib/free_type/']
+    package_list = [package('user32'), package('winmm')]
+elif env.platform.name == 'linux':
+    flags = ['-DLINUX', '-Wall', '-O3', '-fPIC', '-fvisibility=hidden', '-ffunction-sections', '-std=gnu++11']
+    link_flags = [ '-Wl,--gc-sections', '-Wl,--no-undefined' ]
+    package_list = []
+
+global_options(flags, lang='c++')
+
+global_link_options(link_flags, 'native', 'dynamic')
+
+#########################################################################
+
+# Build Component_ID_Generator
+
+comp_gen_include_list = ['common/tokenizer/include/',
+                         'comp_id_gen/include/',
+                         'common/include/']
+
+comp_gen_source_files = []
+comp_gen_source_files.extend(find_files('common/tokenizer/', '*.cpp'))
+comp_gen_source_files.extend(find_files('comp_id_gen', '*.cpp'))
+
+comp_gen_objs = object_files(comp_gen_source_files, includes=comp_gen_include_list)
+
+executable('Component_ID_Generator', comp_gen_objs, packages=package_list)
+
+

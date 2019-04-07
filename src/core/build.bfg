@@ -1,0 +1,57 @@
+
+if env.platform.name == 'windows':
+    flags = ['-DINTERNAL', '-DWINDOWS', '-DENGINE_EXPORT', '-D_CRT_SECURE_NO_WARNINGS', '-fp:fast', '-MD', '-Zo', '-Oi', '-W4', '-FC',
+             '-Ox', '-Ot', '-wd4530', '-wd4577', '-wd4201', '-wd4251']
+    link_flags = ['/LIBPATH:../../../lib/free_type/']
+    package_list = [package('user32'), package('gdi32'), package('opengl32'), package('winmm')]
+elif env.platform.name == 'linux':
+    flags = ['-DINTERNAL', '-DLINUX', '-Wall', '-O3', '-fPIC', '-fvisibility=hidden', '-ffunction-sections', '-std=gnu++11']
+    link_flags = [ '-Wl,--gc-sections', '-Wl,--no-undefined' ]
+    package_list = [package('GL'), package('GLU'), package('glut'), package('GLEW'),
+                    package('sdl2'), package('freetype2'), package('pthread')]
+
+global_options(flags, lang='c++')
+
+global_link_options(link_flags, 'native', 'dynamic')
+
+# Build Engine_Core.lib
+
+core_include_list = ['include/',
+                     'ecs/include/',
+                     'generated_code/include/',
+                     'data_structures/include/']
+
+core_source_files = []
+core_source_files.extend(find_files('ecs/', '*.cpp'))
+core_source_files.extend(find_files('generated_code/', '*.cpp'))
+core_source_files.extend(find_files('data_structures/', '*.cpp'))
+core_source_files.extend(find_files('.', '*.cpp', flat=True))
+
+#if env.platform.name == 'windows':
+    #core_include_list.extend(['src/core/platform/win32/include/', 'lib/free_type/include/']);
+    #core_source_files.extend(find_files('src/core/platform/win32/', '*.cpp'))
+#elif env.platform.name == 'linux':
+#    core_include_list.extend(['src/core/platform/linux/include/', '/usr/include/freetype2/']);
+#    core_source_files.extend(find_files('src/core/platform/linux/', '*.cpp'))
+
+objs = object_files(core_source_files, includes=core_include_list)
+
+# Build the library
+
+if env.platform.name == 'linux':
+    lib_headers = header_directory('src', include='*.h')
+    lib = library('Engine', objs, packages=package_list, includes=lib_headers)
+elif env.platform.name == 'windows':
+    library('Engine', objs, packages=package_list, libs=['../../lib/free_type/freetype.lib'])
+
+if env.platform.name == 'linux':
+    install(lib, lib_headers)
+    pkg_config(includes=find_files('src/', '*.h', flat=True))
+
+project('Engine', version='0.1')
+
+if env.platform.name == 'linux':
+    command('clean', cmds=[['rm', '-f', 'libEngine.so'], ['rm', '-rf', 'src']])
+
+#########################################################################
+
