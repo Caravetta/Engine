@@ -6,12 +6,11 @@
 #include "base_generated_component_info.h"
 
 #ifndef INTERNAL
-#include "generated_component_info.h"
+//#include "generated_component_info.h"
 #endif
 
 namespace Engine {
 
-#define COMP_ID( var ) COMPONENT_GEN_ID_ ## var
 #define TAG_ID( var ) TAG_GEN_ID_ ## var
 
 #define INVALID_COMPONENT 0
@@ -42,7 +41,7 @@ uint64_t get_component_size( const Component_ID id );
 Component_Type get_component_type( const Component_ID id );
 template<typename T> Rc_t component_create( uint8_t* memory );
 template<typename T> Rc_t component_copy( uint8_t* source, uint8_t* dest );
-template<typename T> Component_ID get_component_id( void );
+//template<typename T> Component_ID get_component_id( void );
 //template<typename T> uint32_t get_tag_id( void );
 
 template<typename T>
@@ -63,11 +62,13 @@ Rc_t component_copy( uint8_t* source, uint8_t* dest )
     return SUCCESS;
 }
 
+#if 0
 template<typename T>
 Component_ID get_component_id( void )
 {
-    return COMP_ID(T);
+    return COMP_ID( T );
 }
+#endif
 
 #if 0
 template<typename T>

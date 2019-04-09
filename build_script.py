@@ -2,7 +2,7 @@ import subprocess
 import os
 import sys
 import shutil
-import stat 
+import stat
 
 os.chdir("src/core/")
 
@@ -26,8 +26,8 @@ os.chdir("../../../")
 lib_headers = []
 
 lib_headers.append("src/tools/build/Component_ID_Generator")
-lib_headers.append("src/core/generated_code/include/")
-lib_headers.append("base_generated_component_info.h")
+lib_headers.append("src/core/generated_code/")
+lib_headers.append("base_generated_component_info")
 
 for root, dirs, files in os.walk("src/core/"):
     for file in files:
