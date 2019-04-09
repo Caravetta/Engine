@@ -4,6 +4,9 @@ import sys
 import shutil
 import stat
 
+if sys.platform != 'win32' and sys.platform != 'linux':
+    sys.exit("%s is not supported" % sys.platform)
+
 os.chdir("src/core/")
 
 if (os.path.exists("generated_code")):
