@@ -34,6 +34,7 @@ int main( int argc, char* argv[] )
     std::string file_name;
     std::vector<std::string> file_paths;
     std::vector<struct_def> comps;
+    std::vector<std::string> includes;
     uint32_t last_gen_id = 1;
 
     if ( argc > 4 ) {
@@ -46,7 +47,7 @@ int main( int argc, char* argv[] )
             file_paths[ii - 3] = argv[ii];
         }
 
-        parse_headers(&file_paths, &comps, &last_gen_id);
+        parse_headers(&file_paths, &comps, &last_gen_id, &includes);
     }
 
     if ( comps.size () > 0 ) {
@@ -55,6 +56,7 @@ int main( int argc, char* argv[] )
         uint32_t starting_id = last_gen_id;
 
         if ( h_file.is_open() ) {
+            std::string header_name = file_name;
             std::size_t h_pos = file_name.find(".h");
 
             for (std::string::size_type i=0; i<file_name.length(); ++i) {
@@ -62,15 +64,28 @@ int main( int argc, char* argv[] )
             }
 
             h_file << "#ifndef __" << file_name.substr(0, h_pos) <<"__\n#define __"<< file_name.substr(0, h_pos) <<"__\n\n";
-            if ( last_gen_id == 1 ) {
-                h_file << "#include \"entity.h\" \n";
-                h_file << "#include \"core_common.h\" \n";
-            } else {
-                h_file << "#include <Engine_Core.h>\n";
+            //if ( last_gen_id == 1 ) {
+                //h_file << "#include \"entity.h\" \n";
+            h_file << "#include \"core_common.h\" \n";
+            for ( uint32_t jj = 0; jj < includes.size(); ++jj ) {
+                h_file << "#include \"" << includes[jj] << "\" \n";
             }
+            //} else {
+                //h_file << "#include <Engine_Core.h>\n";
+            //}
             h_file << "\nnamespace Engine {\n";
-            h_file << "\ntemplate<typename T> uint32_t get_component_id( void ) { return 0; }\n\n";
-            c_file << "#include \"base_generated_component_info.h\" \n\n";
+
+            if ( last_gen_id == 1 ) {
+                h_file << "\ntemplate<typename T> uint32_t get_component_id( void ) { return 0; }\n\n";
+            }
+
+            if ( last_gen_id == 1 ) {
+                c_file << "#include \"base_generated_component_info.h\" \n\n";
+            } else {
+                c_file << "#include \"base_generated_component_info.h\" \n";
+                c_file << "#include \"" << header_name << ".h\" \n\n";
+            }
+
             c_file << "namespace Engine {\n";
 
             for ( uint32_t ii = 0; ii < comps.size(); ++ii ) {

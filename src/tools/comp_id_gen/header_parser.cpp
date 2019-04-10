@@ -184,12 +184,33 @@ int _component_parse_pass( std::vector<token_t>* tokens, std::vector<struct_def>
     return 0;
 }
 
-int parse_headers( std::vector<std::string>* file_paths, std::vector<struct_def>* comps, uint32_t* max_gen_id )
+int parse_headers( std::vector<std::string>* file_paths, std::vector<struct_def>* comps, uint32_t* max_gen_id, std::vector<std::string>* includes )
 {
+    uint32_t last_comp = 0;
+
     for ( u32 ii = 0; ii < file_paths->size(); ++ii ) {
         std::vector<token_t> tokens = tokenize_file(file_paths->at(ii), false);
 
         _component_parse_pass( &tokens, comps, max_gen_id );
+
+        if ( last_comp < comps->size() ) {
+            uint32_t pos = 0;
+            pos = (uint32_t)file_paths->at(ii).find_last_of("\\");
+            if ( pos == -1 ) {
+                pos = (uint32_t)file_paths->at(ii).find_last_of("/");
+                if ( pos == -1 ) {
+                    pos = 0;
+                } else {
+                    pos += 1;
+                }
+            } else {
+                pos += 1;
+            }
+
+            includes->push_back(file_paths->at(ii).substr(pos, file_paths->at(ii).size()));
+        }
+
+        last_comp = (uint32_t)comps->size();
     }
     return 0;
 }

@@ -15,7 +15,7 @@ struct struct_def {
     std::vector<struct_member> members;
 };
 
-int parse_headers( std::vector<std::string>* file_paths, std::vector<struct_def>* comps, uint32_t* max_gen_id );
+int parse_headers( std::vector<std::string>* file_paths, std::vector<struct_def>* comps, uint32_t* max_gen_id, std::vector<std::string>* includes );
 
 
 #endif //__HEADER_PARSER_H__

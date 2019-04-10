@@ -6,7 +6,7 @@
 #include "base_generated_component_info.h"
 
 #ifndef INTERNAL
-//#include "generated_component_info.h"
+#include "generated_component_info.h"
 #endif
 
 namespace Engine {
