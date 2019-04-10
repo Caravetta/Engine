@@ -1,8 +1,9 @@
+#! /usr/bin/python
 import subprocess
 import os
 import sys
 import shutil
-import stat 
+import stat
 
 if (os.path.exists("src/core/build")):
 	shutil.rmtree("src/core/build")

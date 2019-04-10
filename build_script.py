@@ -1,10 +1,12 @@
+#! /usr/bin/python
 import subprocess
 import os
 import sys
 import shutil
 import stat
+import commands
 
-if sys.platform != 'win32' and sys.platform != 'linux':
+if sys.platform != 'win32' and 'linux' not in sys.platform:
     sys.exit("%s is not supported" % sys.platform)
 
 os.chdir("src/core/")
@@ -23,6 +25,8 @@ subprocess.call(["9k", "build"])
 os.chdir("build/")
 if sys.platform == 'win32':
 	subprocess.call(["ninja"])
+else:
+        subprocess.call(["make", "-j", "8"])
 
 os.chdir("../../../")
 
@@ -38,7 +42,10 @@ for root, dirs, files in os.walk("src/core/"):
     		if (file.find('linux') == -1):
         		if (file.endswith(".h")):
             	 	 lib_headers.append(os.path.join(root, file))
-
+        else:
+                if (file.find('win32') == -1):
+                        if (file.endswith(".h")):
+                         lib_headers.append(os.path.join(root, file))
 
 subprocess.call(lib_headers)
 
@@ -53,6 +60,8 @@ subprocess.call(["9k", "build"])
 os.chdir("build/")
 if sys.platform == 'win32':
 	subprocess.call(["ninja"])
+else:
+        subprocess.call(["make", "-j", "8"])
 
 os.chdir("../../../")
 
@@ -72,10 +81,16 @@ for root, dirs, files in os.walk("src/core/"):
     		if (file.find('linux') == -1):
         		if (file.endswith(".h")):
             	 	 lib_header.append(os.path.join(root, file))
+        else:
+                if (file.find('win32') == -1):
+                        if (file.endswith(".h")):
+                         lib_header.append(os.path.join(root, file))
 
 for file in lib_header:
 	if sys.platform == 'win32':
 		os.system("copy %s build\Engine_Core\include\. >nul 2>&1" % (file.replace('/', '\\')))
+	else:
+		os.system("cp %s build/Engine_Core/include/." % file)
 
 lib_files = []
 
@@ -87,7 +102,14 @@ if sys.platform == 'win32':
 
 	for file in lib_files:
 		os.system("copy %s build\Engine_Core\. >nul 2>&1" % (file.replace('/', '\\')))
+else:
+	for root, dirs, files in os.walk("src/core/build"):
+		for file in files:
+			if (file.endswith(".so")):
+				lib_files.append(os.path.join(root, file))
 
+	for file in lib_files:
+		os.system("cp %s build/Engine_Core/." % file)
 
 tools = []
 
@@ -99,3 +121,12 @@ if sys.platform == 'win32':
 
 	for file in tools:
 		os.system("copy %s build\Engine_Tools\. >nul 2>&1" % (file.replace('/', '\\')))
+else:
+	for root, dirs, files in os.walk("src/tools/build"):
+		for file in files:
+			if (os.access(os.path.join(root, file), os.X_OK)):
+				tools.append(os.path.join(root, file))
+
+	for file in tools:
+		os.system("cp %s build/Engine_Tools/." % file)
+

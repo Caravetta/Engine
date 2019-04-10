@@ -33,7 +33,7 @@ Rc_t shutdown_systems( void );
 template<typename T>
 Rc_t register_component( void )
 {
-    component_info temp_comp;
+    Component_Info temp_comp;
 
     temp_comp.type = COMPONENT_TYPE;
     temp_comp.create_function = component_create<T>;

@@ -1,6 +1,8 @@
 #ifndef __CORE_COMMON_H__
 #define __CORE_COMMON_H__
 
+#include <cstdio>
+#include <stdio.h>
 #include <stdint.h>
 #include <inttypes.h>
 #include "return_codes.h"
