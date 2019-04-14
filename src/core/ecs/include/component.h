@@ -21,16 +21,16 @@ typedef Rc_t (*component_create_function)( uint8_t* memory );
 typedef Rc_t (*component_copy_function)( uint8_t* source, uint8_t* dest );
 
 enum Component_Type {
-    COMPONENT_TYPE,
-    TAG_TYPE,
-    UNDEFINED_COMPONENT_TYPE,
+     COMPONENT_TYPE,
+     TAG_TYPE,
+     UNDEFINED_COMPONENT_TYPE,
 };
 
 struct Component_Info {
-    Component_Type              type;
-    component_create_function   create_function;
-    component_copy_function     copy_function;
-    size_t                      size;
+     Component_Type              type;
+     component_create_function   create_function;
+     component_copy_function     copy_function;
+     size_t                      size;
 };
 
 Rc_t init_component_system( void );
@@ -45,19 +45,19 @@ template<typename T> Rc_t component_copy( uint8_t* source, uint8_t* dest );
 template<typename T>
 Rc_t component_create( uint8_t* memory )
 {
-    new (memory) T;
-    return SUCCESS;
+     new (memory) T;
+     return SUCCESS;
 }
 
 template<typename T>
 Rc_t component_copy( uint8_t* source, uint8_t* dest )
 {
-    T* source_p = (T*)source;
-    T* dest_p = (T*)dest;
+     T* source_p = (T*)source;
+     T* dest_p = (T*)dest;
 
-    *dest_p = *source_p;
+     *dest_p = *source_p;
 
-    return SUCCESS;
+     return SUCCESS;
 }
 
 #if 0

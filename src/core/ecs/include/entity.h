@@ -8,7 +8,7 @@ namespace Engine {
 
 COMPONENT()
 struct Entity {
-    Handle handle;
+     Handle handle;
 };
 
 Rc_t init_entity_system( void );

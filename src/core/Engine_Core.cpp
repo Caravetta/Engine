@@ -12,18 +12,17 @@ namespace Engine {
 /*                                      */
 /****************************************/
 
-Rc_t init( const engine_config_t* config )
+Rc_t init( void )
 {
-    UNUSED_ARG( config );
-    Rc_t rc = SUCCESS;
+     Rc_t rc = SUCCESS;
 
-    rc = init_ecs();
-    if ( rc != SUCCESS ) {
-        LOG_ERROR("Failed to initialize ECS");
-        return rc;
-    }
+     rc = init_ecs();
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to initialize ECS");
+          return rc;
+     }
 
-    return rc;
+     return rc;
 }
 
 void shutdown( void )

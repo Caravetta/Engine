@@ -10,15 +10,15 @@
 namespace Engine {
 
 #ifdef WINDOWS
-    #ifdef ENGINE_EXPORT
-        #define ENGINE_API __declspec(dllexport)
-    #else
-        #define ENGINE_API __declspec(dllimport)
-    #endif
+     #ifdef ENGINE_EXPORT
+          #define ENGINE_API __declspec(dllexport)
+     #else
+          #define ENGINE_API __declspec(dllimport)
+     #endif
 #elif LINUX
-    #define ENGINE_API __attribute__ ((visibility ("default")))
+     #define ENGINE_API __attribute__ ((visibility ("default")))
 #else
-    #define ENGINE_API
+     #define ENGINE_API
 #endif
 
 #define UNUSED_ARG( x ) ((void)(x))

@@ -33,28 +33,28 @@ Rc_t shutdown_systems( void );
 template<typename T>
 Rc_t register_component( void )
 {
-    Component_Info temp_comp;
+     Component_Info temp_comp;
 
-    temp_comp.type = COMPONENT_TYPE;
-    temp_comp.create_function = component_create<T>;
-    temp_comp.copy_function = component_copy<T>;
-    temp_comp.size = sizeof(T);
+     temp_comp.type = COMPONENT_TYPE;
+     temp_comp.create_function = component_create<T>;
+     temp_comp.copy_function = component_copy<T>;
+     temp_comp.size = sizeof(T);
 
-    register_component_info(get_component_id<T>(), temp_comp);
+     register_component_info(get_component_id<T>(), temp_comp);
 
-    return SUCCESS;
+     return SUCCESS;
 }
 
 template<typename T>
 Rc_t register_tag( void )
 {
-    return SUCCESS;
+     return SUCCESS;
 }
 
 template<typename T>
 Rc_t register_system( void )
 {
-    return SUCCESS;
+     return SUCCESS;
 }
 
 } // end namespace Engine
