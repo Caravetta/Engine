@@ -27,25 +27,25 @@ public:
 template<typename T>
 Rc_t add_component( void )
 {
-
+     return SUCCESS;
 }
 
 template<typename T>
 Rc_t add_tag( void )
 {
-
+     return SUCCESS;
 }
 
 template<typename T>
 bool has_component( void )
 {
-
+     return SUCCESS;
 }
 
 template<typename T>
 bool has_tag( void )
 {
-
+     return false;
 }
 
 } // end namespace Engine

@@ -41,8 +41,6 @@ uint64_t get_component_size( const Component_ID id );
 Component_Type get_component_type( const Component_ID id );
 template<typename T> Rc_t component_create( uint8_t* memory );
 template<typename T> Rc_t component_copy( uint8_t* source, uint8_t* dest );
-//template<typename T> Component_ID get_component_id( void );
-//template<typename T> uint32_t get_tag_id( void );
 
 template<typename T>
 Rc_t component_create( uint8_t* memory )

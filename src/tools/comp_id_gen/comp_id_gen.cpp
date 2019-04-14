@@ -11,7 +11,7 @@ static int generate_comp_id_header( std::ofstream& file, std::string comp_name )
 {
     int rc = 0;
 
-    file << "\ntemplate<> ENGINE_API uint32_t get_component_id<" << comp_name << ">( void );\n";
+    file << "\ntemplate<> ENGINE_API Component_ID get_component_id<" << comp_name << ">( void );\n";
 
     return rc;
 }
@@ -20,7 +20,7 @@ static int generate_comp_id_source( std::ofstream& file, std::string comp_name, 
 {
     int rc = 0;
 
-    file << "\ntemplate<> uint32_t get_component_id<" << comp_name << ">( void )\n";
+    file << "\ntemplate<> Component_ID get_component_id<" << comp_name << ">( void )\n";
     file << "{\n";
     file << "\treturn " << id << ";\n";
     file << "}\n";
@@ -64,19 +64,20 @@ int main( int argc, char* argv[] )
             }
 
             h_file << "#ifndef __" << file_name.substr(0, h_pos) <<"__\n#define __"<< file_name.substr(0, h_pos) <<"__\n\n";
-            //if ( last_gen_id == 1 ) {
-                //h_file << "#include \"entity.h\" \n";
             h_file << "#include \"core_common.h\" \n";
+
             for ( uint32_t jj = 0; jj < includes.size(); ++jj ) {
                 h_file << "#include \"" << includes[jj] << "\" \n";
             }
-            //} else {
-                //h_file << "#include <Engine_Core.h>\n";
-            //}
+
             h_file << "\nnamespace Engine {\n";
 
             if ( last_gen_id == 1 ) {
-                h_file << "\ntemplate<typename T> uint32_t get_component_id( void ) { return 0; }\n\n";
+                h_file << "\ntypedef uint32_t Component_ID;\n";
+            }
+
+            if ( last_gen_id == 1 ) {
+                h_file << "\ntemplate<typename T> Component_ID get_component_id( void ) { return 0; }\n\n";
             }
 
             if ( last_gen_id == 1 ) {
@@ -96,7 +97,7 @@ int main( int argc, char* argv[] )
             }
 
             if ( last_gen_id == 1 ) {
-                h_file << "#define LAST_INTERNAL_GEN_COMP_ID " << starting_id << "\n";
+                h_file << "\n#define LAST_INTERNAL_GEN_COMP_ID " << starting_id << "\n";
             }
 
             c_file << "\n} // end namespace Engine\n\n";

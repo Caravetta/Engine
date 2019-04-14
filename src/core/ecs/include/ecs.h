@@ -41,6 +41,8 @@ Rc_t register_component( void )
     temp_comp.size = sizeof(T);
 
     register_component_info(get_component_id<T>(), temp_comp);
+
+    return SUCCESS;
 }
 
 template<typename T>
