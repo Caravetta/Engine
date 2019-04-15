@@ -1,6 +1,5 @@
 #include <windows.h>
 #include "utils_win32.h"
-#include "core_common.h"
 
 namespace Engine {
 

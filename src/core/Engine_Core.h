@@ -23,7 +23,13 @@ namespace Engine {
 /*                                      */
 /****************************************/
 
-ENGINE_API Rc_t init( void );
+struct Engine_Config {
+     uint16_t    window_width;
+     uint16_t    window_height;
+     std::string window_title;
+};
+
+ENGINE_API Rc_t init( Engine_Config config );
 ENGINE_API void shutdown( void );
 
 } // end namespace Engine

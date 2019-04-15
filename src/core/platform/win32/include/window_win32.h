@@ -2,7 +2,7 @@
 #define __WINDOW_WIN32_H__
 
 #include <string>
-#include "Engine_Types.h"
+#include "window.h"
 
 namespace Engine {
 

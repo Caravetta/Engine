@@ -17,8 +17,6 @@
 #include "thread_win32.h"
 #include "opengl.h"
 #include "utils_win32.h"
-#include "input_win32.h"
-#include "key_scancode_win32.h"
 
 #endif
 

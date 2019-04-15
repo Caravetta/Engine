@@ -1,5 +1,4 @@
 #include "window.h"
-#include "input_manager.h"
 
 namespace Engine {
 namespace Window {

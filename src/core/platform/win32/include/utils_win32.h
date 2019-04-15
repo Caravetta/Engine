@@ -1,7 +1,7 @@
 #ifndef __UTILS_WIN32_H__
 #define __UTILS_WIN32_H__
 
-#include "Engine.h"
+#include "core_common.h"
 
 namespace Engine {
 
