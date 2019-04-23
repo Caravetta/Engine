@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <string>
 #include "platform.h"
-#include "input_manager.h"
+#include "core_common.h"
 
 namespace Engine {
 
@@ -36,10 +36,10 @@ void platform_window_update( struct platform_window_t* platform_window )
             platform_window->is_closed = true;
         } break;
         case SDL_KEYDOWN: {
-            Input_Manager::process_key_down(get_key_id((key_scancode_t)event.key.keysym.scancode));
+            //Input_Manager::process_key_down(get_key_id((key_scancode_t)event.key.keysym.scancode));
         } break;
         case SDL_KEYUP: {
-            Input_Manager::process_key_up(get_key_id((key_scancode_t)event.key.keysym.scancode));
+            //Input_Manager::process_key_up(get_key_id((key_scancode_t)event.key.keysym.scancode));
         } break;
 
         }

@@ -34,11 +34,11 @@ struct Component_Info {
 };
 
 Rc_t init_component_system( void );
-Rc_t register_component_info( const Component_ID id, const Component_Info info );
-component_create_function get_component_create( const Component_ID id );
-component_copy_function get_component_copy( const Component_ID id );
-uint64_t get_component_size( const Component_ID id );
-Component_Type get_component_type( const Component_ID id );
+ENGINE_API Rc_t register_component_info( const Component_ID id, const Component_Info info );
+ENGINE_API component_create_function get_component_create( const Component_ID id );
+ENGINE_API component_copy_function get_component_copy( const Component_ID id );
+ENGINE_API size_t get_component_size( const Component_ID id );
+ENGINE_API Component_Type get_component_type( const Component_ID id );
 template<typename T> Rc_t component_create( uint8_t* memory );
 template<typename T> Rc_t component_copy( uint8_t* source, uint8_t* dest );
 

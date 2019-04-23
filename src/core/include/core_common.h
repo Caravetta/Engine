@@ -27,6 +27,9 @@ namespace Engine {
 #define TAG()
 
 #define CHECK( condition )
+#define CHECK_INFO( condition, print )
+
+#define UNORDERED_MAP_ITER( x, y ) std::unordered_map<x, y>::const_iterator
 
 #define LOG( ... ) printf( __VA_ARGS__ ); printf("\n");
 #define LOG_ERROR(...) printf( __VA_ARGS__ ); printf("\n");

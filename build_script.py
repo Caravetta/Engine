@@ -26,7 +26,7 @@ os.chdir("build/")
 if sys.platform == 'win32':
 	subprocess.call(["ninja"])
 else:
-        subprocess.call(["make", "-j", "8"])
+        subprocess.call(["make", "-j", "16"])
 
 os.chdir("../../../")
 
@@ -61,7 +61,7 @@ os.chdir("build/")
 if sys.platform == 'win32':
 	subprocess.call(["ninja"])
 else:
-        subprocess.call(["make", "-j", "8"])
+        subprocess.call(["make", "-j", "16"])
 
 os.chdir("../../../")
 

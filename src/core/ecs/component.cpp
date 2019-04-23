@@ -85,7 +85,7 @@ component_copy_function get_component_copy( const Component_ID id )
      return copy_func;
 }
 
-uint64_t get_component_size( const Component_ID id )
+size_t get_component_size( const Component_ID id )
 {
      uint64_t comp_size = 0;
 

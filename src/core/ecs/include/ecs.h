@@ -18,11 +18,14 @@ ENGINE_API std::vector<Entity> batch_create_entity( const std::string archetype_
 ENGINE_API Rc_t delete_entity( const Entity entity );
 ENGINE_API Rc_t batch_delete_entity( const std::vector<Entity> entities );
 
-ENGINE_API Rc_t register_archetype( const Archetype archetype );
+ENGINE_API Rc_t register_archetype( Archetype archetype, const std::string name );
 
 template<typename T> Rc_t register_component( void );
 template<typename T> Rc_t register_tag( void );
 template<typename T> Rc_t register_system( void );
+
+template<typename T> Rc_t add_component( const Entity entity );
+template<typename T> Rc_t remove_component( const Entity entity );
 
 template<typename T> T* get_component_data( const Entity entity );
 
@@ -55,6 +58,18 @@ template<typename T>
 Rc_t register_system( void )
 {
      return SUCCESS;
+}
+
+template<typename T>
+Rc_t add_component( const Entity entity )
+{
+     return SUCCESS;
+}
+
+template<typename T>
+Rc_t remove_component( const Entity entity )
+{
+
 }
 
 } // end namespace Engine

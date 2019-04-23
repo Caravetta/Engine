@@ -5,8 +5,12 @@
 #include <typeindex>
 
 #include "window.h"
+#include "page_allocator.h"
 
 namespace Engine {
+
+#define DEFAULT_PAGE_SIZE 16000
+#define DEFAULT_POOL_SIZE 100
 
 /****************************************/
 /*                                      */
@@ -18,9 +22,15 @@ Rc_t init( const Engine_Config config )
 {
      Rc_t rc = SUCCESS;
 
+     rc = init_page_allocator(DEFAULT_PAGE_SIZE, DEFAULT_POOL_SIZE);
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to initialize Page Allocator rc=%d", rc);
+          return rc;
+     }
+
      rc = init_ecs();
      if ( rc != SUCCESS ) {
-          LOG_ERROR("Failed to initialize ECS");
+          LOG_ERROR("Failed to initialize ECS rc=%d", rc);
           return rc;
      }
 

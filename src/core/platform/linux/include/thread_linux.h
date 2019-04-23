@@ -2,6 +2,7 @@
 #define __THREAD_LINUX_H__
 
 #include "core_common.h"
+#include "return_codes.h"
 
 namespace Engine {
 

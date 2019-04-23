@@ -18,6 +18,12 @@ Rc_t init_ecs( void )
           return rc;
      }
 
+     rc = init_archetype_system();
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to initialize archetype system");
+          return rc;
+     }
+
      return rc;
 }
 
@@ -57,9 +63,9 @@ Rc_t batch_delete_entity( const std::vector<Entity> entities )
      return rc;
 }
 
-Rc_t register_archetype( const Archetype archetype )
+Rc_t register_archetype( Archetype archetype, const std::string name )
 {
-     return SUCCESS;
+     return add_archetype(archetype, name);
 }
 
 Rc_t init_systems( void )

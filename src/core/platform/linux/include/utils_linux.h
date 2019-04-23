@@ -1,7 +1,8 @@
 #ifndef __UTILS_LINUX_H__
 #define __UTILS_LINUX_H__
 
-#include "Engine.h"
+#include "core_common.h"
+#include "return_codes.h"
 
 namespace Engine {
 

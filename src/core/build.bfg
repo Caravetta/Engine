@@ -21,6 +21,7 @@ core_include_list = ['include/',
                      'generated_code/include/',
                      'data_types/include/',
                      'data_structures/include/',
+                     'memory_system/include/',
                      'platform/include/']
 
 core_source_files = []
@@ -28,6 +29,7 @@ core_source_files.extend(find_files('ecs/', '*.cpp'))
 core_source_files.extend(find_files('generated_code/', '*.cpp'))
 core_source_files.extend(find_files('data_structures/', '*.cpp'))
 core_source_files.extend(find_files('data_types/', '*.cpp'))
+core_source_files.extend(find_files('memory_system/', '*.cpp'))
 core_source_files.extend(find_files('.', '*.cpp', flat=True))
 core_source_files.extend(find_files('platform/', '*.cpp', flat=True))
 

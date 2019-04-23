@@ -9,8 +9,6 @@
 #include "window_linux.h"
 #include "thread_linux.h"
 #include "utils_linux.h"
-#include "input_linux.h"
-#include "key_scancode_linux.h"
 
 #elif WINDOWS
 #include "window_win32.h"
