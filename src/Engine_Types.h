@@ -53,8 +53,16 @@ typedef enum {
 
 class ENGINE_API Vector2f {
 public:
-    float x;
-    float y;
+    union {
+        struct {
+          float x;
+          float y;
+        };
+        struct {
+          float min;
+          float max;
+        };
+    };
 
     Vector2f();
     Vector2f( const float x, const float y );
@@ -197,6 +205,7 @@ typedef enum {
     TEXT_COMP,
     FONT_SETTINGS_COMP,
     MATERIAL_HANDLE_COMP,
+    PARTICAL_EMITTER_COMP,
     BASE_COMPONENT_COUNT
 } base_comp_types_t;
 
@@ -408,6 +417,14 @@ public:
     void shutdown();
 };
 
+class ENGINE_API Partical_System : public System {
+public:
+    Partical_System();
+    void init();
+    void update();
+    void shutdown();
+};
+
 /******************************************/
 /*                                        */
 /*        Default Component Types         */
@@ -579,6 +596,37 @@ struct ENGINE_API Camera {
     float       near_plane;
     float       far_plane;
     float       aspect_ratio;
+};
+
+/******************************************/
+/*                                        */
+/*       Partical Emitter Type            */
+/*                                        */
+/******************************************/
+
+enum Partical_Type {
+    BILLBOARD_PARTICAL_TYPE,
+    MESH_PARTICAL_TYPE
+};
+
+struct Partical {
+    Transform transform;
+    float     life;
+    Vector3f  speed;
+};
+
+struct ENGINE_API Partical_Emitter {
+    Partical_Type         type;
+    std::vector<Partical> particals;
+    Vector3f              partical_speed;
+
+    float                 spawn_rate;
+    float                 last_spawn;
+    Mesh                  mesh;
+    Mesh_Handle           mesh_handle;
+    float                 life_time;
+    float                 width;
+    float                 height;
 };
 
 /******************************************/
