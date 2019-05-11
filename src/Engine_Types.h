@@ -205,7 +205,7 @@ typedef enum {
     TEXT_COMP,
     FONT_SETTINGS_COMP,
     MATERIAL_HANDLE_COMP,
-    PARTICAL_EMITTER_COMP,
+    PARTICLE_EMITTER_COMP,
     BASE_COMPONENT_COUNT
 } base_comp_types_t;
 
@@ -417,9 +417,9 @@ public:
     void shutdown();
 };
 
-class ENGINE_API Partical_System : public System {
+class ENGINE_API Particle_System : public System {
 public:
-    Partical_System();
+    Particle_System();
     void init();
     void update();
     void shutdown();
@@ -600,25 +600,25 @@ struct ENGINE_API Camera {
 
 /******************************************/
 /*                                        */
-/*       Partical Emitter Type            */
+/*       Particle Emitter Type            */
 /*                                        */
 /******************************************/
 
-enum Partical_Type {
-    BILLBOARD_PARTICAL_TYPE,
-    MESH_PARTICAL_TYPE
+enum Particle_Type {
+    BILLBOARD_PARTICLE_TYPE,
+    MESH_PARTICLE_TYPE
 };
 
-struct Partical {
+struct Particle {
     Transform transform;
     float     life;
     Vector3f  speed;
 };
 
-struct ENGINE_API Partical_Emitter {
-    Partical_Type         type;
-    std::vector<Partical> particals;
-    Vector3f              partical_speed;
+struct ENGINE_API Particle_Emitter {
+    Particle_Type         type;
+    std::vector<Particle> particles;
+    Vector3f              particle_speed;
 
     float                 spawn_rate;
     float                 last_spawn;
