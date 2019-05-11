@@ -1,3 +1,4 @@
+import sys
 
 include_list = ['src/',
                 'src/Engine/include/',
@@ -17,6 +18,7 @@ include_list = ['src/',
                 'src/Engine/tokenizer/include/',
                 'src/Engine/introspection_system/include/',
                 'src/Engine/material_system/include/',
+                'src/Engine/particle_system/include/',
                 'src/Engine/file_loaders/include']
 
 source_files = []
@@ -38,6 +40,7 @@ source_files.extend(find_files('src/Engine/file_loaders/', '*.cpp'))
 source_files.extend(find_files('src/Engine/tokenizer/', '*.cpp'))
 source_files.extend(find_files('src/Engine/introspection_system/', '*.cpp'))
 source_files.extend(find_files('src/Engine/material_system/', '*.cpp'))
+source_files.extend(find_files('src/Engine/particle_system/', '*.cpp'))
 source_files.extend(find_files('src/Engine/platform/', '*.cpp', flat=True))
 
 if env.platform.name == 'windows':

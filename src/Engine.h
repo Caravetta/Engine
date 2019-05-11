@@ -132,6 +132,8 @@ void register_component( void )
         type_idx_info<T>::id = FONT_SETTINGS_COMP;
     } else if ( typeid(T) == typeid(Material_Handle) ) {
         type_idx_info<T>::id = MATERIAL_HANDLE_COMP;
+    } else if ( typeid(T) == typeid(Particle_Emitter) ) {
+        type_idx_info<T>::id = PARTICLE_EMITTER_COMP;
     } else {
         type_idx_info<T>::id = get_max_components();
     }
