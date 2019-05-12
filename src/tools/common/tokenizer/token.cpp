@@ -255,6 +255,8 @@ std::string token_type_to_string( token_type_t type )
 
 void print_token_info( token_t* token )
 {
-    UNUSED_ARG(token);
     //LOG("Token: " << token->data << " Type: " << token_type_to_string(token->type));
+    LOG("Token type: %s data: %s",
+         token->data.c_str(),
+         token_type_to_string(token->type).c_str());
 }

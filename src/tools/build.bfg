@@ -15,18 +15,41 @@ global_link_options(link_flags, 'native', 'dynamic')
 
 #########################################################################
 
+# Common Objs
+
+common_include_list = ['common/tokenizer/include/',
+                       'common/include/']
+
+common_source_files = []
+common_source_files.extend(find_files('common/tokenizer/', '*.cpp'))
+
+common_objs = object_files(common_source_files, includes=common_include_list)
+
 # Build Component_ID_Generator
 
-comp_gen_include_list = ['common/tokenizer/include/',
-                         'comp_id_gen/include/',
-                         'common/include/']
+comp_gen_include_list = ['comp_id_gen/include/']
+comp_gen_include_list.extend(common_include_list);
 
 comp_gen_source_files = []
-comp_gen_source_files.extend(find_files('common/tokenizer/', '*.cpp'))
 comp_gen_source_files.extend(find_files('comp_id_gen', '*.cpp'))
 
 comp_gen_objs = object_files(comp_gen_source_files, includes=comp_gen_include_list)
+comp_gen_objs.extend(common_objs);
+print comp_gen_objs
 
 executable('Component_ID_Generator', comp_gen_objs, packages=package_list)
 
+# Build Shader Compiler
+
+shader_comp_include_list = []
+shader_comp_include_list.extend(common_include_list)
+
+shader_comp_source_files = []
+shader_comp_source_files.extend(find_files('shader_compiler', '*.cpp'))
+
+shader_comp_objs = object_files(shader_comp_source_files, includes=shader_comp_include_list)
+shader_comp_objs.extend(common_objs);
+print comp_gen_objs
+
+executable('Shader_Compiler', shader_comp_objs, packages=package_list)
 

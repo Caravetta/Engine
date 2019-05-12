@@ -2,6 +2,7 @@
 #define __CORE_COMMON_H__
 
 #include <stdint.h>
+#include <stdio.h>
 #include "return_codes.h"
 
 typedef int8_t  int8;
@@ -35,5 +36,7 @@ typedef float64 f64;
 #define UNUSED_ARG( x ) ((void)(x))
 
 #define CHECK( condition )
+
+#define LOG( ... ) printf( __VA_ARGS__ ); printf("\n");
 
 #endif //__CORE_COMMON_H__
