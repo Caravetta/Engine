@@ -12,6 +12,11 @@ float to_radians( float angle )
     return (float)((angle * PI) / 180);
 }
 
+float between_two_floats( float min, float max )
+{
+     return min + ((float)rand() / ((float)RAND_MAX / (max - min)));
+}
+
 Matrix4f translate( Matrix4f matrix, Vector3f vector )
 {
     Matrix4f result;

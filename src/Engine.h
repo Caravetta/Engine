@@ -132,8 +132,8 @@ void register_component( void )
         type_idx_info<T>::id = FONT_SETTINGS_COMP;
     } else if ( typeid(T) == typeid(Material_Handle) ) {
         type_idx_info<T>::id = MATERIAL_HANDLE_COMP;
-    } else if ( typeid(T) == typeid(Particle_Emitter) ) {
-        type_idx_info<T>::id = PARTICLE_EMITTER_COMP;
+    } else if ( typeid(T) == typeid(Billboard_Particle_Emitter) ) {
+        type_idx_info<T>::id = BILLBOARD_PARTICLE_EMITTER_COMP;
     } else {
         type_idx_info<T>::id = get_max_components();
     }
@@ -254,6 +254,7 @@ ENGINE_API Rc_t set_mouse_position( int x, int y);
 
 ENGINE_API Matrix4f translate( Matrix4f matrix, Vector3f vector );
 ENGINE_API Matrix4f scale( Matrix4f matrix, Vector3f vector );
+ENGINE_API float between_two_floats( float min, float max );
 
 /****************************************/
 /*                                      */

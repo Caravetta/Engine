@@ -62,6 +62,10 @@ public:
           float min;
           float max;
         };
+        struct {
+          float width;
+          float height;
+        };
     };
 
     Vector2f();
@@ -205,7 +209,8 @@ typedef enum {
     TEXT_COMP,
     FONT_SETTINGS_COMP,
     MATERIAL_HANDLE_COMP,
-    PARTICLE_EMITTER_COMP,
+    BILLBOARD_PARTICLE_EMITTER_COMP,
+    CUSTOM_BILLBOARD_PARTICLE_EMITTER_COMP,
     BASE_COMPONENT_COUNT
 } base_comp_types_t;
 
@@ -425,6 +430,14 @@ public:
     void shutdown();
 };
 
+class ENGINE_API Custom_Billboard_Particle_System : public System {
+public:
+    Custom_Billboard_Particle_System();
+    void init();
+    void update();
+    void shutdown();
+};
+
 /******************************************/
 /*                                        */
 /*        Default Component Types         */
@@ -609,24 +622,65 @@ enum Particle_Type {
     MESH_PARTICLE_TYPE
 };
 
+enum Particle_Value_Type {
+     STATIC_VALUE,
+     BETWEEN_TWO_VALUES,
+     GRADIENT_VALUE,
+};
+
 struct Particle {
     Transform transform;
     float     life;
+    float     life_time;
     Vector3f  speed;
+    Vector3f  color;
+    Vector2f  size;
 };
 
-struct ENGINE_API Particle_Emitter {
-    Particle_Type         type;
-    std::vector<Particle> particles;
-    Vector3f              particle_speed;
-
+struct ENGINE_API Billboard_Particle_Emitter {
+    uint32_t              max_num_particles;
+    bool                  pre_fill;
+    bool                  has_gravity;
     float                 spawn_rate;
     float                 last_spawn;
-    Mesh                  mesh;
+
+    Particle_Value_Type   life_type;
+    Vector2f              life_time;
+
+    Particle_Value_Type   start_size_type;
+    Vector2f              start_width;
+    Vector2f              start_height;
+    Particle_Value_Type   size_type;
+    Vector2f              width;
+    Vector2f              height;
+
+    Particle_Value_Type   start_speed_type;
+    Vector2f              start_x_speed;
+    Vector2f              start_y_speed;
+    Vector2f              start_z_speed;
+    Particle_Value_Type   speed_type;
+    Vector2f              x_speed;
+    Vector2f              y_speed;
+    Vector2f              z_speed;
+
+    std::vector<Particle> particles;
+    Mesh                  mesh; // this should be moved to mesh manager
     Mesh_Handle           mesh_handle;
-    float                 life_time;
-    float                 width;
-    float                 height;
+};
+
+struct ENGINE_API Custom_Billboard_Particle_Emitter {
+    uint32_t              max_num_particles;
+    bool                  pre_fill;
+    bool                  has_gravity;
+    float                 spawn_rate;
+    float                 last_spawn;
+
+    void (*particle_init) (Custom_Billboard_Particle_Emitter* emitter, Particle* particle);
+    void (*particles_update) (Custom_Billboard_Particle_Emitter* emitter, std::vector<Particle>* particles);
+
+    std::vector<Particle> particles;
+    Mesh                  mesh; // this should be moved to mesh manager
+    Mesh_Handle           mesh_handle;
 };
 
 /******************************************/
