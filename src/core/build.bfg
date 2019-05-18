@@ -5,10 +5,10 @@ if env.platform.name == 'windows':
     link_flags = ['/LIBPATH:../../../lib/free_type/']
     package_list = [package('user32'), package('gdi32'), package('opengl32'), package('winmm')]
 elif env.platform.name == 'linux':
-    flags = ['-DINTERNAL', '-DLINUX', '-Wall', '-O3', '-fPIC', '-fvisibility=hidden', '-ffunction-sections', '-std=gnu++11']
+    flags = ['-DINTERNAL', '-DLINUX', '-Wall', '-O3', '-fPIC', '-fvisibility=hidden', '-ffunction-sections', '-std=c++11', '-Lbuild/src']
     link_flags = [ '-Wl,--gc-sections', '-Wl,--no-undefined' ]
     package_list = [package('GL'), package('GLU'), package('glut'), package('GLEW'),
-                    package('sdl2'), package('freetype2'), package('pthread')]
+                    package('sdl2'), package('freetype2'), package('pthread'), package('benchmark')]
 
 global_options(flags, lang='c++')
 
@@ -16,39 +16,45 @@ global_link_options(link_flags, 'native', 'dynamic')
 
 # Build Engine_Core.lib
 
-core_include_list = ['include/',
-                     'ecs/include/',
-                     'generated_code/include/',
-                     'data_types/include/',
-                     'data_structures/include/',
-                     'memory_system/include/',
-                     'platform/include/']
+common_include_list = ['include/',
+                       'ecs/include/',
+                       'generated_code/include/',
+                       'data_types/include/',
+                       'data_structures/include/',
+                       'memory_system/include/',
+                       'platform/include/']
 
-core_source_files = []
-core_source_files.extend(find_files('ecs/', '*.cpp'))
-core_source_files.extend(find_files('generated_code/', '*.cpp'))
-core_source_files.extend(find_files('data_structures/', '*.cpp'))
-core_source_files.extend(find_files('data_types/', '*.cpp'))
-core_source_files.extend(find_files('memory_system/', '*.cpp'))
-core_source_files.extend(find_files('.', '*.cpp', flat=True))
-core_source_files.extend(find_files('platform/', '*.cpp', flat=True))
+common_source_files = []
+common_source_files.extend(find_files('ecs/', '*.cpp'))
+common_source_files.extend(find_files('generated_code/', '*.cpp'))
+common_source_files.extend(find_files('data_structures/', '*.cpp'))
+common_source_files.extend(find_files('data_types/', '*.cpp'))
+common_source_files.extend(find_files('memory_system/', '*.cpp'))
+#common_source_files.extend(find_files('.', '*.cpp', flat=True))
+common_source_files.extend(find_files('platform/', '*.cpp', flat=True))
 
 if env.platform.name == 'windows':
-    core_include_list.extend(['platform/win32/include/', '../../lib/free_type/include/']);
-    core_source_files.extend(find_files('platform/win32/', '*.cpp'))
+    common_include_list.extend(['platform/win32/include/', '../../lib/free_type/include/'])
+    common_source_files.extend(find_files('platform/win32/', '*.cpp'))
 elif env.platform.name == 'linux':
-    core_include_list.extend(['platform/linux/include/', '/usr/include/freetype2/']);
-    core_source_files.extend(find_files('platform/linux/', '*.cpp'))
+    common_include_list.extend(['platform/linux/include/', '/usr/include/freetype2/'])
+    common_source_files.extend(find_files('platform/linux/', '*.cpp'))
 
-objs = object_files(core_source_files, includes=core_include_list)
+common_objs = object_files(common_source_files, includes=common_include_list)
 
 # Build the library
 
+lib_source_files = []
+lib_source_files.extend(find_files('.', 'Engine_Core.cpp', flat=True))
+
+lib_objs = object_files(lib_source_files, includes=common_include_list)
+lib_objs.extend(common_objs)
+
 if env.platform.name == 'linux':
     lib_headers = header_directory('src', include='*.h')
-    lib = library('Engine', objs, packages=package_list, includes=lib_headers)
+    lib = library('Engine', lib_objs, packages=package_list, includes=lib_headers)
 elif env.platform.name == 'windows':
-    library('Engine', objs, packages=package_list, libs=['../../lib/free_type/freetype.lib'])
+    library('Engine', lib_objs, packages=package_list, libs=['../../lib/free_type/freetype.lib'])
 
 if env.platform.name == 'linux':
     install(lib, lib_headers)

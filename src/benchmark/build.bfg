@@ -1,0 +1,52 @@
+
+if env.platform.name == 'linux':
+    flags = ['-DINTERNAL', '-DLINUX', '-Wall', '-O3', '-fPIC', '-fvisibility=hidden', '-ffunction-sections', '-std=c++11', '-Lbuild/src']
+    link_flags = [ '-Wl,--gc-sections', '-Wl,--no-undefined' ]
+    package_list = [package('GL'), package('GLU'), package('glut'), package('GLEW'),
+                    package('sdl2'), package('freetype2'), package('pthread'), package('benchmark')]
+
+global_options(flags, lang='c++')
+
+global_link_options(link_flags, 'native', 'dynamic')
+
+# Build Engine_Core.lib
+
+common_include_list = ['../core/include/',
+                       '../core/ecs/include/',
+                       '../core/generated_code/include/',
+                       '../core/data_types/include/',
+                       '../core/data_structures/include/',
+                       '../core/memory_system/include/',
+                       '../core/platform/include/']
+
+common_source_files = []
+common_source_files.extend(find_files('../core/ecs/', '*.cpp'))
+common_source_files.extend(find_files('../core/generated_code/', '*.cpp'))
+common_source_files.extend(find_files('../core/data_structures/', '*.cpp'))
+common_source_files.extend(find_files('../core/data_types/', '*.cpp'))
+common_source_files.extend(find_files('../core/memory_system/', '*.cpp'))
+common_source_files.extend(find_files('../core/platform/', '*.cpp', flat=True))
+
+if env.platform.name == 'linux':
+    common_include_list.extend(['../core/platform/linux/include/', '/usr/include/freetype2/'])
+    common_source_files.extend(find_files('../core/platform/linux/', '*.cpp'))
+
+common_objs = object_files(common_source_files, includes=common_include_list)
+
+# Build Benchmark
+
+bench_source_files = []
+bench_source_files.extend(find_files('.', 'Engine_Benchmark.cpp', flat=True))
+print bench_source_files
+
+bench_objs = object_files(bench_source_files, includes=common_include_list)
+bench_objs.extend(common_objs)
+print bench_objs
+
+executable('Engine_Benchmark', bench_objs, packages=package_list)
+
+if env.platform.name == 'linux':
+    command('clean', cmds=[['rm', '-f', 'libEngine.so'], ['rm', '-rf', 'src']])
+
+#########################################################################
+

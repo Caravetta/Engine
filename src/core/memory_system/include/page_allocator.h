@@ -7,6 +7,7 @@
 namespace Engine {
 
 Rc_t init_page_allocator( const uint16_t page_size, const uint16_t pool_size );
+void destroy_page_allocator( void );
 void* allocate_page( void );
 void free_page( void* page );
 uint16_t page_size( void );

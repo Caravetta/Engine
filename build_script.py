@@ -65,6 +65,14 @@ else:
 
 os.chdir("../../../")
 
+if sys.platform != 'win32':
+    os.chdir("src/benchmark/")
+
+    subprocess.call(["9k", "build"])
+    os.chdir("build/")
+    subprocess.call(["make", "-j", "16"])
+    os.chdir("../../../")
+
 if (os.path.exists("build")):
 	shutil.rmtree("build")
 
@@ -72,6 +80,9 @@ os.mkdir("build")
 os.mkdir("build/Engine_Tools")
 os.mkdir("build/Engine_Core")
 os.mkdir("build/Engine_Core/include")
+
+if sys.platform != 'win32':
+    os.mkdir("build/Engine_Benchmark")
 
 lib_header = []
 
@@ -130,3 +141,13 @@ else:
 	for file in tools:
 		os.system("cp %s build/Engine_Tools/." % file)
 
+if sys.platform != 'win32':
+    bench_files = []
+
+    for root, dirs, files in os.walk("src/benchmark/build"):
+        for file in files:
+	    if (os.access(os.path.join(root, file), os.X_OK)):
+	        bench_files.append(os.path.join(root, file))
+
+    for file in bench_files:
+        os.system("cp %s build/Engine_Benchmark/." % file)

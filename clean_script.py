@@ -14,5 +14,11 @@ if (os.path.exists("src/core/generated_code")):
 if (os.path.exists("src/tools/build")):
 	shutil.rmtree("src/tools/build")
 
+if (os.path.exists("src/benchmark/build")):
+	shutil.rmtree("src/benchmark/build")
+
+if (os.path.exists("src/benchmark/core")):
+	shutil.rmtree("src/benchmark/core")
+
 if (os.path.exists("build")):
 	shutil.rmtree("build")
