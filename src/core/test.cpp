@@ -5,6 +5,7 @@
 #include "meta_struct.h"
 #include "reflection_system.h"
 #include "crc32.h"
+#include "vector3f.h"
 
 void __test(std::vector<int> vec )
 {
@@ -19,13 +20,23 @@ struct Ref_Test : Engine::Reflection::Struct {
 
      uint8_t a;
      uint8_t b;
+     uint8_t i;
+     uint64_t k;
+};
+
+struct Size_Test {
+     uint8_t l;
+     uint8_t a;
 };
 
 META_STRUCT_DEFINE( Ref_Test );
 
 void Ref_Test::populate_meta_struct_func(Engine::Meta_Struct& comp)
 {
-     LOG("META_NAME: %s crc32: %" PRIu32 "", comp.__name, Engine::crc32(comp.__name));
+     comp.add_field(&Ref_Test::a, "a");
+     comp.add_field(&Ref_Test::b, "b");
+     comp.add_field(&Ref_Test::k, "k");
+     comp.add_field(&Ref_Test::i, "i");
 }
 
 struct Ref_Test_ : Engine::Reflection::Struct {
@@ -46,6 +57,11 @@ void Ref_Test_::populate_meta_struct_func(Engine::Meta_Struct& comp)
 int main()
 {
      Engine::Reflection::init_reflection_system();
+
+     Engine::Vector3f vec(1, 4, 7);
+
+     LOG("Sizeof Size_Test %d Sizeof Ref_Test %d", (int)sizeof(Size_Test), (int)sizeof(Ref_Test));
+
      Engine::Handle_Manager handle_manager;
      Engine::Handle handle = handle_manager.get_handle();
      Engine::Handle handle_1 = handle_manager.get_handle();
@@ -89,6 +105,11 @@ int main()
      Engine::Entity_Group main_group({12, 33});
 
      Engine::Component_Data_Array<int> data = main_group.get_component_data_array<int>();
+
+     Engine::Meta_Struct* ref_struct = Engine::Reflection::get_meta_struct("Ref_Test");
+     if ( ref_struct != NULL ) {
+          ref_struct->print_struct_info();
+     }
 
      //system("pause");
 

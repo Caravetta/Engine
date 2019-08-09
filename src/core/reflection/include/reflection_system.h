@@ -14,9 +14,9 @@ namespace Reflection {
 
 Rc_t init_reflection_system( void );
 
-bool register_type( const Meta_Base* type );
+bool register_type( Meta_Base* type );
 
-inline const Meta_Struct* get_meta_struct( const char* name );
+Meta_Struct* get_meta_struct( const char* name );
 
 } // end namespace Reflection
 } // end namespace Engine
