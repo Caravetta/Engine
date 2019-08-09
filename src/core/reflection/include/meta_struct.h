@@ -1,8 +1,10 @@
 #ifndef __META_STRUCT_H__
 #define __META_STRUCT_H__
 
+#include <vector>
 #include "core_common.h"
 #include "meta_base.h"
+#include "meta_field.h"
 
 namespace Engine {
 
@@ -42,6 +44,7 @@ protected:
 public:
      const Meta_Struct*            __base_struct;
      populate_meta_struct_func     __populate_func;
+     std::vector<Meta_Field>       __fields;
 
      META_BASE_DERIVED( Meta_Base_ID::META_STRUCT_ID, Meta_Struct, Meta_Base );
 
@@ -54,6 +57,11 @@ public:
      virtual void meta_unregister( void ) const override;
 
      void add_derived_struct( const Meta_Struct* derived ) const;
+     void print_struct_info( void );
+     template<class Struct_T, class Field_T> void add_field( Field_T Struct_T::* field, const char* name,
+                                                             uint32_t flags = 0 );
+private:
+     Meta_Field* allocate_field( void );
 };
 
 template<class Class_T, class Base_T>

@@ -67,7 +67,7 @@ void Meta_Base_Registrar::unregister_type( Registrar_Base_Types type )
 
 }
 
-void Meta_Base_Registrar::add_type_to_registry( const Meta_Base* type )
+void Meta_Base_Registrar::add_type_to_registry( Meta_Base* type )
 {
      Reflection::register_type(type);
 }

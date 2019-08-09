@@ -9,8 +9,10 @@ set(engine_core_src
     ecs/entity_group.cpp
     reflection/meta_base.cpp
     reflection/meta_struct.cpp
+    reflection/meta_field.cpp
     reflection/reflection_system.cpp
     utils/crc32.cpp
+    math/vector3f.cpp
     test.cpp)
 
 add_executable(Engine-Core ${engine_core_src})
@@ -20,7 +22,8 @@ target_include_directories(Engine-Core PUBLIC
                            data_structures/include
                            ecs/include
                            utils/include
-                           reflection/include)
+                           reflection/include
+                           math/include)
 
 get_property(includes
              TARGET Engine-Core

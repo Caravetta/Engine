@@ -1,5 +1,8 @@
+#include "crc32.h"
 
 namespace Engine {
+
+#define GET_FIELD_OFFSET( __struct, __field ) (uint32_t) (uintptr_t) &( ((__struct*)NULL)->*__field)
 
 template<class T>
 void Meta_Struct::create( Meta_Struct const*& meta_struct, const char* name, const char* base_name )
@@ -40,6 +43,16 @@ void Meta_Struct::create( const char* name, const char* base_name, populate_meta
      if ( info->__populate_func ) {
           info->__populate_func( *info );
      }
+}
+
+template<class Struct_T, class Field_T>
+void Meta_Struct::add_field( Field_T Struct_T::* field, const char* name, uint32_t flags )
+{
+     Meta_Field* new_field = allocate_field();
+     new_field->__name = name;
+     new_field->__name_crc = crc32(name);
+     new_field->__size = sizeof(Field_T);
+     new_field->__offset = GET_FIELD_OFFSET(Struct_T, field);
 }
 
 
@@ -94,7 +107,7 @@ template<class Class_T>
 void Meta_Struct_Registrar<Class_T, void>::meta_register( void )
 {
      if ( Class_T::__s_meta_struct == NULL ) {
-          Meta_Base_Registrar::add_type_to_registry(Class_T::create_meta_struct());
+          Meta_Base_Registrar::add_type_to_registry((Meta_Base*)Class_T::create_meta_struct());
      }
 }
 

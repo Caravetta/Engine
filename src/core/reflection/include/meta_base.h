@@ -88,7 +88,7 @@ public:
      static void remove_from_list( Registrar_Base_Types type, Meta_Base_Registrar* registrar );
      static void register_type( Registrar_Base_Types type );
      static void unregister_type( Registrar_Base_Types type );
-     static void add_type_to_registry( const Meta_Base* type );
+     static void add_type_to_registry( Meta_Base* type );
      static void remove_type_from_registry( const Meta_Base* type );
 };
 

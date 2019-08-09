@@ -34,6 +34,10 @@ namespace Engine {
 #define LOG( ... ) printf( __VA_ARGS__ ); printf("\n");
 #define LOG_ERROR(...) printf( __VA_ARGS__ ); printf("\n");
 
+#define NEAR_ZERO 1e-15f
+
+typedef float float32_t;
+
 } // end namespace Engine
 
 #endif //__CORE_COMMON_H__
