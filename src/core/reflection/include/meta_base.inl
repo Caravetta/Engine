@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <sstream>
 
 namespace Engine {
 
@@ -11,7 +12,7 @@ inline Rc_t Meta_Base::set_property( const std::string& key, const T& value ) co
 
      stream << value;
 
-     if ( !str.fail() ) {
+     if ( !stream.fail() ) {
           set_property<std::string>(key, stream.str());
      } else {
           rc = OSTREAM_ERROR;

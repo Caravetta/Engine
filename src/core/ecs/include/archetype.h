@@ -2,6 +2,7 @@
 #define __ARCHETYPE_H__
 
 #include <unordered_map>
+#include <vector>
 #include "core_common.h"
 #include "component.h"
 

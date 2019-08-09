@@ -1,4 +1,6 @@
 
+#include "reflection_system.h"
+
 namespace Engine {
 
 template<class T>

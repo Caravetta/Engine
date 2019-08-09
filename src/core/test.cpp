@@ -1,7 +1,8 @@
 #include "core_common.h"
 #include "handle.h"
 #include "ecs.h"
-#include "windows.h"
+//#include "windows.h"
+#include "meta_struct.h"
 #include "reflection_system.h"
 #include "crc32.h"
 
@@ -23,6 +24,21 @@ struct Ref_Test : Engine::Reflection::Struct {
 META_STRUCT_DEFINE( Ref_Test );
 
 void Ref_Test::populate_meta_struct_func(Engine::Meta_Struct& comp)
+{
+     LOG("META_NAME: %s crc32: %" PRIu32 "", comp.__name, Engine::crc32(comp.__name));
+}
+
+struct Ref_Test_ : Engine::Reflection::Struct {
+     META_STRUCT_DECLARE( Ref_Test_ );
+     static void populate_meta_struct_func(Engine::Meta_Struct& comp);
+
+     uint8_t a;
+     uint8_t b;
+};
+
+META_STRUCT_DEFINE( Ref_Test_ );
+
+void Ref_Test_::populate_meta_struct_func(Engine::Meta_Struct& comp)
 {
      LOG("META_NAME: %s crc32: %" PRIu32 "", comp.__name, Engine::crc32(comp.__name));
 }
@@ -74,7 +90,7 @@ int main()
 
      Engine::Component_Data_Array<int> data = main_group.get_component_data_array<int>();
 
-     system("pause");
+     //system("pause");
 
      return 0;
 }

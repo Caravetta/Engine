@@ -3,9 +3,12 @@
 
 #include "core_common.h"
 #include "meta_base.h"
-#include "meta_struct.h"
+//#include "meta_struct.h"
 
 namespace Engine {
+
+class Meta_Struct;
+
 namespace Reflection {
 
 
