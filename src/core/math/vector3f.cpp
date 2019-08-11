@@ -12,7 +12,9 @@ const Vector3f Vector3f::UNIT(1.0f, 1.0f, 1.0f);
 
 void Vector3f::populate_meta_struct_func( Engine::Meta_Struct& meta_struct )
 {
-     //TODO(JOSH): need to fill in
+     meta_struct.add_field(&Vector3f::x, "x");
+     meta_struct.add_field(&Vector3f::y, "y");
+     meta_struct.add_field(&Vector3f::z, "z");
 }
 
 Vector3f::Vector3f( void )

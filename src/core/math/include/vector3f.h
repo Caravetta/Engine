@@ -2,6 +2,7 @@
 #define __VECTOR3F_H__
 
 #include "core_common.h"
+#include "meta_struct.h"
 #include "reflection_system.h"
 
 namespace Engine {
