@@ -13,16 +13,16 @@ class Meta_Struct;
 typedef void (*populate_meta_struct_func)( Meta_Struct& );
 
 #define META_STRUCT_DECLARE( _struct )                                     \
-     public:\
+     public:                                                               \
      typedef _struct __this;                                               \
      static const Engine::Meta_Struct* __s_meta_struct;                    \
      static Engine::Meta_Struct_Registrar<_struct, void> __s__registrar;   \
      static const Engine::Meta_Struct* create_meta_struct( void );         \
 
 #define META_STRUCT_DEFINE( _struct )                                                \
-     const Engine::Meta_Struct* _struct::__s_meta_struct = NULL;                              \
+     const Engine::Meta_Struct* _struct::__s_meta_struct = NULL;                     \
      Engine::Meta_Struct_Registrar<_struct, void> _struct::__s__registrar(#_struct); \
-     const Engine::Meta_Struct* _struct::create_meta_struct( void )                           \
+     const Engine::Meta_Struct* _struct::create_meta_struct( void )                  \
      {                                                                               \
           Engine::Meta_Struct::create<_struct>(__s_meta_struct, #_struct, NULL);     \
           return __s_meta_struct;                                                    \

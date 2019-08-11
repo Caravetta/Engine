@@ -6,6 +6,7 @@ set(engine_core_src
     ecs/entity_system.cpp
     ecs/archetype_system.cpp
     ecs/archetype.cpp
+    ecs/component.cpp
     ecs/entity_group.cpp
     reflection/meta_base.cpp
     reflection/meta_struct.cpp
