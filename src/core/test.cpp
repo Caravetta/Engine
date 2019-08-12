@@ -6,6 +6,7 @@
 #include "reflection_system.h"
 #include "crc32.h"
 #include "vector3f.h"
+#include "component.h"
 
 void __test(std::vector<int> vec )
 {
@@ -54,9 +55,26 @@ void Ref_Test_::populate_meta_struct_func(Engine::Meta_Struct& comp)
      LOG("META_NAME: %s crc32: %" PRIu32 "", comp.__name, Engine::crc32(comp.__name));
 }
 
+struct Transform {
+     COMPONENT_DECLARE( Transform );
+
+     Engine::Vector3f position;
+};
+
+COMPONENT_DEFINE( Transform );
+
+struct Transform_1 {
+     COMPONENT_DECLARE( Transform_1 );
+
+     Engine::Vector3f position;
+};
+
+COMPONENT_DEFINE( Transform_1 );
+
 int main()
 {
      Engine::Reflection::init_reflection_system();
+     Engine::init_component_system();
 
      Engine::Vector3f vec(1, 4, 7);
 
@@ -112,6 +130,8 @@ int main()
      }
 
      //system("pause");
+     LOG("Transform ID: %" PRIu32 "", Engine::component_id<Transform>());
+     LOG("Transform_1 ID: %" PRIu32 "", Engine::component_id<Transform_1>());
 
      return 0;
 }
