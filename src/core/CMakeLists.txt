@@ -3,17 +3,17 @@ set(engine_core_src
     data_structures/bit_field.cpp
     data_structures/handle.cpp
     ecs/ecs.cpp
-    ecs/entity_system.cpp
-    ecs/archetype_system.cpp
-    ecs/archetype.cpp
+    ecs/entity.cpp
     ecs/component.cpp
-    ecs/entity_group.cpp
+    ecs/component_data.cpp
     reflection/meta_base.cpp
     reflection/meta_struct.cpp
     reflection/meta_field.cpp
     reflection/reflection_system.cpp
     utils/crc32.cpp
     math/vector3f.cpp
+    memory/page_allocator.cpp
+    engine_core.cpp
     test.cpp)
 
 add_executable(Engine-Core ${engine_core_src})
@@ -24,7 +24,8 @@ target_include_directories(Engine-Core PUBLIC
                            ecs/include
                            utils/include
                            reflection/include
-                           math/include)
+                           math/include
+                           memory/include)
 
 get_property(includes
              TARGET Engine-Core

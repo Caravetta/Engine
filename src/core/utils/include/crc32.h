@@ -6,6 +6,7 @@
 namespace Engine {
 
 inline uint32_t crc32( const char* string );
+inline uint32_t crc32( const void* data, size_t byte_count );
 
 uint32_t crc32_update( uint32_t current_crc, const void* data, size_t byte_count );
 

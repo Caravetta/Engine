@@ -1,19 +1,5 @@
-#include "core_common.h"
-#include "handle.h"
-#include "ecs.h"
+#include "engine_core.h"
 //#include "windows.h"
-#include "meta_struct.h"
-#include "reflection_system.h"
-#include "crc32.h"
-#include "vector3f.h"
-#include "component.h"
-
-void __test(std::vector<int> vec )
-{
-     for ( size_t ii = 0; ii < vec.size(); ii++ ) {
-          LOG("%d", vec[ii]);
-     }
-}
 
 struct Ref_Test : Engine::Reflection::Struct {
      META_STRUCT_DECLARE( Ref_Test );
@@ -57,81 +43,119 @@ void Ref_Test_::populate_meta_struct_func(Engine::Meta_Struct& comp)
 
 struct Transform {
      COMPONENT_DECLARE( Transform );
-
-     Engine::Vector3f position;
+     uint64_t test;
+     //Engine::Vector3f position;
 };
 
 COMPONENT_DEFINE( Transform );
 
 struct Transform_1 {
      COMPONENT_DECLARE( Transform_1 );
-
-     Engine::Vector3f position;
+     float y;
+     //Engine::Vector3f position;
 };
 
 COMPONENT_DEFINE( Transform_1 );
 
+struct Mesh_Handle {
+     COMPONENT_DECLARE( Mesh_Handle );
+
+     uint64_t handle;
+};
+
+COMPONENT_DEFINE( Mesh_Handle );
+
 int main()
 {
-     Engine::Reflection::init_reflection_system();
-     Engine::init_component_system();
-
-     Engine::Vector3f vec(1, 4, 7);
-
-     LOG("Sizeof Size_Test %d Sizeof Ref_Test %d", (int)sizeof(Size_Test), (int)sizeof(Ref_Test));
-
-     Engine::Handle_Manager handle_manager;
-     Engine::Handle handle = handle_manager.get_handle();
-     Engine::Handle handle_1 = handle_manager.get_handle();
-     LOG("Handle before free %" PRIu64 "", handle);
-     LOG("Handle before free %" PRIu64 "", handle_1);
-     uint32_t index = handle_index(handle);
-     uint32_t phase = handle_phase(handle);
-     LOG("Handle IDX %" PRIu32 "", index);
-     LOG("Handle PHASE %" PRIu32 "", phase);
-     handle_manager.free_handle(handle);
-     handle = handle_manager.get_handle();
-     handle_manager.free_handle(handle_1);
-     handle_1 = handle_manager.get_handle();
-     LOG("Handle after free %" PRIu64 "", handle);
-     LOG("Handle after free %" PRIu64 "", handle_1);
-     index = handle_index(handle);
-     phase = handle_phase(handle);
-     LOG("Handle IDX %" PRIu32 "", index);
-     LOG("Handle PHASE %" PRIu32 "", phase);
-
-
-     Engine::Archetype arche_test;
-     arche_test.add_component(12, Engine::ARCHETYPE_COMPONENT);
-     arche_test.add_component(1, Engine::ARCHETYPE_SHARED);
-     arche_test.add_component(50, Engine::ARCHETYPE_COMPONENT);
-     arche_test.add_component(60, Engine::ARCHETYPE_TAG);
-     arche_test.add_component(33, Engine::ARCHETYPE_COMPONENT);
-
-     Engine::Archetype arche_test_1;
-     arche_test_1.add_component(12, Engine::ARCHETYPE_COMPONENT);
-     arche_test_1.add_component(60, Engine::ARCHETYPE_TAG);
-     arche_test_1.add_component(33, Engine::ARCHETYPE_COMPONENT);
-
-     Engine::init_ecs();
-
-     Engine::register_archetype("test", arche_test);
-     Engine::register_archetype("test__1", arche_test_1);
-
-     __test({1, 2, 3, 4, 5});
-
-     Engine::Entity_Group main_group({12, 33});
-
-     Engine::Component_Data_Array<int> data = main_group.get_component_data_array<int>();
+     Engine::Rc_t rc = Engine::engine_init();
+     if ( rc != Engine::SUCCESS ) {
+          LOG_ERROR("Failed to init engine rc=%d", rc);
+          return -1;
+     }
 
      Engine::Meta_Struct* ref_struct = Engine::Reflection::get_meta_struct("Ref_Test");
      if ( ref_struct != NULL ) {
           ref_struct->print_struct_info();
      }
 
-     //system("pause");
      LOG("Transform ID: %" PRIu32 "", Engine::component_id<Transform>());
      LOG("Transform_1 ID: %" PRIu32 "", Engine::component_id<Transform_1>());
+     LOG("Mesh_Handle ID: %" PRIu32 "", Engine::component_id<Mesh_Handle>());
 
+#if 1
+     Engine::Entity entity = Engine::create_entity();
+#endif
+     Engine::Entity entity_1 = Engine::create_entity({Engine::component_id<Transform>(),
+                                                      Engine::component_id<Transform_1>()});
+
+     Transform* transform = Engine::get_component<Transform>(entity_1);
+     if ( transform == NULL ) {
+          return -1;
+     }
+
+     transform->test = 123;
+
+     LOG("Transform Test before add %" PRIu64 "", transform->test);
+#if 1
+     Engine::Entity entity_2 = Engine::create_entity({Engine::component_id<Transform>()});
+
+     Engine::Entity entity_3 = Engine::create_entity({Engine::component_id<Transform>(),
+                                                      Engine::component_id<Transform_1>()});
+
+     Engine::add_components(entity, {Engine::component_id<Transform>(),
+                                     Engine::component_id<Mesh_Handle>()});
+#endif
+     Engine::add_component(entity_1, Engine::component_id<Mesh_Handle>());
+
+     Mesh_Handle* mesh = Engine::get_component<Mesh_Handle>(entity_1);
+     if ( mesh == NULL ) {
+          return -1;
+     }
+
+     mesh->handle = 245;
+
+     Mesh_Handle* mesh_1 = Engine::get_component<Mesh_Handle>(entity_1);
+     if ( mesh == NULL ) {
+          return -1;
+     }
+
+     transform = Engine::get_component<Transform>(entity_1);
+     if ( transform == NULL ) {
+          return -1;
+     }
+
+     LOG("Transform Test After add %" PRIu64 "", transform->test);
+
+     LOG("Mesh_1 Handle value= %" PRIu32 "", mesh_1->handle);
+#if 1
+     LOG("\n////BEFORE DELETES/////////////\n");
+     Engine::ecs_debug_print();
+
+     Engine::delete_entity(entity_2);
+     Engine::delete_entity(entity);
+     Engine::delete_entity(entity_3);
+     Engine::delete_entity(entity_1);
+
+     LOG("\n////AFTER DELETES/////////////\n");
+     //system("pause");
+     Engine::ecs_debug_print();
+
+     LOG("\n////AFTER CREATE/////////////\n");
+     entity = Engine::create_entity();
+     entity_1 = Engine::create_entity({Engine::component_id<Transform>(),
+                                       Engine::component_id<Transform_1>()});
+
+     entity_2 = Engine::create_entity({Engine::component_id<Transform>()});
+
+     entity_3 = Engine::create_entity({Engine::component_id<Transform>(),
+                                       Engine::component_id<Transform_1>()});
+
+     Engine::add_components(entity, {Engine::component_id<Transform>(),
+                                     Engine::component_id<Mesh_Handle>()});
+
+     Engine::remove_component(entity_3, Engine::component_id<Transform>());
+
+     Engine::ecs_debug_print();
+#endif
      return 0;
 }
