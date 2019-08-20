@@ -39,9 +39,102 @@ Vector3f::~Vector3f( void )
      // do nothing
 }
 
-Vector3f Vector3f::operator/(const float32_t value ) const
+Vector3f Vector3f::operator-( void ) const
 {
-     return Vector3f((x / value),(y / value),(z / value));
+     return Vector3f(-x, -y, -z);
+}
+
+Vector3f Vector3f::operator+( const Vector3f& vector ) const
+{
+     return Vector3f(x + vector.x, y + vector.y, z + vector.z);
+}
+
+Vector3f Vector3f::operator-( const Vector3f& vector ) const
+{
+     return Vector3f(x - vector.x, y - vector.y, z - vector.z);
+}
+
+Vector3f Vector3f::operator*( const Vector3f& vector ) const
+{
+     return Vector3f(x * vector.x, y * vector.y, z * vector.z);
+}
+
+Vector3f Vector3f::operator*( const float32_t value ) const
+{
+     return Vector3f(x * value, y * value, z * value);
+}
+
+Vector3f Vector3f::operator/( const Vector3f& vector ) const
+{
+     return Vector3f(x / vector.x, y / vector.y, z / vector.z);
+}
+
+Vector3f Vector3f::operator/( const float32_t value ) const
+{
+     return Vector3f(x / value, y / value, z / value);
+}
+
+Vector3f& Vector3f::operator=( const Vector3f& vector )
+{
+     x = vector.x;
+     y = vector.y;
+     z = vector.z;
+
+     return *this;
+}
+
+Vector3f& Vector3f::operator+=( const Vector3f& vector )
+{
+     x += vector.x;
+     y += vector.y;
+     z += vector.z;
+
+     return *this;
+}
+
+Vector3f& Vector3f::operator-=( const Vector3f& vector )
+{
+     x -= vector.x;
+     y -= vector.y;
+     z -= vector.z;
+
+     return *this;
+}
+
+Vector3f& Vector3f::operator*=( const Vector3f& vector )
+{
+     x *= vector.x;
+     y *= vector.y;
+     z *= vector.z;
+
+     return *this;
+}
+
+Vector3f& Vector3f::operator*=( const float32_t value )
+{
+     x *= value;
+     y *= value;
+     z *= value;
+
+     return *this;
+}
+
+Vector3f& Vector3f::operator/=( const Vector3f& vector )
+{
+     x /= vector.x;
+     y /= vector.y;
+     z /= vector.z;
+
+     return *this;
+}
+
+Vector3f& Vector3f::operator/=( const float32_t value )
+{
+     x /= value;
+     y /= value;
+     z /= value;
+
+     return *this;
 }
 
 } // end namespace Engine

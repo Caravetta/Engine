@@ -11,6 +11,12 @@ namespace Engine {
 
 typedef uint64_t Entity;
 
+template<class T>
+struct Component_Info{
+     Component_ID   id;
+     T              default_value;
+};
+
 Rc_t init_entity_system( void );
 
 Entity create_entity( void );
@@ -20,6 +26,8 @@ void delete_entity( Entity entity );
 
 Rc_t add_component( Entity entity, Component_ID id );
 Rc_t add_components( Entity entity, std::vector<Component_ID> components );
+//Rc_t add_component( Entity entity, Component_Info component );
+//Rc_t add_components( Entity entity, std::vector<Component_Info> components );
 Rc_t remove_component( Entity entity, Component_ID id );
 Rc_t remove_components( Entity entity, std::vector<Component_ID> components );
 

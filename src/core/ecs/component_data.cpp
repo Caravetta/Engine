@@ -323,7 +323,7 @@ Rc_t _add_comps_to_ent( Handle handle, std::vector<Component_ID>& ids )
 
      Comp_Data_Node* p_data_node = _comp_list_exists(entity_map[handle_idx].node_idx);
      if ( p_data_node == NULL ) {
-          LOG("Failed to find Component Data Node with ID: % " PRIu32 "",
+          LOG("Failed to find Component Data Node with ID: %" PRIu32 "",
                entity_map[handle_idx].node_idx);
           return ENGINE_ERROR;
      }
@@ -437,7 +437,7 @@ Rc_t _remove_comps_from_ent( Handle handle, std::vector<Component_ID>& ids )
 
      Comp_Data_Node* p_data_node = _comp_list_exists(entity_map[handle_idx].node_idx);
      if ( p_data_node == NULL ) {
-          LOG("Failed to find Component Data Node with ID: % " PRIu32 "",
+          LOG("Failed to find Component Data Node with ID: %" PRIu32 "",
                entity_map[handle_idx].node_idx);
           return ENGINE_ERROR;
      }

@@ -32,10 +32,8 @@ get_property(includes
              PROPERTY INTERFACE_INCLUDE_DIRECTORIES
             )
 
-message(STATUS "Included directories for target ${target_name}")
-foreach(dir ${includes})
-     message(STATUS "dir='${dir}'")
-endforeach()
+message(STATUS "We are on a ${CMAKE_SYSTEM_NAME} system")
+message(STATUS "We are on a ${CMAKE_CXX_COMPILER_ID} system")
 
 add_custom_target(base_comp_gen
                   COMMAND test

@@ -15,16 +15,23 @@ namespace Engine {
      #else
           #define ENGINE_API __declspec(dllimport)
      #endif
+
+     #define ALIGN_PRE( ALIGNMENT ) __declspec( align( ALIGNMENT ) )
+     #define ALIGN_POST( ALIGNMENT )
+
+     #define FORCE_INLINE __forceinline
 #elif LINUX
      #define ENGINE_API __attribute__ ((visibility ("default")))
+
+     #define ALIGN_PRE( ALIGNMENT )
+     #define ALIGN_POST( ALIGNMENT ) __attribute__( ( aligned( ALIGNMENT ) ) )
+
+     #define FORCE_INLINE inline __attribute__( ( always_inline ) )
 #else
-     #define ENGINE_API
+     #error
 #endif
 
 #define UNUSED_ARG( x ) ((void)(x))
-
-#define COMPONENT()
-#define TAG()
 
 #define CHECK( condition )
 #define CHECK_INFO( condition, print )
