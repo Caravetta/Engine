@@ -1,5 +1,5 @@
 #include "engine_core.h"
-//#include "windows.h"
+#include "windows.h"
 
 struct Ref_Test : Engine::Reflection::Struct {
      META_STRUCT_DECLARE( Ref_Test );
@@ -126,7 +126,7 @@ int main()
 
      LOG("Transform Test After add %" PRIu64 "", transform->test);
 
-     LOG("Mesh_1 Handle value= %" PRIu32 "", mesh_1->handle);
+     LOG("Mesh_1 Handle value= %" PRIu64 "", mesh_1->handle);
 #if 1
      LOG("\n////BEFORE DELETES/////////////\n");
      Engine::ecs_debug_print();
@@ -137,7 +137,6 @@ int main()
      Engine::delete_entity(entity_1);
 
      LOG("\n////AFTER DELETES/////////////\n");
-     //system("pause");
      Engine::ecs_debug_print();
 
      LOG("\n////AFTER CREATE/////////////\n");
@@ -155,7 +154,19 @@ int main()
 
      Engine::remove_component(entity_3, Engine::component_id<Transform>());
 
-     Engine::ecs_debug_print();
 #endif
+
+     for ( size_t ii = 0; ii < 10000; ii++ ) {
+          entity_3 = Engine::create_entity({Engine::component_id<Transform>(),
+                                            Engine::component_id<Transform_1>()});
+     }
+
+     Engine::ecs_debug_print();
+
+     Engine::Entity_Group group({Engine::component_id<Mesh_Handle>(),
+                                 Engine::component_id<Transform>()});
+
+     Engine::Component_Data_Array a(group);
+     system("pause");
      return 0;
 }

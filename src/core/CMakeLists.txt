@@ -4,8 +4,10 @@ set(engine_core_src
     data_structures/handle.cpp
     ecs/ecs.cpp
     ecs/entity.cpp
+    ecs/entity_group.cpp
     ecs/component.cpp
     ecs/component_data.cpp
+    ecs/component_data_array.cpp
     reflection/meta_base.cpp
     reflection/meta_struct.cpp
     reflection/meta_field.cpp
