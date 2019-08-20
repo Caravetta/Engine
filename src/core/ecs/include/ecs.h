@@ -3,6 +3,8 @@
 
 #include "component.h"
 #include "entity.h"
+#include "entity_group.h"
+#include "component_data_array.h"
 
 namespace Engine {
 

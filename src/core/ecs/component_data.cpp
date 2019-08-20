@@ -23,6 +23,7 @@ struct Comp_Data_Node {
      std::vector<size_t>           offsets;
      Comp_Offset_Map               offset_map;
      uint32_t                      n_chunks;
+     uint64_t                      total_ents;
      Chunk*                        head;
      Chunk*                        tail;
      uint16_t                      ents_per_chunk;
@@ -187,6 +188,7 @@ void _add_handle_to_node( Handle handle, Comp_Data_Node& data_node )
           cmp_mem_init(comp_mem);
      }
 
+     data_node.total_ents += 1;
      chunk->n_ents += 1;
 }
 
@@ -204,8 +206,9 @@ Comp_Data_Node* _create_comp_data_node( std::vector<Component_ID>& ids, uint32_t
      new_data_node->prev = NULL;
      new_data_node->head = NULL;
      new_data_node->tail = NULL;
+     new_data_node->total_ents = 0;
      new_data_node->id = id;
-     new_data_node->ents_per_chunk = (page_size() - sizeof(Chunk)) / ent_size;
+     new_data_node->ents_per_chunk = (uint16_t)((page_size() - sizeof(Chunk)) / ent_size);
      size_t offset = sizeof(Handle) * new_data_node->ents_per_chunk;
      for ( size_t ii = 0; ii < ids.size(); ii++ ) {
           new_data_node->offsets.push_back(offset);
@@ -363,10 +366,10 @@ Rc_t _add_comps_to_ent( Handle handle, std::vector<Component_ID>& ids )
      // Second copy the comps over from old to new
      Chunk* old_chunk = _find_chunk(old_data_node, entity_map[handle_idx].chunk_idx);
      size_t old_comp_idx = 0;
+
      for ( size_t ii = 0; ii < new_data_node.components.size(); ii++ ) {
           if ( new_data_node.components[ii] == old_data_node.components[old_comp_idx] ) {
                // found a match, move data over and inc the old comp idx
-
                size_t comp_size = component_size(new_data_node.components[ii]);
                comp_mem_cpy_func comp_mem_cpy = component_mem_cpy(new_data_node.components[ii]);
 
@@ -375,10 +378,13 @@ Rc_t _add_comps_to_ent( Handle handle, std::vector<Component_ID>& ids )
 
                uint8_t* old_comp_mem = ((uint8_t*)old_chunk->data + old_data_node.offsets[old_comp_idx]) +
                                              (comp_size * entity_map[handle_idx].data_idx);
-
                comp_mem_cpy(old_comp_mem, new_comp_mem);
 
                old_comp_idx += 1;
+               if ( old_comp_idx >= old_data_node.components.size() ) {
+                    // no more old comps to copy
+                    break;
+               }
           }
      }
 
@@ -501,6 +507,10 @@ Rc_t _remove_comps_from_ent( Handle handle, std::vector<Component_ID>& ids )
                comp_mem_cpy(old_comp_mem, new_comp_mem);
 
                old_comp_idx += 1;
+               if ( old_comp_idx >= old_data_node.components.size() ) {
+                    // no more old comps to copy
+                    break;
+               }
           }
      }
 
@@ -528,6 +538,17 @@ Rc_t handle_remove_components( Handle handle, std::vector<Component_ID>& ids )
      return _remove_comps_from_ent(handle, ids);
 }
 
+void get_data_lists( std::vector<Data_List>& data_lists, std::vector<Component_ID>& components )
+{
+     for ( const auto &entry : component_data_system->data_node_map ) {
+          Comp_Data_Node& data_node = *entry.second;
+          if ( std::includes(data_node.components.begin(), data_node.components.end(),
+                              components.begin(), components.end()) ) {
+               data_lists.push_back({(uint8_t*)data_node.head, data_node.total_ents});
+          }
+     }
+}
+
 void comp_data_system_debug_print( void )
 {
      for ( const auto &entry : component_data_system->data_node_map ) {
@@ -535,9 +556,9 @@ void comp_data_system_debug_print( void )
           LOG("******* Data Node *******");
           LOG("ID: %" PRIu32 "", data_node.id);
           LOG("Entities Per Chunk: %" PRIu16 "", data_node.ents_per_chunk);
-          LOG("Components [ %d ]", data_node.components.size());
+          LOG("Components [ %zd ]", data_node.components.size());
           for ( size_t jj = 0; jj < data_node.components.size(); jj++ ) {
-               LOG("\tID: %" PRIu32 " Size %d Offset: %d",
+               LOG("\tID: %" PRIu32 " Size %zd Offset: %zd",
                     data_node.components[jj],
                     component_size(data_node.components[jj]),
                     data_node.offsets[jj]);
