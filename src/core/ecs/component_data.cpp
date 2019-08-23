@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <unordered_map>
 #include "component_data.h"
 #include "page_allocator.h"
 #include "crc32.h"
@@ -12,8 +11,6 @@ struct Chunk {
      Chunk*    next;
      uint8_t*  data;
 };
-
-typedef std::unordered_map<Component_ID, size_t> Comp_Offset_Map;
 
 struct Comp_Data_Node {
      Comp_Data_Node*               next;
@@ -538,15 +535,27 @@ Rc_t handle_remove_components( Handle handle, std::vector<Component_ID>& ids )
      return _remove_comps_from_ent(handle, ids);
 }
 
-void get_data_lists( std::vector<Data_List>& data_lists, std::vector<Component_ID>& components )
+size_t get_data_chunks( std::vector<Data_Chunk>& data_chunks, std::vector<Component_ID>& components )
 {
+     size_t cur_idx = 0;
+     Chunk* cur_chunk = NULL;
+
      for ( const auto &entry : component_data_system->data_node_map ) {
           Comp_Data_Node& data_node = *entry.second;
           if ( std::includes(data_node.components.begin(), data_node.components.end(),
                               components.begin(), components.end()) ) {
-               data_lists.push_back({(uint8_t*)data_node.head, data_node.total_ents});
+               cur_chunk = data_node.head;
+
+               while ( cur_chunk != NULL ) {
+                    Data_Chunk node = {data_node.offset_map, cur_idx, cur_idx + (cur_chunk->n_ents - 1), cur_chunk->data};
+                    data_chunks.push_back(node);
+                    cur_idx += cur_chunk->n_ents;
+                    cur_chunk = cur_chunk->next;
+               }
           }
      }
+
+     return cur_idx;
 }
 
 void comp_data_system_debug_print( void )

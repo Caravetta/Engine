@@ -6,6 +6,7 @@
 #include "engine_math.h"
 #include "reflection.h"
 #include "utils.h"
+#include "graphics.h"
 
 namespace Engine {
 

@@ -20,6 +20,11 @@ Rc_t engine_init( void )
           LOG_ERROR("Failed to setup ECS system rc=%d", rc);
      }
 
+     rc = OpenGL::init_opengl();
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to setup OpenGL rc=%d", rc);
+     }
+
      return rc;
 }
 

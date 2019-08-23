@@ -14,11 +14,22 @@ set(engine_core_src
     reflection/reflection_system.cpp
     utils/crc32.cpp
     math/vector3f.cpp
+    graphics/window.cpp
     memory/page_allocator.cpp
     engine_core.cpp
     test.cpp)
 
+if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
+set(engine_core_linux_src
+    platform/linux/window_linux.cpp
+    platform/linux/opengl_linux.cpp)
+
+add_executable(Engine-Core ${engine_core_src} ${engine_core_linux_src})
+endif()
+
+if ( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 add_executable(Engine-Core ${engine_core_src})
+endif()
 
 target_include_directories(Engine-Core PUBLIC
                            include
@@ -27,15 +38,20 @@ target_include_directories(Engine-Core PUBLIC
                            utils/include
                            reflection/include
                            math/include
-                           memory/include)
+                           memory/include
+                           platform/include
+                           graphics/include)
+
+if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
+target_include_directories(Engine-Core PUBLIC
+                           platform/linux/include)
+
+endif()
 
 get_property(includes
              TARGET Engine-Core
              PROPERTY INTERFACE_INCLUDE_DIRECTORIES
             )
-
-message(STATUS "We are on a ${CMAKE_SYSTEM_NAME} system")
-message(STATUS "We are on a ${CMAKE_CXX_COMPILER_ID} system")
 
 add_custom_target(base_comp_gen
                   COMMAND test

@@ -31,6 +31,12 @@ namespace Engine {
      #error
 #endif
 
+#ifdef CPU_X86
+     #define ENGINE_SIMD_SSE 1
+#else
+     #error
+#endif
+
 #define UNUSED_ARG( x ) ((void)(x))
 
 #define CHECK( condition )
@@ -43,8 +49,10 @@ namespace Engine {
 
 #define NEAR_ZERO 1e-15f
 
-typedef float float32_t;
+//typedef float float32_t;
 
 } // end namespace Engine
+
+typedef float float32_t;
 
 #endif //__CORE_COMMON_H__

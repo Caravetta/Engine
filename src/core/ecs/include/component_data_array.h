@@ -10,19 +10,25 @@ namespace Engine {
 
 class Entity_Group;
 
+template<class T>
 class Component_Data_Array {
 private:
-     std::vector<Data_List>   __data_list;
-     size_t                   __comp_size;
+     std::vector<Data_Chunk>*      __chunk_nodes;
+     size_t                        __cur_idx;
+     size_t                        __cur_chunk_idx;
+     size_t                        __next_idx;
+     Data_Chunk*                   __next_chunk;
+     T*                            __cur_data;
+     size_t                        __size;
 
 public:
-     Component_Data_Array( Entity_Group group );
-     uint8_t* data_at( size_t index );
-     template<class T> T& operator[]( size_t index );
+     Component_Data_Array( Entity_Group& group );
+     size_t size( void );
+     T& operator[]( size_t index );
 };
 
-}
+} // end namespace Engine
 
-//#include "component_data_array.inl"
+#include "component_data_array.inl"
 
 #endif //__COMPONENT_DATA_ARRAY_H__
