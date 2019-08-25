@@ -26,10 +26,12 @@ set(engine_core_linux_src
     platform/linux/opengl_linux.cpp)
 
 add_executable(Engine-Core ${engine_core_src} ${engine_core_linux_src})
-endif()
+elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
+set(engine_core_win_src
+    platform/win32/window_win32.cpp
+    platform/win32/opengl_win32.cpp)
 
-if ( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
-add_executable(Engine-Core ${engine_core_src})
+add_executable(Engine-Core ${engine_core_src} ${engine_core_win_src})
 endif()
 
 target_include_directories(Engine-Core PUBLIC
@@ -48,6 +50,12 @@ if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 target_include_directories(Engine-Core PUBLIC
                            platform/linux/include)
 
+elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
+
+target_include_directories(Engine-Core PUBLIC
+                           platform/win32/include)
+
+target_link_libraries(Engine-Core user32 gdi32 opengl32 winmm)
 endif()
 
 get_property(includes

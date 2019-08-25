@@ -2,7 +2,8 @@
 #define __PLATFORM_H__
 
 #ifdef WINDOWS
-
+#include "window_win32.h"
+#include "opengl_win32.h"
 #elif LINUX
 #include "window_linux.h"
 #include "opengl_linux.h"
