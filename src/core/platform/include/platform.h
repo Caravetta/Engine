@@ -10,4 +10,10 @@
      #error
 #endif
 
+#ifdef OPENGL
+#include "opengl.h"
+#else
+     #error
+#endif
+
 #endif //__PLATFORM_H__

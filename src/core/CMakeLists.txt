@@ -12,6 +12,7 @@ set(engine_core_src
     reflection/meta_struct.cpp
     reflection/meta_field.cpp
     reflection/reflection_system.cpp
+    platform/opengl/shader_gl.cpp
     utils/crc32.cpp
     math/vector3f.cpp
     graphics/window.cpp
@@ -40,6 +41,7 @@ target_include_directories(Engine-Core PUBLIC
                            math/include
                            memory/include
                            platform/include
+                           platform/opengl/include
                            graphics/include)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )

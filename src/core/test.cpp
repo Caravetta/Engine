@@ -26,6 +26,9 @@ int main(int argc, char** argv) {
           return -1;
      }
 
+     Engine::Shader test_shader({{Engine::VERTEX_SHADER, ""},
+                                 {Engine::VERTEX_SHADER, ""}});
+
      Engine::Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Test");
 
      Engine::Entity entity = Engine::create_entity();
