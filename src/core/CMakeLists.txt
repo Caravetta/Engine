@@ -32,7 +32,14 @@ set(engine_core_win_src
     platform/win32/opengl_win32.cpp)
 
 add_executable(Engine-Core ${engine_core_src} ${engine_core_win_src})
+
+#add_library(Engine-Core SHARED ${engine_core_src} ${engine_core_win_src})
+#set_target_properties(Engine-Core PROPERTIES
+#                      PUBLIC_HEADER "engine_core.h;include/core_common.h"
+#                      LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
+
+message(STATUS "JOSH ${CMAKE_BINARY_DIR}")
 
 target_include_directories(Engine-Core PUBLIC
                            include
@@ -51,7 +58,6 @@ target_include_directories(Engine-Core PUBLIC
                            platform/linux/include)
 
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
-
 target_include_directories(Engine-Core PUBLIC
                            platform/win32/include)
 
@@ -69,4 +75,7 @@ add_custom_target(base_comp_gen
                  )
 
 add_dependencies(Engine-Core base_comp_gen)
+
+#file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+#file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/lib/include)
 

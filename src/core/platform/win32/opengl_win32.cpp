@@ -3,12 +3,30 @@
 namespace Engine {
 namespace OpenGL {
 
+#define OPENGL_LOAD( func_name, func_define )                                             \
+     func_name = (func_define)wglGetProcAddress(#func_name);                              \
+     if ( !func_name ) { LOG_ERROR("Failed to load " #func_name); return ENGINE_ERROR; }
+
 PFNWGLCHOOSEPIXELFORMATARBPROC     wglChoosePixelFormatARB       = NULL;
 PFNWGLCREATECONTEXTATTRIBSARBPROC  wglCreateContextAttribsARB    = NULL;
-
-#define OPENGL_LOAD( func_name, func_define ) \
-     func_name = (func_define)wglGetProcAddress(#func_name); \
-     if ( !func_name ) { LOG_ERROR("Failed to load " #func_name); return ENGINE_ERROR; }
+PFNGLSHADERSOURCEPROC              glShaderSource                = NULL;
+PFNGLCREATESHADERPROC              glCreateShader                = NULL;
+PFNGLCOMPILESHADERPROC             glCompileShader               = NULL;
+PFNGLGETSHADERIVPROC               glGetShaderiv                 = NULL;
+PFNGLDELETESHADERPROC              glDeleteShader                = NULL;
+PFNGLCREATEPROGRAMPROC             glCreateProgram               = NULL;
+PFNGLATTACHSHADERPROC              glAttachShader                = NULL;
+PFNGLLINKPROGRAMPROC               glLinkProgram                 = NULL;
+PFNGLGETPROGRAMIVPROC              glGetProgramiv                = NULL;
+PFNGLDELETEPROGRAMPROC             glDeleteProgram               = NULL;
+PFNGLGENBUFFERSPROC                   glGenBuffers;
+PFNGLBINDBUFFERPROC                   glBindBuffer;
+PFNGLBUFFERDATAPROC                   glBufferData;
+PFNGLENABLEVERTEXATTRIBARRAYPROC      glEnableVertexAttribArray;
+PFNGLDISABLEVERTEXATTRIBARRAYPROC     glDisableVertexAttribArray;
+PFNGLVERTEXATTRIBPOINTERPROC          glVertexAttribPointer;
+PFNGLDRAWARRAYSPROC                   glDrawArrays;
+PFNGLUSEPROGRAMPROC                   glUseProgram;
 
 LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
@@ -24,6 +42,7 @@ LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 Rc_t init_opengl( void )
 {
+     LOG("JOSH 1");
      WNDCLASSEX _wc;
      HINSTANCE instance = GetModuleHandle(NULL);
      HWND hWnd;
@@ -42,7 +61,7 @@ Rc_t init_opengl( void )
      _wc.cbSize = sizeof(WNDCLASSEX);
 
      if ( !RegisterClassEx(&_wc) ) {
-          LOG_ERROR("Failed To Register The Window Classawdawdawd.");
+          LOG_ERROR("Failed To Register The Window Class.");
           DWORD dw = GetLastError();
           UNUSED_ARG(dw);
           return ENGINE_ERROR;
@@ -106,7 +125,24 @@ Rc_t init_opengl( void )
      wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
      if ( !wglChoosePixelFormatARB ) { LOG_ERROR("Failed to load wglChoosePixelFormatARB"); return ENGINE_ERROR; }
 
-     OPENGL_LOAD(glGenVertexArrays, glGenVertexArraysProc);
+     OPENGL_LOAD(glShaderSource, PFNGLSHADERSOURCEPROC);
+     OPENGL_LOAD(glCreateShader, PFNGLCREATESHADERPROC);
+     OPENGL_LOAD(glCompileShader, PFNGLCOMPILESHADERPROC);
+     OPENGL_LOAD(glGetShaderiv, PFNGLGETSHADERIVPROC);
+     OPENGL_LOAD(glDeleteShader, PFNGLDELETESHADERPROC);
+     OPENGL_LOAD(glCreateProgram, PFNGLCREATEPROGRAMPROC);
+     OPENGL_LOAD(glAttachShader, PFNGLATTACHSHADERPROC);
+     OPENGL_LOAD(glLinkProgram, PFNGLLINKPROGRAMPROC);
+     OPENGL_LOAD(glGetProgramiv, PFNGLGETPROGRAMIVPROC);
+     OPENGL_LOAD(glDeleteProgram, PFNGLDELETEPROGRAMPROC);
+     OPENGL_LOAD(glGenBuffers, PFNGLGENBUFFERSPROC);
+     OPENGL_LOAD(glBindBuffer, PFNGLBINDBUFFERPROC);
+     OPENGL_LOAD(glBufferData, PFNGLBUFFERDATAPROC);
+     OPENGL_LOAD(glEnableVertexAttribArray, PFNGLENABLEVERTEXATTRIBARRAYPROC);
+     OPENGL_LOAD(glDisableVertexAttribArray, PFNGLDISABLEVERTEXATTRIBARRAYPROC);
+     OPENGL_LOAD(glVertexAttribPointer, PFNGLVERTEXATTRIBPOINTERPROC);
+     OPENGL_LOAD(glDrawArrays, PFNGLDRAWARRAYSPROC);
+     OPENGL_LOAD(glUseProgram, PFNGLUSEPROGRAMPROC);
 
      // Release the temporary rendering context now that the extensions have been loaded.
      wglMakeCurrent(NULL, NULL);

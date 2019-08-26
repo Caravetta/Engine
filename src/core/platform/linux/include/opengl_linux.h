@@ -3,13 +3,14 @@
 
 #include <GL/gl.h>
 #include "core_common.h"
+#include "opengl_common.h"
 
 namespace Engine {
 namespace OpenGL {
 
 typedef void (*glGenVertexArraysProc) (GLsizei , GLuint*);
 
-static glGenVertexArraysProc glGenVertexArrays = NULL;
+extern glGenVertexArraysProc glGenVertexArrays = NULL;
 
 Rc_t init_opengl( void );
 

@@ -10,7 +10,7 @@
 
 namespace Engine {
 
-Rc_t engine_init( void );
+ENGINE_API Rc_t engine_init( void );
 
 } // end namespace Engine
 
