@@ -3,7 +3,6 @@
 
 #include "core_common.h"
 #include "meta_struct.h"
-#include "reflection_system.h"
 #include "vector3f.h"
 
 namespace Engine {
@@ -59,8 +58,11 @@ public:
      Vector4f& operator/=( const Vector4f& vector );
      Vector4f& operator/=( const float32_t value );
 
-     bool operator==( const Vector4& vector ) const;
-     bool operator!=( const Vector4& vector ) const;
+     bool operator==( const Vector4f& vector ) const;
+     bool operator!=( const Vector4f& vector ) const;
+
+     float32_t& operator[] ( const uint32_t i );
+     const float32_t& operator[] ( const uint32_t i ) const;
 };
 
 } // end namespace Engine

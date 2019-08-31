@@ -57,35 +57,28 @@ int main(int argc, char** argv) {
           LOG("MESH idx %zd = %" PRIu64 "", ii, mesh_handles[ii].handle);
      }
 
+     GLuint vertexArray_id;
+     Engine::OpenGL::glGenVertexArrays(1, &vertexArray_id);
+     Engine::OpenGL::glBindVertexArray(vertexArray_id);
 
-     LOG("__id %d", test_shader.id());
      GLuint vertexbuffer;
-     // Generate 1 buffer, put the resulting identifier in vertexbuffer
      Engine::OpenGL::glGenBuffers(1, &vertexbuffer);
-     // The following commands will talk about our 'vertexbuffer' buffer
      Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-     // Give our vertices to OpenGL.
      Engine::OpenGL::glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-          Engine::OpenGL::glVertexAttribPointer(
-                                                  0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-                                                  3,                  // size
-   GL_FLOAT,           // type
-   GL_FALSE,           // normalized?
-   3 *sizeof(float),                  // stride
-   (void*)0            // array buffer offset
-);
-          Engine::OpenGL::glEnableVertexAttribArray(0);
+     Engine::OpenGL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+     Engine::OpenGL::glEnableVertexAttribArray(0);
+     glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
 
      while( window.is_closed() == false ) {
           window.update();
           glViewport(0, 0, window.width(), window.height());
-          glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
           glClear(GL_COLOR_BUFFER_BIT);
 
           Engine::OpenGL::glUseProgram(test_shader.id());
+          Engine::OpenGL::glEnableVertexAttribArray(0);
           Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-// Draw the triangle !
-          Engine::OpenGL::glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+          Engine::OpenGL::glDrawArrays(GL_TRIANGLES, 0, 3);
+
           window.swap_buffers();
      }
 }

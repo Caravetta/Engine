@@ -15,6 +15,8 @@ set(engine_core_src
     platform/opengl/shader_gl.cpp
     utils/crc32.cpp
     math/vector3f.cpp
+    math/vector4f.cpp
+    math/matrix4f.cpp
     graphics/window.cpp
     memory/page_allocator.cpp
     engine_core.cpp

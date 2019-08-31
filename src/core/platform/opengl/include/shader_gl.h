@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "core_common.h"
+#include "matrix4f.h"
 
 namespace Engine {
 
@@ -20,11 +21,17 @@ struct Shader_GL_File {
 
 class Shader_GL {
 private:
-     unsigned int __id;
+     int32_t __id;
 
 public:
      Shader_GL( std::vector<Shader_GL_File> files );
-     unsigned int id( void );
+     int32_t id( void );
+     int32_t uniform_id( char* name );
+     void set_uniform_float1( int32_t location, float value );
+     void set_uniform_float2( int32_t location, float value_1, float value_2 );
+     void set_uniform_float3( int32_t location, float value_1, float value_2, float float_3 );
+     void set_uniform_float4( int32_t location, float value_1, float value_2, float float_3, float float_4 );
+     void set_uniform_mat4( int32_t location, const Matrix4f& matrix );
 };
 
 };

@@ -40,15 +40,22 @@ Shader_GL::Shader_GL( std::vector<Shader_GL_File> files )
      shader_ids.resize(files.size());
 
      for ( size_t ii = 0; ii < files.size(); ii++ ) {
+
           OpenGL::GLint length;
           OpenGL::GLchar* source = (OpenGL::GLchar *)__shader_contents(files[ii].file.c_str(), &length);
-
           if ( source == NULL ) {
                __id = -1;
                return;
           }
 
           shader_ids[ii] = OpenGL::glCreateShader(files[ii].type);
+          if ( shader_ids[ii] == 0 ) {
+               //TODO(JOSH): need tp clean up other shaders that where created
+               LOG_ERROR("%s: Failed to create shader", __FUNCTION__);
+               __id = -1;
+               return;
+          }
+
           OpenGL::glShaderSource(shader_ids[ii], 1, (const OpenGL::GLchar**)&source, &length);
 
           free(source);
@@ -57,8 +64,8 @@ Shader_GL::Shader_GL( std::vector<Shader_GL_File> files )
 
           OpenGL::glGetShaderiv(shader_ids[ii], GL_COMPILE_STATUS, &is_ok);
           if ( !is_ok ) {
-               LOG_ERROR("%s: Error loading shader %s", __FUNCTION__, files[ii].file.c_str());
-               //TODO(JOSH): need tp clean up other shaders
+               LOG_ERROR("%s: Failed to load shader %s", __FUNCTION__, files[ii].file.c_str());
+               //TODO(JOSH): need tp clean up other shaders that where created
                OpenGL::glDeleteShader(shader_ids[ii]);
                __id = -1;
                return;
@@ -68,12 +75,10 @@ Shader_GL::Shader_GL( std::vector<Shader_GL_File> files )
      __id = OpenGL::glCreateProgram();
 
      for ( size_t ii = 0; ii < shader_ids.size(); ii++ ) {
-          LOG("Linking %d to %d", shader_ids[ii], __id);
           OpenGL::glAttachShader(__id, shader_ids[ii]);
      }
 
      OpenGL::glLinkProgram(__id);
-     LOG("HEREEEEEEEEEEE");
      OpenGL::glGetProgramiv(__id, GL_LINK_STATUS, &is_ok);
      if ( !is_ok ) {
           LOG_ERROR("%s: Error creating program", __FUNCTION__);
@@ -83,9 +88,39 @@ Shader_GL::Shader_GL( std::vector<Shader_GL_File> files )
      }
 }
 
-unsigned int Shader_GL::id( void )
+int32_t Shader_GL::id( void )
 {
      return __id;
+}
+
+int32_t Shader_GL::uniform_id( char* name )
+{
+     return OpenGL::glGetUniformLocation(__id, name);
+}
+
+void Shader_GL::set_uniform_float1( int32_t location, float value )
+{
+     OpenGL::glUniform1f(location, value);
+}
+
+void Shader_GL::set_uniform_float2( int32_t location, float value_1, float value_2 )
+{
+     OpenGL::glUniform2f(location, value_1, value_2);
+}
+
+void Shader_GL::set_uniform_float3( int32_t location, float value_1, float value_2, float value_3 )
+{
+     OpenGL::glUniform3f(location, value_1, value_2, value_3);
+}
+
+void Shader_GL::set_uniform_float4( int32_t location, float value_1, float value_2, float value_3, float value_4 )
+{
+     OpenGL::glUniform4f(location, value_1, value_2, value_3, value_4);
+}
+
+void Shader_GL::set_uniform_mat4( int32_t location, const Matrix4f& matrix )
+{
+     OpenGL::glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix);
 }
 
 } // end namespace Engine
