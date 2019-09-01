@@ -19,6 +19,7 @@ struct Mesh_Handle {
 
 COMPONENT_DEFINE( Mesh_Handle );
 
+
 static const GLfloat g_vertex_buffer_data[] = {
    -1.0f, -1.0f, 0.0f,
     1.0f, -1.0f, 0.0f,
@@ -69,12 +70,25 @@ int main(int argc, char** argv) {
      Engine::OpenGL::glEnableVertexAttribArray(0);
      glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
 
+     Engine::Matrix4f view;
+
      while( window.is_closed() == false ) {
           window.update();
           glViewport(0, 0, window.width(), window.height());
           glClear(GL_COLOR_BUFFER_BIT);
 
           Engine::OpenGL::glUseProgram(test_shader.id());
+
+          int32_t location = test_shader.uniform_id("color");
+          test_shader.set_uniform_float3(location, 0.3f, 0, 0.3f);
+
+          Engine::Matrix4f ortho = Engine::orthographic_projection(1, 1, -1, 1);
+          location = test_shader.uniform_id("ortho");
+          test_shader.set_uniform_mat4(location, ortho);
+
+          location = test_shader.uniform_id("view");
+          test_shader.set_uniform_mat4(location, view);
+
           Engine::OpenGL::glEnableVertexAttribArray(0);
           Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
           Engine::OpenGL::glDrawArrays(GL_TRIANGLES, 0, 3);

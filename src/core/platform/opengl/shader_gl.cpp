@@ -48,6 +48,8 @@ Shader_GL::Shader_GL( std::vector<Shader_GL_File> files )
                return;
           }
 
+          //TODO(JOSH): need to parse the shader and gen the uniform locations
+
           shader_ids[ii] = OpenGL::glCreateShader(files[ii].type);
           if ( shader_ids[ii] == 0 ) {
                //TODO(JOSH): need tp clean up other shaders that where created
@@ -93,9 +95,9 @@ int32_t Shader_GL::id( void )
      return __id;
 }
 
-int32_t Shader_GL::uniform_id( char* name )
+int32_t Shader_GL::uniform_id( std::string name )
 {
-     return OpenGL::glGetUniformLocation(__id, name);
+     return OpenGL::glGetUniformLocation(__id, name.c_str());
 }
 
 void Shader_GL::set_uniform_float1( int32_t location, float value )
@@ -120,7 +122,7 @@ void Shader_GL::set_uniform_float4( int32_t location, float value_1, float value
 
 void Shader_GL::set_uniform_mat4( int32_t location, const Matrix4f& matrix )
 {
-     OpenGL::glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix);
+     OpenGL::glUniformMatrix4fv(location, 1, GL_TRUE, (float*)&matrix);
 }
 
 } // end namespace Engine
