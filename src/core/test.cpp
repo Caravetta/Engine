@@ -25,11 +25,6 @@ COMPONENT_DEFINE( Mesh_Handle );
 
 
 static const GLfloat g_vertex_buffer_data[] = {
-//   -1.0f, -1.0f, 0.0f,
-//    1.0f, -1.0f, 0.0f,
-//    0.0f,  1.0f, 0.0f,
-//};
-
     -0.5f, -0.5f, 0.0f,
      0.5f, -0.5f, 0.0f,
      0.5f,  0.5f, 0.0f,
@@ -82,11 +77,8 @@ int main(int argc, char** argv) {
      Engine::OpenGL::glEnableVertexAttribArray(0);
      glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
 
-     //glm::mat4 transform = glm::translate(tes, glm::vec3(100, 100, 0));
-     //transform = glm::inverse(transform);
-
-     //glm::mat4 ortho = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
-     Engine::Matrix4f ortho = Engine::orthographic_projection(0, 600.0f, 0, 800.0f, -1, 1);
+     //Engine::Matrix4f ortho = Engine::orthographic_projection(0, 600.0f, 0, 800.0f, -1, 1000);
+     Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45), 800.0f/600.0f, 1.0f, 100.0f);
 
      float xx = 0;
 
@@ -104,16 +96,15 @@ int main(int argc, char** argv) {
 
           Engine::Matrix4f view = Engine::translate(Engine::Vector3f(0, 0, 0));
 
-          Engine::Matrix4f model_trans = Engine::translate(Engine::Vector3f(150, 250, 0));
-          Engine::Matrix4f model_scale = Engine::scale(Engine::Vector3f(100, 100, 0));
+          Engine::Matrix4f model_trans = Engine::translate(Engine::Vector3f(0, 0, 50));
+          Engine::Matrix4f model_scale = Engine::scale(Engine::Vector3f(10, 10, 0));
 
           auto t_now = std::chrono::high_resolution_clock::now();
           float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
 
-          Engine::Matrix4f model_rot = Engine::rotation(Engine::Vector3f(10, 0, time*60));
+          Engine::Matrix4f model_rot = Engine::rotation(Engine::Vector3f(60, 0, time*60));
 
           Engine::Matrix4f model = model_trans * model_rot * model_scale;
-
 
           Engine::Matrix4f mvp = ortho * view * model;
 
