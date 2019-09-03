@@ -28,14 +28,14 @@ public:
      explicit Matrix4f( const Vector4f& vector );
 
      Matrix4f operator+( const Matrix4f& matrix ) const;
-     Matrix4f operator*( const Matrix4f& matrix ) const;
+     Matrix4f operator*( const Matrix4f& other ) const;
      Vector4f operator*( const Vector4f& vector ) const;
      Matrix4f operator*( const float32_t value ) const;
 
      //Matrix4f& operator=( const Matrix3f& matrix );
      Matrix4f& operator=( const Matrix4f& matrix );
      Matrix4f& operator+=( const Matrix4f& matrix );
-     Matrix4f& operator*=( const Matrix4f& matrix );
+     Matrix4f& operator*=( const Matrix4f& other );
      Matrix4f& operator*=( const float32_t value );
 
      bool operator==(const Matrix4f& matrix ) const;

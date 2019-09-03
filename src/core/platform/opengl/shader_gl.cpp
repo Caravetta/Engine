@@ -120,9 +120,9 @@ void Shader_GL::set_uniform_float4( int32_t location, float value_1, float value
      OpenGL::glUniform4f(location, value_1, value_2, value_3, value_4);
 }
 
-void Shader_GL::set_uniform_mat4( int32_t location, const Matrix4f& matrix )
+void Shader_GL::set_uniform_mat4( int32_t location, Matrix4f* matrix )
 {
-     OpenGL::glUniformMatrix4fv(location, 1, GL_TRUE, (float*)&matrix);
+     OpenGL::glUniformMatrix4fv(location, 1, GL_FALSE, (float*)matrix);
 }
 
 } // end namespace Engine

@@ -1,4 +1,8 @@
 #include "engine_core.h"
+#include "glm.hpp"
+#include "matrix_transform.hpp"
+#include "matrix_clip_space.hpp"
+#include <chrono>
 
 #define WINDOW_WIDTH	800
 #define WINDOW_HEIGHT	600
@@ -21,9 +25,17 @@ COMPONENT_DEFINE( Mesh_Handle );
 
 
 static const GLfloat g_vertex_buffer_data[] = {
-   -1.0f, -1.0f, 0.0f,
-    1.0f, -1.0f, 0.0f,
-    0.0f,  1.0f, 0.0f,
+//   -1.0f, -1.0f, 0.0f,
+//    1.0f, -1.0f, 0.0f,
+//    0.0f,  1.0f, 0.0f,
+//};
+
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.5f,  0.5f, 0.0f,
+     0.5f,  0.5f, 0.0f,
+    -0.5f,  0.5f, 0.0f,
+    -0.5f, -0.5f, 0.0f,
 };
 
 int main(int argc, char** argv) {
@@ -70,7 +82,15 @@ int main(int argc, char** argv) {
      Engine::OpenGL::glEnableVertexAttribArray(0);
      glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
 
-     Engine::Matrix4f view;
+     //glm::mat4 transform = glm::translate(tes, glm::vec3(100, 100, 0));
+     //transform = glm::inverse(transform);
+
+     //glm::mat4 ortho = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
+     Engine::Matrix4f ortho = Engine::orthographic_projection(0, 600.0f, 0, 800.0f, -1, 1);
+
+     float xx = 0;
+
+     auto t_start = std::chrono::high_resolution_clock::now();
 
      while( window.is_closed() == false ) {
           window.update();
@@ -82,16 +102,27 @@ int main(int argc, char** argv) {
           int32_t location = test_shader.uniform_id("color");
           test_shader.set_uniform_float3(location, 0.3f, 0, 0.3f);
 
-          Engine::Matrix4f ortho = Engine::orthographic_projection(1, 1, -1, 1);
-          location = test_shader.uniform_id("ortho");
-          test_shader.set_uniform_mat4(location, ortho);
+          Engine::Matrix4f view = Engine::translate(Engine::Vector3f(0, 0, 0));
 
-          location = test_shader.uniform_id("view");
-          test_shader.set_uniform_mat4(location, view);
+          Engine::Matrix4f model_trans = Engine::translate(Engine::Vector3f(150, 250, 0));
+          Engine::Matrix4f model_scale = Engine::scale(Engine::Vector3f(100, 100, 0));
+
+          auto t_now = std::chrono::high_resolution_clock::now();
+          float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
+
+          Engine::Matrix4f model_rot = Engine::rotation(Engine::Vector3f(10, 0, time*60));
+
+          Engine::Matrix4f model = model_trans * model_rot * model_scale;
+
+
+          Engine::Matrix4f mvp = ortho * view * model;
+
+          location = test_shader.uniform_id("mvp");
+          test_shader.set_uniform_mat4(location, (Engine::Matrix4f*)&mvp);
 
           Engine::OpenGL::glEnableVertexAttribArray(0);
           Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-          Engine::OpenGL::glDrawArrays(GL_TRIANGLES, 0, 3);
+          Engine::OpenGL::glDrawArrays(GL_TRIANGLES, 0, 6);
 
           window.swap_buffers();
      }

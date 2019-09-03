@@ -31,7 +31,7 @@ public:
      void set_uniform_float2( int32_t location, float value_1, float value_2 );
      void set_uniform_float3( int32_t location, float value_1, float value_2, float float_3 );
      void set_uniform_float4( int32_t location, float value_1, float value_2, float float_3, float float_4 );
-     void set_uniform_mat4( int32_t location, const Matrix4f& matrix );
+     void set_uniform_mat4( int32_t location, Matrix4f* matrix );
 };
 
 };

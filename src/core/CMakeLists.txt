@@ -53,7 +53,13 @@ target_include_directories(Engine-Core PUBLIC
                            memory/include
                            platform/include
                            platform/opengl/include
-                           graphics/include)
+                           graphics/include
+                           ../libs/glm/glm
+                           ../libs/glm/glm/detail
+                           ../libs/glm/glm/ext
+                           ../libs/glm/glm/gtc
+                           ../libs/glm/glm/gtx
+                           ../libs/glm/glm/simd)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 target_include_directories(Engine-Core PUBLIC

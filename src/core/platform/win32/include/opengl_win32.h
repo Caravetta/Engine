@@ -30,6 +30,15 @@ typedef void (APIENTRY * PFNGLDISABLEVERTEXATTRIBARRAYPROC) ( GLuint index );
 typedef void (APIENTRY * PFNGLVERTEXATTRIBPOINTERPROC) ( GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer );
 typedef void (APIENTRY * PFNGLDRAWARRAYSPROC) ( GLenum mode, GLint first, GLsizei count );
 typedef void (APIENTRY * PFNGLUSEPROGRAMPROC) ( GLuint program );
+typedef void (APIENTRY * PFNGLGENVERTEXARRAYPROC) ( GLsizei n, GLuint* arrays );
+typedef void (APIENTRY * PFNGLBINDVERTEXARRAYPROC) ( GLuint array );
+typedef void (APIENTRY * PFNGLUNIFORM1FPROC) ( GLint location, GLfloat v0 );
+typedef void (APIENTRY * PFNGLUNIFORM2FPROC) ( GLint location, GLfloat v0, GLfloat v1 );
+typedef void (APIENTRY * PFNGLUNIFORM3FPROC) ( GLint location, GLfloat v0, GLfloat v1, GLfloat v2 );
+typedef void (APIENTRY * PFNGLUNIFORM4FPROC) ( GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3 );
+typedef void (APIENTRY * PFNGLUNIFORMMATRIX4FVPROC) ( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+typedef GLint (APIENTRY * PFNGLGETUNIFORMLOCATIONPROC) ( GLuint program, const GLchar* name );
+
 
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC     wglCreateContextAttribsARB;
 extern PFNWGLCHOOSEPIXELFORMATARBPROC        wglChoosePixelFormatARB;
@@ -52,6 +61,15 @@ extern PFNGLDISABLEVERTEXATTRIBARRAYPROC     glDisableVertexAttribArray;
 extern PFNGLVERTEXATTRIBPOINTERPROC          glVertexAttribPointer;
 extern PFNGLDRAWARRAYSPROC                   glDrawArrays;
 extern PFNGLUSEPROGRAMPROC                   glUseProgram;
+
+extern PFNGLGENVERTEXARRAYPROC               glGenVertexArrays;
+extern PFNGLBINDVERTEXARRAYPROC              glBindVertexArray;
+extern PFNGLUNIFORM1FPROC                    glUniform1f;
+extern PFNGLUNIFORM2FPROC                    glUniform2f;
+extern PFNGLUNIFORM3FPROC                    glUniform3f;
+extern PFNGLUNIFORM4FPROC                    glUniform4f;
+extern PFNGLUNIFORMMATRIX4FVPROC             glUniformMatrix4fv;
+extern PFNGLGETUNIFORMLOCATIONPROC           glGetUniformLocation;
 
 Rc_t init_opengl( void );
 

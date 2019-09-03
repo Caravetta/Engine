@@ -115,7 +115,6 @@ LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 struct platform_window_t* platform_window_create( int width, int height, std::string title )
 {
-     LOG("JOSH 2");
      platform_window_t* window = new platform_window_t;
 
      window->width = width;

@@ -49,6 +49,7 @@ Matrix4f::Matrix4f( const Vector4f& vector )
 
 Matrix4f Matrix4f::operator+( const Matrix4f& matrix ) const
 {
+     //TODO(JOSH): need to check this
      Matrix4f local = *this;
      Matrix4f result = Matrix4f::ZERO;
 
@@ -61,18 +62,30 @@ Matrix4f Matrix4f::operator+( const Matrix4f& matrix ) const
      return result;
 }
 
-Matrix4f Matrix4f::operator*( const Matrix4f& matrix ) const
+Matrix4f Matrix4f::operator*( const Matrix4f& other ) const
 {
-     Matrix4f local = *this;
+     Matrix4f m = *this;
      Matrix4f result = Matrix4f::ZERO;
 
-     for ( uint8_t row = 0; row < ROW_SIZE; row++ ) {
-          for ( uint8_t col = 0; col < COL_SIZE; col++ ) {
-               for ( uint8_t mid = 0; mid < MID_SIZE; mid++ ) {
-                    result[row][col] += local[row][mid] * matrix[mid][col];
-               }
-          }
-     }
+     result[0][0] = (m[0][0] * other[0][0]) + (m[1][0] * other[0][1]) + (m[2][0] * other[0][2]) + (m[3][0] * other[0][3]);
+     result[1][0] = (m[0][0] * other[1][0]) + (m[1][0] * other[1][1]) + (m[2][0] * other[1][2]) + (m[3][0] * other[1][3]);
+     result[2][0] = (m[0][0] * other[2][0]) + (m[1][0] * other[2][1]) + (m[2][0] * other[2][2]) + (m[3][0] * other[2][3]);
+     result[3][0] = (m[0][0] * other[3][0]) + (m[1][0] * other[3][1]) + (m[2][0] * other[3][2]) + (m[3][0] * other[3][3]);
+
+     result[0][1] = (m[0][1] * other[0][0]) + (m[1][1] * other[0][1]) + (m[2][1] * other[0][2]) + (m[3][1] * other[0][3]);
+     result[1][1] = (m[0][1] * other[1][0]) + (m[1][1] * other[1][1]) + (m[2][1] * other[1][2]) + (m[3][1] * other[1][3]);
+     result[2][1] = (m[0][1] * other[2][0]) + (m[1][1] * other[2][1]) + (m[2][1] * other[2][2]) + (m[3][1] * other[2][3]);
+     result[3][1] = (m[0][1] * other[3][0]) + (m[1][1] * other[3][1]) + (m[2][1] * other[3][2]) + (m[3][1] * other[3][3]);
+
+     result[0][2] = (m[0][2] * other[0][0]) + (m[1][2] * other[0][1]) + (m[2][2] * other[0][2]) + (m[3][2] * other[0][3]);
+     result[1][2] = (m[0][2] * other[1][0]) + (m[1][2] * other[1][1]) + (m[2][2] * other[1][2]) + (m[3][2] * other[1][3]);
+     result[2][2] = (m[0][2] * other[2][0]) + (m[1][2] * other[2][1]) + (m[2][2] * other[2][2]) + (m[3][2] * other[2][3]);
+     result[3][2] = (m[0][2] * other[3][0]) + (m[1][2] * other[3][1]) + (m[2][2] * other[3][2]) + (m[3][2] * other[3][3]);
+
+     result[0][3] = (m[0][3] * other[0][0]) + (m[1][3] * other[0][1]) + (m[2][3] * other[0][2]) + (m[3][3] * other[0][3]);
+     result[1][3] = (m[0][3] * other[1][0]) + (m[1][3] * other[1][1]) + (m[2][3] * other[1][2]) + (m[3][3] * other[1][3]);
+     result[2][3] = (m[0][3] * other[2][0]) + (m[1][3] * other[2][1]) + (m[2][3] * other[2][2]) + (m[3][3] * other[2][3]);
+     result[3][3] = (m[0][3] * other[3][0]) + (m[1][3] * other[3][1]) + (m[2][3] * other[3][2]) + (m[3][3] * other[3][3]);
 
      return result;
 }
@@ -108,6 +121,7 @@ Matrix4f& Matrix4f::operator=( const Matrix4f& matrix )
 
 Matrix4f& Matrix4f::operator+=( const Matrix4f& matrix )
 {
+     //TODO(JOSH): need to check this
      Matrix4f local = *this;
      Matrix4f& result = *this;
 
@@ -122,20 +136,32 @@ Matrix4f& Matrix4f::operator+=( const Matrix4f& matrix )
      return result;
 }
 
-Matrix4f& Matrix4f::operator*=( const Matrix4f& matrix )
+Matrix4f& Matrix4f::operator*=( const Matrix4f& other )
 {
-     Matrix4f local = *this;
+     Matrix4f m = *this;
      Matrix4f& result = *this;
 
      result = Matrix4f::ZERO;
 
-     for ( uint8_t row = 0; row < ROW_SIZE; row++ ) {
-          for ( uint8_t col = 0; col < COL_SIZE; col++ ) {
-               for ( uint8_t mid = 0; mid < MID_SIZE; mid++ ) {
-                    result[row][col] += local[row][mid] * matrix[mid][col];
-               }
-          }
-     }
+     result[0][0] = (m[0][0] * other[0][0]) + (m[1][0] * other[0][1]) + (m[2][0] * other[0][2]) + (m[3][0] * other[0][3]);
+     result[1][0] = (m[0][0] * other[1][0]) + (m[1][0] * other[1][1]) + (m[2][0] * other[1][2]) + (m[3][0] * other[1][3]);
+     result[2][0] = (m[0][0] * other[2][0]) + (m[1][0] * other[2][1]) + (m[2][0] * other[2][2]) + (m[3][0] * other[2][3]);
+     result[3][0] = (m[0][0] * other[3][0]) + (m[1][0] * other[3][1]) + (m[2][0] * other[3][2]) + (m[3][0] * other[3][3]);
+
+     result[0][1] = (m[0][1] * other[0][0]) + (m[1][1] * other[0][1]) + (m[2][1] * other[0][2]) + (m[3][1] * other[0][3]);
+     result[1][1] = (m[0][1] * other[1][0]) + (m[1][1] * other[1][1]) + (m[2][1] * other[1][2]) + (m[3][1] * other[1][3]);
+     result[2][1] = (m[0][1] * other[2][0]) + (m[1][1] * other[2][1]) + (m[2][1] * other[2][2]) + (m[3][1] * other[2][3]);
+     result[3][1] = (m[0][1] * other[3][0]) + (m[1][1] * other[3][1]) + (m[2][1] * other[3][2]) + (m[3][1] * other[3][3]);
+
+     result[0][2] = (m[0][2] * other[0][0]) + (m[1][2] * other[0][1]) + (m[2][2] * other[0][2]) + (m[3][2] * other[0][3]);
+     result[1][2] = (m[0][2] * other[1][0]) + (m[1][2] * other[1][1]) + (m[2][2] * other[1][2]) + (m[3][2] * other[1][3]);
+     result[2][2] = (m[0][2] * other[2][0]) + (m[1][2] * other[2][1]) + (m[2][2] * other[2][2]) + (m[3][2] * other[2][3]);
+     result[3][2] = (m[0][2] * other[3][0]) + (m[1][2] * other[3][1]) + (m[2][2] * other[3][2]) + (m[3][2] * other[3][3]);
+
+     result[0][3] = (m[0][3] * other[0][0]) + (m[1][3] * other[0][1]) + (m[2][3] * other[0][2]) + (m[3][3] * other[0][3]);
+     result[1][3] = (m[0][3] * other[1][0]) + (m[1][3] * other[1][1]) + (m[2][3] * other[1][2]) + (m[3][3] * other[1][3]);
+     result[2][3] = (m[0][3] * other[2][0]) + (m[1][3] * other[2][1]) + (m[2][3] * other[2][2]) + (m[3][3] * other[2][3]);
+     result[3][3] = (m[0][3] * other[3][0]) + (m[1][3] * other[3][1]) + (m[2][3] * other[3][2]) + (m[3][3] * other[3][3]);
 
      return result;
 }

@@ -19,14 +19,22 @@ PFNGLATTACHSHADERPROC              glAttachShader                = NULL;
 PFNGLLINKPROGRAMPROC               glLinkProgram                 = NULL;
 PFNGLGETPROGRAMIVPROC              glGetProgramiv                = NULL;
 PFNGLDELETEPROGRAMPROC             glDeleteProgram               = NULL;
-PFNGLGENBUFFERSPROC                   glGenBuffers;
-PFNGLBINDBUFFERPROC                   glBindBuffer;
-PFNGLBUFFERDATAPROC                   glBufferData;
-PFNGLENABLEVERTEXATTRIBARRAYPROC      glEnableVertexAttribArray;
-PFNGLDISABLEVERTEXATTRIBARRAYPROC     glDisableVertexAttribArray;
-PFNGLVERTEXATTRIBPOINTERPROC          glVertexAttribPointer;
-PFNGLDRAWARRAYSPROC                   glDrawArrays;
-PFNGLUSEPROGRAMPROC                   glUseProgram;
+PFNGLGENBUFFERSPROC                glGenBuffers                  = NULL;
+PFNGLBINDBUFFERPROC                glBindBuffer                  = NULL;
+PFNGLBUFFERDATAPROC                glBufferData                  = NULL;
+PFNGLENABLEVERTEXATTRIBARRAYPROC   glEnableVertexAttribArray     = NULL;
+PFNGLDISABLEVERTEXATTRIBARRAYPROC  glDisableVertexAttribArray    = NULL;
+PFNGLVERTEXATTRIBPOINTERPROC       glVertexAttribPointer         = NULL;
+PFNGLDRAWARRAYSPROC                glDrawArrays                  = NULL;
+PFNGLUSEPROGRAMPROC                glUseProgram                  = NULL;
+PFNGLGENVERTEXARRAYPROC            glGenVertexArrays             = NULL;
+PFNGLBINDVERTEXARRAYPROC           glBindVertexArray             = NULL;
+PFNGLUNIFORM1FPROC                 glUniform1f                   = NULL;
+PFNGLUNIFORM2FPROC                 glUniform2f                   = NULL;
+PFNGLUNIFORM3FPROC                 glUniform3f                   = NULL;
+PFNGLUNIFORM4FPROC                 glUniform4f                   = NULL;
+PFNGLUNIFORMMATRIX4FVPROC          glUniformMatrix4fv            = NULL;
+PFNGLGETUNIFORMLOCATIONPROC        glGetUniformLocation          = NULL;
 
 LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
@@ -42,7 +50,6 @@ LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 Rc_t init_opengl( void )
 {
-     LOG("JOSH 1");
      WNDCLASSEX _wc;
      HINSTANCE instance = GetModuleHandle(NULL);
      HWND hWnd;
@@ -143,6 +150,14 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glVertexAttribPointer, PFNGLVERTEXATTRIBPOINTERPROC);
      OPENGL_LOAD(glDrawArrays, PFNGLDRAWARRAYSPROC);
      OPENGL_LOAD(glUseProgram, PFNGLUSEPROGRAMPROC);
+     OPENGL_LOAD(glGenVertexArrays, PFNGLGENVERTEXARRAYPROC);
+     OPENGL_LOAD(glBindVertexArray, PFNGLBINDVERTEXARRAYPROC);
+     OPENGL_LOAD(glUniform1f, PFNGLUNIFORM1FPROC);
+     OPENGL_LOAD(glUniform2f, PFNGLUNIFORM2FPROC);
+     OPENGL_LOAD(glUniform3f, PFNGLUNIFORM3FPROC);
+     OPENGL_LOAD(glUniform4f, PFNGLUNIFORM4FPROC);
+     OPENGL_LOAD(glUniformMatrix4fv, PFNGLUNIFORMMATRIX4FVPROC);
+     OPENGL_LOAD(glGetUniformLocation, PFNGLGETUNIFORMLOCATIONPROC);
 
      // Release the temporary rendering context now that the extensions have been loaded.
      wglMakeCurrent(NULL, NULL);
