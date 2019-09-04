@@ -19,12 +19,19 @@ struct Shader_GL_File {
      std::string    file;
 };
 
+struct Shader_GL_String {
+     Shader_GL_Type type;
+     char*          source;
+     size_t         length;
+};
+
 class Shader_GL {
 private:
      int32_t __id;
 
 public:
      Shader_GL( std::vector<Shader_GL_File> files );
+     Shader_GL( std::vector<Shader_GL_String> strings );
      int32_t id( void );
      int32_t uniform_id( std::string name );
      void set_uniform_float1( int32_t location, float value );

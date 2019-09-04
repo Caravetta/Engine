@@ -90,6 +90,63 @@ Shader_GL::Shader_GL( std::vector<Shader_GL_File> files )
      }
 }
 
+Shader_GL::Shader_GL( std::vector<Shader_GL_String> strings )
+{
+     OpenGL::GLint is_ok;
+     std::vector<OpenGL::GLuint> shader_ids;
+     shader_ids.resize(strings.size());
+     LOG("size %zd", strings.size());
+     for ( size_t ii = 0; ii < strings.size(); ii++ ) {
+
+          OpenGL::GLint length = strings[ii].length;
+          LOG("JOSH Length %d", length);
+          OpenGL::GLchar* source = (OpenGL::GLchar *)strings[ii].source;
+          if ( source == NULL ) {
+               __id = -1;
+               return;
+          }
+
+          //TODO(JOSH): need to parse the shader and gen the uniform locations
+
+          shader_ids[ii] = OpenGL::glCreateShader(strings[ii].type);
+          if ( shader_ids[ii] == 0 ) {
+               //TODO(JOSH): need tp clean up other shaders that where created
+               LOG_ERROR("%s: Failed to create shader", __FUNCTION__);
+               __id = -1;
+               return;
+          }
+
+          OpenGL::glShaderSource(shader_ids[ii], 1, (const OpenGL::GLchar**)&source, &length);
+
+          OpenGL::glCompileShader(shader_ids[ii]);
+
+          OpenGL::glGetShaderiv(shader_ids[ii], GL_COMPILE_STATUS, &is_ok);
+          if ( !is_ok ) {
+               LOG_ERROR("%s: Failed to load shader", __FUNCTION__);
+               //TODO(JOSH): need tp clean up other shaders that where created
+               OpenGL::glDeleteShader(shader_ids[ii]);
+               __id = -1;
+               return;
+          }
+     }
+
+     __id = OpenGL::glCreateProgram();
+
+     for ( size_t ii = 0; ii < shader_ids.size(); ii++ ) {
+          OpenGL::glAttachShader(__id, shader_ids[ii]);
+     }
+
+     OpenGL::glLinkProgram(__id);
+     OpenGL::glGetProgramiv(__id, GL_LINK_STATUS, &is_ok);
+     if ( !is_ok ) {
+          LOG_ERROR("%s: Error creating program", __FUNCTION__);
+          OpenGL::glDeleteProgram(__id);
+          __id = -1;
+          return;
+     }
+
+}
+
 int32_t Shader_GL::id( void )
 {
      return __id;
@@ -122,7 +179,7 @@ void Shader_GL::set_uniform_float4( int32_t location, float value_1, float value
 
 void Shader_GL::set_uniform_mat4( int32_t location, Matrix4f* matrix )
 {
-     OpenGL::glUniformMatrix4fv(location, 1, GL_FALSE, (float*)matrix);
+     OpenGL::glUniformMatrix4fv(location, 1, GL_FALSE, (float*)&matrix->x);
 }
 
 } // end namespace Engine

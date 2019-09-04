@@ -26,7 +26,7 @@ float32_t tan( float32_t radians )
      return tanf(radians);
 }
 
-Matrix4f translate( Vector3f vector )
+Matrix4f translate( const Vector3f& vector )
 {
      Matrix4f trans = Matrix4f::IDENTITY;
 
@@ -52,18 +52,18 @@ Matrix4f translate( Matrix4f matrix, Vector3f vector )
      return trans;
 }
 
-Matrix4f scale( Vector3f vector )
+Matrix4f scale( const Vector3f& vector )
 {
      Matrix4f scale = Matrix4f::IDENTITY;
 
-     scale[0][0] = vector.x;
-     scale[1][1] = vector.y;
-     scale[2][2] = vector.z;
+     scale[0][0] = vector.x == 0 ? 1 : vector.x;
+     scale[1][1] = vector.y == 0 ? 1 : vector.y;
+     scale[2][2] = vector.z == 0 ? 1 : vector.z;
 
      return scale;
 }
 
-Matrix4f rotation( Vector3f vector )
+Matrix4f rotation( const Vector3f& vector )
 {
      Matrix4f rot_x = Matrix4f::IDENTITY;
      float32_t x_rad = radians(vector.x);
@@ -139,6 +139,20 @@ Matrix4f orthographic_projection( float32_t width, float32_t height,
                       Vector4f(0.0f,    y_scale, 0.0f,    0.0f),
                       Vector4f(0.0f,    0.0f,    z_scale, 0.0f),
                       Vector4f(0.0f,    0.0f,    t_scale, 1.0f) );
+}
+
+Matrix4f model_transform( const Vector3f& position_vec,
+                          const Vector3f& scale_vec,
+                          const Vector3f& rotation_vec )
+{
+     return translate(position_vec) * rotation(rotation_vec) * scale(scale_vec);
+}
+
+Matrix4f view_transform( const Vector3f& position_vec,
+                         const Vector3f& scale_vec,
+                         const Vector3f& rotation_vec )
+{
+     return translate(position_vec) * rotation(rotation_vec) * scale(scale_vec);
 }
 
 };
