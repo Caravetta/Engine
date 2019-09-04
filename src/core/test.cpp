@@ -35,6 +35,16 @@ char frag[] = "                           \
                }\n                        \
               ";
 
+void gl_bind( void )
+{
+     LOG("JOSH in BIND");
+}
+
+struct Test_Buf {
+     int a;
+     void (*bind)( void );
+};
+
 struct Transform {
      COMPONENT_DECLARE( Transform );
 
@@ -62,6 +72,11 @@ static const GLfloat g_vertex_buffer_data[] = {
 };
 
 int main(int argc, char** argv) {
+
+     Test_Buf buf_test = {0, gl_bind};
+
+     buf_test.bind();
+
      Engine::Rc_t rc = Engine::engine_init();
      if ( rc != Engine::SUCCESS ) {
           LOG_ERROR("Failed to init engine rc=%d", rc);
@@ -73,8 +88,10 @@ int main(int argc, char** argv) {
      Engine::Shader test_shader({(Engine::Shader_GL_File){Engine::VERTEX_SHADER, "res/shader/chunk_vert_shader.glsl"},
                                  (Engine::Shader_GL_File){Engine::FRAGMENT_SHADER, "res/shader/chunk_frag_shader.glsl"}});
 #endif
-     Engine::Shader test_shader({(Engine::Shader_GL_String){Engine::VERTEX_SHADER, vert, sizeof(vert)},
-                                 (Engine::Shader_GL_String){Engine::FRAGMENT_SHADER, frag, sizeof(frag)}});
+     std::vector<Engine::Shader_GL_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
+                                                             {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
+
+     Engine::Shader test_shader(shader_strings);
 
      Engine::Entity entity = Engine::create_entity();
 
@@ -144,7 +161,7 @@ int main(int argc, char** argv) {
 
           Engine::Matrix4f model_transform = Engine::model_transform(Engine::Vector3f(0, 0, 50),
                                                                      Engine::Vector3f(10, 10, 0),
-                                                                     Engine::Vector3f(time*10, time*10, time*10));
+                                                                     Engine::Vector3f(time*40, time*40, time*40));
 
           Engine::Matrix4f mvp = ortho * view_transform * model_transform;
 

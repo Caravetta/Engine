@@ -95,11 +95,10 @@ Shader_GL::Shader_GL( std::vector<Shader_GL_String> strings )
      OpenGL::GLint is_ok;
      std::vector<OpenGL::GLuint> shader_ids;
      shader_ids.resize(strings.size());
-     LOG("size %zd", strings.size());
+
      for ( size_t ii = 0; ii < strings.size(); ii++ ) {
 
-          OpenGL::GLint length = strings[ii].length;
-          LOG("JOSH Length %d", length);
+          OpenGL::GLint length = (GLint)strings[ii].length;
           OpenGL::GLchar* source = (OpenGL::GLchar *)strings[ii].source;
           if ( source == NULL ) {
                __id = -1;
