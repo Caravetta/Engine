@@ -1,10 +1,11 @@
 #include <windows.h>
-#include <gl/gl.h>
+//#include <gl/gl.h>
 #include "window_win32.h"
-#include "opengl_win32.h"
+#include "platform_graphics.h"
+//#include "opengl_win32.h"
 
 namespace Engine {
-
+#if 0
 #define WGL_NUMBER_PIXEL_FORMATS_ARB      0x2000
 #define WGL_DRAW_TO_WINDOW_ARB            0x2001
 #define WGL_DRAW_TO_BITMAP_ARB            0x2002
@@ -65,7 +66,7 @@ namespace Engine {
 #define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
 #define WGL_CONTEXT_PROFILE_MASK_ARB      0x9126
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB  0x00000001
-
+#endif
 struct platform_window_t {
      int       width;
      int       height;
@@ -175,7 +176,8 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
      if ( window->hWnd == NULL ) {
           return NULL;
      }
-
+     #if 0
+//JOSH HERE
      int attributeListInt[30];
      int pixelFormat[1];
      unsigned int formatCount;
@@ -282,6 +284,13 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
           LOG_ERROR("Failed to set rendering context");
           return NULL;
      }
+//JOSH END
+     #endif
+
+     Rc_t rc = create_render_context(window);
+     if ( rc != SUCCESS ) {
+          return NULL;
+     }
 
      ShowWindow(window->hWnd, SW_SHOW);
      SetForegroundWindow(window->hWnd);
@@ -310,7 +319,7 @@ void platform_window_update( struct platform_window_t* platform_window )
 
 void platform_window_swap_buffers( struct platform_window_t* platform_window )
 {
-     SwapBuffers(platform_window->hDC);
+     swap_buffer(platform_window);
 }
 
 bool platform_window_is_closed( struct platform_window_t* platform_window )

@@ -35,16 +35,6 @@ char frag[] = "                           \
                }\n                        \
               ";
 
-void gl_bind( void )
-{
-     LOG("JOSH in BIND");
-}
-
-struct Test_Buf {
-     int a;
-     void (*bind)( void );
-};
-
 struct Transform {
      COMPONENT_DECLARE( Transform );
 
@@ -62,7 +52,7 @@ struct Mesh_Handle {
 COMPONENT_DEFINE( Mesh_Handle );
 
 
-static const GLfloat g_vertex_buffer_data[] = {
+static const float g_vertex_buffer_data[] = {
     -0.5f, -0.5f, 0.0f,
      0.5f, -0.5f, 0.0f,
      0.5f,  0.5f, 0.0f,
@@ -73,10 +63,6 @@ static const GLfloat g_vertex_buffer_data[] = {
 
 int main(int argc, char** argv) {
 
-     Test_Buf buf_test = {0, gl_bind};
-
-     buf_test.bind();
-
      Engine::Rc_t rc = Engine::engine_init();
      if ( rc != Engine::SUCCESS ) {
           LOG_ERROR("Failed to init engine rc=%d", rc);
@@ -84,12 +70,9 @@ int main(int argc, char** argv) {
      }
 
      Engine::Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Test");
-#if 0
-     Engine::Shader test_shader({(Engine::Shader_GL_File){Engine::VERTEX_SHADER, "res/shader/chunk_vert_shader.glsl"},
-                                 (Engine::Shader_GL_File){Engine::FRAGMENT_SHADER, "res/shader/chunk_frag_shader.glsl"}});
-#endif
-     std::vector<Engine::Shader_GL_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
-                                                             {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
+
+     std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
+                                                          {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
 
      Engine::Shader test_shader(shader_strings);
 
@@ -112,43 +95,40 @@ int main(int argc, char** argv) {
           LOG("MESH idx %zd = %" PRIu64 "", ii, mesh_handles[ii].handle);
      }
 
-     GLuint vertexArray_id;
-     Engine::OpenGL::glGenVertexArrays(1, &vertexArray_id);
-     Engine::OpenGL::glBindVertexArray(vertexArray_id);
+     uint32_t vertexArray_id = Engine::create_vertex_array();
+     Engine::bind_vertex_array(vertexArray_id);
 
-     GLuint vertexbuffer;
-     Engine::OpenGL::glGenBuffers(1, &vertexbuffer);
-     Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-     Engine::OpenGL::glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-     Engine::OpenGL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-     Engine::OpenGL::glEnableVertexAttribArray(0);
+     uint32_t vertexbuffer_id = Engine::create_vertex_buffer();
+     Engine::bind_vertex_buffer(vertexbuffer_id);
+     Engine::buffer_vertex_data((uint8_t*)g_vertex_buffer_data, sizeof(g_vertex_buffer_data));
+     Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+     Engine::enable_vertex_attrib(0);
 
-     GLuint vertexbuffer_1;
-     Engine::OpenGL::glGenBuffers(1, &vertexbuffer_1);
-     Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer_1);
-     Engine::OpenGL::glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-     Engine::OpenGL::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-     Engine::OpenGL::glEnableVertexAttribArray(0);
-     glClearColor(0.5f, 0.6f, 0.7f, 1.0f);
+     uint32_t vertexbuffer_id1 = Engine::create_vertex_buffer();
+     Engine::bind_vertex_buffer(vertexbuffer_id);
+     Engine::buffer_vertex_data((uint8_t*)g_vertex_buffer_data, sizeof(g_vertex_buffer_data));
+     Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+     Engine::enable_vertex_attrib(0);
 
-     //Engine::Matrix4f ortho = Engine::orthographic_projection(0, 600.0f, 0, 800.0f, -1, 1000);
      Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45), 800.0f/600.0f, 1.0f, 100.0f);
 
      auto t_start = std::chrono::high_resolution_clock::now();
 
-     glEnable(GL_DEPTH_TEST);
-     glDepthFunc(GL_LESS);
+     Engine::enable_graphics_option(Engine::DEPTH_TEST);
+     Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
+
+     Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
+     int32_t color_location = test_shader.uniform_id("color");
+     int32_t mvp_location = test_shader.uniform_id("mvp");
+
+     LOG("Shader Locations color:% " PRIi32 " mvp:% " PRIi32 "", color_location, mvp_location);
 
      while( window.is_closed() == false ) {
           window.update();
-          glViewport(0, 0, window.width(), window.height());
-          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+          Engine::set_view_port(0, 0, window.width(), window.height());
+          Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
-          Engine::OpenGL::glUseProgram(test_shader.id());
-
-          int32_t color_location = test_shader.uniform_id("color");
-          int32_t mvp_location = test_shader.uniform_id("mvp");
-
+          Engine::use_program(test_shader.id());
 
           test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
 
@@ -167,9 +147,9 @@ int main(int argc, char** argv) {
 
           test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
 
-          Engine::OpenGL::glEnableVertexAttribArray(0);
-          Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-          Engine::OpenGL::glDrawArrays(GL_TRIANGLES, 0, 6);
+          Engine::enable_vertex_attrib(0);
+          Engine::bind_vertex_buffer(vertexbuffer_id);
+          Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
 
           test_shader.set_uniform_float3(color_location, 0.7f, 0.7f, 0.7f);
 
@@ -180,9 +160,9 @@ int main(int argc, char** argv) {
 
           test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
 
-          Engine::OpenGL::glEnableVertexAttribArray(0);
-          Engine::OpenGL::glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer_1);
-          Engine::OpenGL::glDrawArrays(GL_TRIANGLES, 0, 6);
+          Engine::enable_vertex_attrib(0);
+          Engine::bind_vertex_buffer(vertexbuffer_id1);
+          Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
 
           window.swap_buffers();
      }

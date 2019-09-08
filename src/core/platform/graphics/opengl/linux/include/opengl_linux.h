@@ -53,10 +53,8 @@ extern glDisableVertexAttribArrayProc   glDisableVertexAttribArray;
 extern glVertexAttribPointerProc        glVertexAttribPointer;
 extern glDrawArraysProc                 glDrawArrays;
 extern glUseProgramProc                 glUseProgram;
-
 extern glGenVertexArraysProc            glGenVertexArrays;
 extern glBindVertexArrayProc            glBindVertexArray;
-
 extern glUniform1fProc                  glUniform1f;
 extern glUniform2fProc                  glUniform2f;
 extern glUniform3fProc                  glUniform3f;
@@ -67,6 +65,10 @@ extern glGetUniformLocationProc         glGetUniformLocation;
 Rc_t init_opengl( void );
 
 } // end namespace OpenGL
+
+Rc_t init_render_context( struct platform_window_t* window );
+void buffer_swap( struct platform_window_t* window );
+
 } // end namespace Engine
 
 #endif //__OPENGL_LINUX_H__
