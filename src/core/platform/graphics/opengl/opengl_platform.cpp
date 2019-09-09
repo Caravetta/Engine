@@ -1,9 +1,16 @@
 #include <vector>
 #include <string>
 #include "opengl_platform.h"
-#include "opengl_linux.h"
 #include "matrix4f.h"
 #include "shader_common.h"
+
+#ifdef WINDOWS
+     #include "opengl_win32.h"
+#elif LINUX
+     #include "opengl_linux.h"
+#else
+     #error
+#endif
 
 namespace Engine {
 

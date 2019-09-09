@@ -1,5 +1,20 @@
 add_subdirectory(platform/graphics/opengl)
 
+#Set Comp Flags
+set(CMAKE_CXX_FLAGS "${CXX_FLAGS_BASE}")
+
+if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
+     set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -Wall -Wno-unknown-pragmas -Wno-sign-compare -fPIC -Woverloaded-virtual -Wwrite-strings -Wno-unused")
+     set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3")
+     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLINUX -DOPENGL -lX11 -lGL -lGLU -ldl")
+
+elseif(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWINDOWS -D_CRT_SECURE_NO_WARNINGS")
+
+endif()
+
 set(engine_core_src
     data_structures/bit_field.cpp
     data_structures/handle.cpp
@@ -13,7 +28,6 @@ set(engine_core_src
     reflection/meta_struct.cpp
     reflection/meta_field.cpp
     reflection/reflection_system.cpp
-    platform/opengl/shader_gl.cpp
     platform/graphics/platform_graphics.cpp
     utils/crc32.cpp
     math/vector3f.cpp
@@ -81,7 +95,4 @@ add_custom_target(base_comp_gen
                  )
 
 add_dependencies(Engine-Core base_comp_gen)
-
-#file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-#file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/lib/include)
 

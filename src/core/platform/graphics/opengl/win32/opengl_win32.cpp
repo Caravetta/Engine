@@ -241,6 +241,16 @@ Rc_t init_opengl( void )
 
 } // end namespace OpenGL
 
+struct platform_window_t {
+     int       width;
+     int       height;
+     bool      is_closed;
+     HWND      hWnd;
+     HINSTANCE instance;
+     HDC       hDC;
+     HGLRC     hglrc;
+};
+
 Rc_t init_render_context( struct platform_window_t* window )
 {
      int attributeListInt[30];
@@ -254,7 +264,7 @@ Rc_t init_render_context( struct platform_window_t* window )
      window->hDC = GetDC(window->hWnd);
      if ( !window->hWnd ) {
           LOG_ERROR("Failed to get window context");
-          return NULL;
+          return ENGINE_ERROR;
      }
 
      // Support for OpenGL rendering.
@@ -308,14 +318,14 @@ Rc_t init_render_context( struct platform_window_t* window )
      result = OpenGL::wglChoosePixelFormatARB(window->hDC, attributeListInt, NULL, 1, pixelFormat, &formatCount);
      if ( result != 1 ) {
           LOG_ERROR("Failed to choose pixel format");
-          return NULL;
+          return ENGINE_ERROR;
      }
 
      // If the video card/display can handle our desired pixel format then we set it as the current one.
      result = SetPixelFormat(window->hDC, pixelFormat[0], &pixelFormatDescriptor);
      if ( result != 1 ) {
           LOG_ERROR("Failed to set pixel format");
-          return NULL;
+          return ENGINE_ERROR;
      }
 
      // Set the 4.0 version of OpenGL in the attribute list.
@@ -340,14 +350,14 @@ Rc_t init_render_context( struct platform_window_t* window )
      window->hglrc = OpenGL::wglCreateContextAttribsARB(window->hDC, 0, attribs);
      if ( window->hglrc == NULL ) {
           LOG_ERROR("Failed to get rendering context");
-          return NULL;
+          return ENGINE_ERROR;
      }
 
      // Set the rendering context to active.
      result = wglMakeCurrent(window->hDC, window->hglrc);
      if ( result != 1 ) {
           LOG_ERROR("Failed to set rendering context");
-          return NULL;
+          return ENGINE_ERROR;
      }
 
      return SUCCESS;
@@ -355,7 +365,7 @@ Rc_t init_render_context( struct platform_window_t* window )
 
 void buffer_swap( struct platform_window_t* window )
 {
-     SwapBuffers(platform_window->hDC);
+     SwapBuffers(window->hDC);
 }
 
 } // end namespace Engine

@@ -2,11 +2,7 @@
 #define __PLATFORM_GRAPHICS_COMMON_H__
 
 #ifdef WINDOWS
-     #ifdef ENGINE_EXPORT
-          #define GRAPHICS_API __declspec(dllexport)
-     #else
-          #define GRAPHICS_API __declspec(dllimport)
-     #endif
+     #define GRAPHICS_API __declspec(dllexport)
 
 #elif LINUX
      #define GRAPHICS_API __attribute__ ((visibility ("default")))

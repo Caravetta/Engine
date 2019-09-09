@@ -29,11 +29,28 @@ namespace Engine {
           }
 
 #elif WINDOWS
+     #include <windows.h>
 
-#define LOAD_LIB
+     #define LIB_HANDLE HINSTANCE
+     #define LIB_EXTENSION .dll
 
-#define LOAD_LIB_FUNC
+     #define LIB_NAME( lib, exten ) EXTEN_PASTE(lib, exten)
 
+     #define LOAD_LIB( lib )                                               \
+          handle = LoadLibrary(LIB_NAME(lib, LIB_EXTENSION));              \
+          if ( handle == NULL ) {                                          \
+               LOG("Failed to load lib %s", LIB_NAME(lib, LIB_EXTENSION)); \
+               return ENGINE_ERROR;                                        \
+          }
+
+     #define LOAD_LIB_FUNC( var )                           \
+          var = (var ## _proc)GetProcAddress(handle, #var); \
+          if ( var == NULL ) {                              \
+               LOG_ERROR("Failed to load " #var );          \
+          }
+
+#else
+     #error
 #endif
 
 init_graphics_platform_proc init_graphics_platform     = NULL;
@@ -66,7 +83,11 @@ draw_data_proc              draw_data                  = NULL;
 Rc_t load_graphics_api( Graphics_API graphics_api )
 {
      LIB_HANDLE handle;
+#ifdef LINUX
      LOAD_LIB("./libOpenGL");
+#elif WINDOWS
+     LOAD_LIB("./OpenGL");
+#endif
 
      LOAD_LIB_FUNC(init_graphics_platform);
      LOAD_LIB_FUNC(create_render_context);

@@ -121,8 +121,6 @@ int main(int argc, char** argv) {
      int32_t color_location = test_shader.uniform_id("color");
      int32_t mvp_location = test_shader.uniform_id("mvp");
 
-     LOG("Shader Locations color:% " PRIi32 " mvp:% " PRIi32 "", color_location, mvp_location);
-
      while( window.is_closed() == false ) {
           window.update();
           Engine::set_view_port(0, 0, window.width(), window.height());
@@ -141,7 +139,7 @@ int main(int argc, char** argv) {
 
           Engine::Matrix4f model_transform = Engine::model_transform(Engine::Vector3f(0, 0, 50),
                                                                      Engine::Vector3f(10, 10, 0),
-                                                                     Engine::Vector3f(time*40, time*40, time*40));
+                                                                     Engine::Vector3f(time*30, time*20, time*40));
 
           Engine::Matrix4f mvp = ortho * view_transform * model_transform;
 
