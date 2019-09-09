@@ -110,7 +110,10 @@ int main(int argc, char** argv) {
      Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
      Engine::enable_vertex_attrib(0);
 
-     Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45), 800.0f/600.0f, 1.0f, 100.0f);
+     Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45),
+                                                             (float)window.width()/(float)window.height(),
+                                                             1.0f,
+                                                             100.0f);
 
      auto t_start = std::chrono::high_resolution_clock::now();
 
@@ -153,7 +156,7 @@ int main(int argc, char** argv) {
 
           model_transform = Engine::model_transform(Engine::Vector3f(0, 0, 70),
                                                     Engine::Vector3f(20, 20, 0),
-                                                    Engine::Vector3f(0, 0, 0));
+                                                    Engine::Vector3f(time*10, time*10, time*10));
           mvp = ortho * view_transform * model_transform;
 
           test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
