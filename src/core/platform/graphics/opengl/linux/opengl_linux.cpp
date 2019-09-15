@@ -41,6 +41,16 @@ glUniform4fProc                    glUniform4f                   = NULL;
 glUniformMatrix4fvProc             glUniformMatrix4fv            = NULL;
 glGetUniformLocationProc           glGetUniformLocation          = NULL;
 
+glGenFramebuffersProc                 glGenFramebuffers          = NULL;
+glBindFramebufferProc                 glBindFramebuffer          = NULL;
+glCheckNamedFramebufferStatusProc     glCheckNamedFramebufferStatus   = NULL;
+glDeleteFramebuffersProc              glDeleteFramebuffers            = NULL;
+glGenTexturesProc                     glGenTextures                   = NULL;
+glBindTextureProc                     glBindTexture                   = NULL;
+glTexImage2DProc                      glTexImage2D                    = NULL;
+glTexParameteriProc                   glTexParameteri                 = NULL;
+glFramebufferTexture2DProc            glFramebufferTexture2D          = NULL;
+
 Rc_t init_opengl( void )
 {
      //OPENGL_LOAD(glGenVertexArrays, glGenVertexArraysProc);
@@ -70,6 +80,17 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glUniform4f, glUniform4fProc);
      OPENGL_LOAD(glUniformMatrix4fv, glUniformMatrix4fvProc);
      OPENGL_LOAD(glGetUniformLocation, glGetUniformLocationProc);
+     OPENGL_LOAD(glGenFramebuffers, glGenFramebuffersProc);
+     OPENGL_LOAD(glBindFramebuffer, glBindFramebufferProc);
+     OPENGL_LOAD(glCheckNamedFramebufferStatus, glCheckNamedFramebufferStatusProc);
+     OPENGL_LOAD(glDeleteFramebuffers, glDeleteFramebuffersProc);
+     OPENGL_LOAD(glGenTextures, glGenTexturesProc);
+     OPENGL_LOAD(glBindTexture, glBindTextureProc);
+     OPENGL_LOAD(glTexImage2D, glTexImage2DProc);
+     OPENGL_LOAD(glTexParameteri, glTexParameteriProc);
+     OPENGL_LOAD(glFramebufferTexture2D, glFramebufferTexture2DProc);
+
+
 
      return SUCCESS;
 }
