@@ -24,24 +24,14 @@ char vert[] = "                                                                 
 
 char frag[] = "                           \
                #version 330 core\n        \
-                                          \
-               out vec3 color_out;\n      \
+                out vec3 color_out;\n      \
                                           \
                uniform vec3 color;\n      \
-                                          \
                void main()\n              \
                {\n                        \
-                    color_out = color;\n  \
+                   color_out = color;\n  \
                }\n                        \
               ";
-
-struct Transform {
-     COMPONENT_DECLARE( Transform );
-
-     Engine::Vector3f position;
-};
-
-COMPONENT_DEFINE( Transform );
 
 struct Mesh_Handle {
      COMPONENT_DECLARE( Mesh_Handle );
@@ -51,6 +41,12 @@ struct Mesh_Handle {
 
 COMPONENT_DEFINE( Mesh_Handle );
 
+float RandomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
 
 static const float g_vertex_buffer_data[] = {
     -0.5f, -0.5f, 0.0f,
@@ -78,10 +74,10 @@ int main(int argc, char** argv) {
 
      Engine::Entity entity = Engine::create_entity();
 
-     Engine::add_components(entity, {Engine::component_id<Transform>(),
+     Engine::add_components(entity, {Engine::component_id<Engine::Transform>(),
                                      Engine::component_id<Mesh_Handle>()});
 
-     Engine::Entity_Group group({Engine::component_id<Transform>(),
+     Engine::Entity_Group group({Engine::component_id<Engine::Transform>(),
                                  Engine::component_id<Mesh_Handle>()});
 
      Engine::Component_Data_Array<Mesh_Handle> mesh_handles(group);
@@ -109,7 +105,6 @@ int main(int argc, char** argv) {
      Engine::buffer_vertex_data((uint8_t*)g_vertex_buffer_data, sizeof(g_vertex_buffer_data));
      Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
      Engine::enable_vertex_attrib(0);
-
      Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45),
                                                              (float)window.width()/(float)window.height(),
                                                              1.0f,
@@ -124,8 +119,26 @@ int main(int argc, char** argv) {
      int32_t color_location = test_shader.uniform_id("color");
      int32_t mvp_location = test_shader.uniform_id("mvp");
 
+     //Engine::Fbo_Handle fbo = Engine::create_fbo( true );
+     //LOG("JOSH FBO IN TEST %" PRIu64 "", fbo);
+     Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
+
+     #define ENTS 10
+
+     Engine::Transform transforms[ENTS];
+
+     for ( size_t ii = 0; ii < ENTS; ii++ ) {
+          transforms[ii].position = Engine::Vector3f(RandomFloat(-2, 2), RandomFloat(-2, 2), RandomFloat(4, 10));
+          transforms[ii].scale = Engine::Vector3f(0.1, 0.1, 0);
+          transforms[ii].rotation = Engine::Vector3f(70, 0, 0);
+     }
+
+     Engine::Vector3f cam_pos(0, 0, 0);
+     Engine::Vector3f cam_rot(0, 0, 0);
+
      while( window.is_closed() == false ) {
           window.update();
+          //Engine::bind_fbo(fbo);
           Engine::set_view_port(0, 0, window.width(), window.height());
           Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
@@ -133,38 +146,58 @@ int main(int argc, char** argv) {
 
           test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
 
-          Engine::Matrix4f view_transform = Engine::view_transform(Engine::Vector3f(0, 0, 0),
+          if ( Engine::is_key_pressed(Engine::W_KEY) ) {
+               cam_pos.z -= 0.1;
+          } else if ( Engine::is_key_pressed(Engine::S_KEY) ) {
+               cam_pos.z += 0.1;
+          }
+
+          if ( Engine::is_key_pressed(Engine::A_KEY) ) {
+               cam_rot.y += 1;
+          } else if ( Engine::is_key_pressed(Engine::D_KEY) ) {
+               cam_rot.y -= 1;
+          }
+
+          Engine::Matrix4f view_transform = Engine::view_transform(cam_pos,
                                                                    Engine::Vector3f(0, 0, 0),
-                                                                   Engine::Vector3f(0, 0, 0));
+                                                                   cam_rot);
 
           auto t_now = std::chrono::high_resolution_clock::now();
           float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
 
-          Engine::Matrix4f model_transform = Engine::model_transform(Engine::Vector3f(0, 0, 50),
-                                                                     Engine::Vector3f(10, 10, 0),
-                                                                     Engine::Vector3f(time*30, time*20, time*40));
+          //Engine::use_program(-1);
 
-          Engine::Matrix4f mvp = ortho * view_transform * model_transform;
+          for ( size_t ii = 0; ii < ENTS; ii++ ) {
+               //transforms[ii].rotation = Engine::Vector3f(time*30, time*20, time*40);
+               Engine::Matrix4f model_transform = Engine::model_transform(transforms[ii].position,
+                                                                          transforms[ii].scale,
+                                                                          transforms[ii].rotation);
 
-          test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
+               Engine::Matrix4f mvp = ortho * view_transform * model_transform;
+               test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
+               Engine::enable_vertex_attrib(0);
+               Engine::bind_vertex_buffer(vertexbuffer_id);
+               Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
+          }
+#if 0
+          Engine::use_program(-2);
+          Engine::use_program(test_shader.id());
 
-          Engine::enable_vertex_attrib(0);
-          Engine::bind_vertex_buffer(vertexbuffer_id);
-          Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
+          test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
 
-          test_shader.set_uniform_float3(color_location, 0.7f, 0.7f, 0.7f);
+          for ( size_t ii = 0; ii < ENTS; ii++ ) {
+               //transforms[ii].rotation = Engine::Vector3f(time*30, time*20, time*40);
+               Engine::Matrix4f model_transform = Engine::model_transform(transforms[ii].position,
+                                                                          transforms[ii].scale,
+                                                                          transforms[ii].rotation);
 
-          model_transform = Engine::model_transform(Engine::Vector3f(0, 0, 70),
-                                                    Engine::Vector3f(20, 20, 0),
-                                                    Engine::Vector3f(time*10, time*10, time*10));
-          mvp = ortho * view_transform * model_transform;
-
-          test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
-
-          Engine::enable_vertex_attrib(0);
-          Engine::bind_vertex_buffer(vertexbuffer_id1);
-          Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
-
+               Engine::Matrix4f mvp = ortho * view_transform * model_transform;
+               test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
+               Engine::enable_vertex_attrib(0);
+               Engine::bind_vertex_buffer(vertexbuffer_id);
+               Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
+          }
+#endif
           window.swap_buffers();
      }
 }

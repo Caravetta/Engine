@@ -15,6 +15,11 @@ Rc_t init_ecs( void )
           LOG_ERROR("Failed to initiate component system");
      }
 
+     rc = init_system_systems();
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to initiate system system");
+     }
+
      rc = init_component_data_system();
      if ( rc != SUCCESS ) {
           LOG_ERROR("Failed to initiate component data system");

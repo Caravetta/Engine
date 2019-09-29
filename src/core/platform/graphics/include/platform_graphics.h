@@ -30,6 +30,10 @@ typedef void (*bind_vertex_buffer_proc) ( uint32_t buffer_id );
 typedef void (*buffer_vertex_data_proc) ( uint8_t* data, size_t size );
 typedef void (*define_vertex_attrib_proc) ( uint32_t index, size_t size, Data_Type type, size_t stride, uint8_t* data );
 typedef void (*enable_vertex_attrib_proc) ( uint32_t index );
+typedef Fbo_Handle (*create_fbo_proc) ( bool add_depth );
+typedef void (*delete_fbo_proc) ( Fbo_Handle fbo );
+typedef void (*bind_fbo_proc) ( Fbo_Handle fbo );
+typedef void (*unbind_fbo_proc) ( void );
 typedef void (*draw_data_proc) ( Draw_Mode mode, int first, size_t count );
 
 extern init_graphics_platform_proc init_graphics_platform;
@@ -56,6 +60,10 @@ extern bind_vertex_buffer_proc     bind_vertex_buffer;
 extern buffer_vertex_data_proc     buffer_vertex_data;
 extern define_vertex_attrib_proc   define_vertex_attrib;
 extern enable_vertex_attrib_proc   enable_vertex_attrib;
+extern create_fbo_proc             create_fbo;
+extern delete_fbo_proc             delete_fbo;
+extern bind_fbo_proc               bind_fbo;
+extern unbind_fbo_proc             unbind_fbo;
 extern draw_data_proc              draw_data;
 
 enum Graphics_API {

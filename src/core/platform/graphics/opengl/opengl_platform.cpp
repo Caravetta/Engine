@@ -30,10 +30,6 @@ GLenum options_array[] = {
      GL_DEPTH_TEST,
 };
 
-unsigned int framebuffer;
-unsigned int texColorBuffer;
-unsigned int texDepth;
-
 extern "C" Rc_t init_graphics_platform( void )
 {
      return OpenGL::init_opengl();
@@ -51,20 +47,6 @@ extern "C" void swap_buffer( struct platform_window_t* window )
 
 extern "C" void set_clear_color( float r, float g, float b, float a )
 {
-#if 0
-     OpenGL::glGenFramebuffers(1, &framebuffer);
-     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-     OpenGL::glGenTextures(1, &texColorBuffer);
-     OpenGL::glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-     OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-     OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-     OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
-     // attach it to currently bound framebuffer object
-     OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
-#endif
-
      glClearColor(r, g, b, a);
 }
 
@@ -161,7 +143,19 @@ extern "C" int32_t create_program_string( uint8_t* strings )
 
 extern "C" void use_program( int32_t program_id )
 {
-     OpenGL::glUseProgram(program_id);
+     if ( program_id == -1 ) {
+          glColorMask(false, false, false, false);
+          glDepthMask(GL_TRUE);
+          glDepthFunc(GL_LESS);
+          glEnable(GL_DEPTH_TEST);
+          glClear(GL_DEPTH_BUFFER_BIT);
+     } else if ( program_id == -2 ) {
+
+          glColorMask(true, true, true, true);
+          glClear(GL_COLOR_BUFFER_BIT);
+     } else {
+          OpenGL::glUseProgram(program_id);
+     }
 }
 
 extern "C" int32_t fetch_uniform_id( int32_t program_id, uint8_t* name )
@@ -224,7 +218,8 @@ extern "C" void buffer_vertex_data( uint8_t* data, size_t size )
      OpenGL::glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }
 
-extern "C" void define_vertex_attrib( uint32_t index, size_t size, Data_Type type, size_t stride, uint8_t* data )
+extern "C" void define_vertex_attrib( uint32_t index, size_t size,
+                                      Data_Type type, size_t stride, uint8_t* data )
 {
      OpenGL::glVertexAttribPointer(index, size, type_array[type], GL_FALSE, stride, (void*)data);
 }
@@ -232,6 +227,73 @@ extern "C" void define_vertex_attrib( uint32_t index, size_t size, Data_Type typ
 extern "C" void enable_vertex_attrib( uint32_t index )
 {
      OpenGL::glEnableVertexAttribArray(index);
+}
+
+struct Fbo_Data {
+     unsigned int framebuffer;
+     unsigned int texColorBuffer;
+     unsigned int texDepth;
+};
+
+extern "C" Fbo_Handle create_fbo( bool add_depth )
+{
+     Fbo_Data* data = new (std::nothrow) Fbo_Data;
+     if ( data == NULL ) {
+          LOG_ERROR("Failed to allocate memory for FBO");
+          return INVALID_FBO_HANDLE;
+     }
+
+     OpenGL::glGenFramebuffers(1, &data->framebuffer);
+     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, data->framebuffer);
+
+     OpenGL::glGenTextures(1, &data->texColorBuffer);
+     OpenGL::glBindTexture(GL_TEXTURE_2D, data->texColorBuffer);
+     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600,
+                          0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+     OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+     OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+     OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
+
+     OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                    GL_TEXTURE_2D, data->texColorBuffer, 0);
+
+     if ( add_depth ) {
+          OpenGL::glGenTextures(1, &data->texDepth);
+          OpenGL::glBindTexture(GL_TEXTURE_2D, data->texDepth);
+          OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 800, 600,
+                               0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+          OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
+          OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                         GL_TEXTURE_2D, data->texDepth, 0);
+     }
+
+     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+     return (uint64_t)data;
+}
+
+extern "C" void delete_fbo( Fbo_Handle fbo )
+{
+
+}
+
+extern "C" void bind_fbo( Fbo_Handle fbo )
+{
+     Fbo_Data* data = (Fbo_Data*)fbo;
+     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, data->framebuffer);
+     //glBlendFunc(GL_ONE, GL_ONE);
+     glColorMask(false, false, false, false);
+     glDepthMask(GL_TRUE);
+     glDepthFunc(GL_LESS);
+     glEnable(GL_DEPTH_TEST);
+     glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+extern "C" void unbind_fbo( void )
+{
+     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 extern "C" void draw_data( Draw_Mode mode, int first, size_t count )

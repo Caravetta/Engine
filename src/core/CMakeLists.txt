@@ -24,6 +24,8 @@ set(engine_core_src
     ecs/component.cpp
     ecs/component_data.cpp
     ecs/component_data_array.cpp
+    ecs/default_components.cpp
+    ecs/system.cpp
     reflection/meta_base.cpp
     reflection/meta_struct.cpp
     reflection/meta_field.cpp
@@ -33,6 +35,7 @@ set(engine_core_src
     math/vector3f.cpp
     math/vector4f.cpp
     math/matrix4f.cpp
+    input/key_input.cpp
     graphics/window.cpp
     graphics/shader.cpp
     memory/page_allocator.cpp
@@ -41,6 +44,7 @@ set(engine_core_src
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 set(engine_core_linux_src
+    platform/linux/input_linux.cpp
     platform/linux/window_linux.cpp)
 
 add_executable(Engine-Core ${engine_core_src} ${engine_core_linux_src})
@@ -65,6 +69,7 @@ target_include_directories(Engine-Core PUBLIC
                            platform/opengl/include
                            platform/opengl/include
                            platform/graphics/include
+                           input/include
                            graphics/include
                            ../libs/glm/glm
                            ../libs/glm/glm/detail

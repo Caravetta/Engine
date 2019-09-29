@@ -77,6 +77,10 @@ bind_vertex_buffer_proc     bind_vertex_buffer         = NULL;
 buffer_vertex_data_proc     buffer_vertex_data         = NULL;
 define_vertex_attrib_proc   define_vertex_attrib       = NULL;
 enable_vertex_attrib_proc   enable_vertex_attrib       = NULL;
+create_fbo_proc             create_fbo                 = NULL;
+delete_fbo_proc             delete_fbo                 = NULL;
+bind_fbo_proc               bind_fbo                   = NULL;
+unbind_fbo_proc             unbind_fbo                 = NULL;
 draw_data_proc              draw_data                  = NULL;
 
 
@@ -113,6 +117,10 @@ Rc_t load_graphics_api( Graphics_API graphics_api )
      LOAD_LIB_FUNC(buffer_vertex_data);
      LOAD_LIB_FUNC(define_vertex_attrib);
      LOAD_LIB_FUNC(enable_vertex_attrib);
+     LOAD_LIB_FUNC(create_fbo);
+     LOAD_LIB_FUNC(delete_fbo);
+     LOAD_LIB_FUNC(bind_fbo);
+     LOAD_LIB_FUNC(unbind_fbo);
      LOAD_LIB_FUNC(draw_data);
 
      init_graphics_platform();

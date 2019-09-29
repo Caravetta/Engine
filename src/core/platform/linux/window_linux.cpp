@@ -1,11 +1,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysymdef.h>
-//#include <GL/gl.h>
-//#include <GL/glx.h>
 #include <cstring>
 #include "window_linux.h"
 #include "platform_graphics.h"
+#include "input_linux.h"
 
 namespace Engine {
 
@@ -31,6 +30,8 @@ static bool __is_extension_supported(const char *ext_list, const char *extension
 
 struct platform_window_t* platform_window_create( int width, int height, std::string title )
 {
+     LOG("NUM KEYS %d", PLATFORM_KEY_COUNT);
+
      platform_window_t* window = new platform_window_t;
 
      window->width = width;
@@ -54,6 +55,8 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
           return NULL;
      }
 
+     XSelectInput(window->display, window->window, KeyPressMask | KeyReleaseMask );
+
      // show the window
      XClearWindow(window->display, window->window);
      XMapRaised(window->display, window->window);
@@ -65,7 +68,6 @@ void platform_window_update( struct platform_window_t* platform_window )
 {
      if (XPending(platform_window->display) > 0) {
           XEvent ev;
-
           XNextEvent(platform_window->display, &ev);
           if ( ev.type == Expose ) {
                XWindowAttributes attributes;
@@ -79,6 +81,14 @@ void platform_window_update( struct platform_window_t* platform_window )
                }
           } else if ( ev.type == DestroyNotify ) {
                platform_window->is_closed = true;
+          } else if ( ev.type == KeyPress ) {
+               if ( ev.xkey.keycode < Platform_Key::PLATFORM_KEY_COUNT ) {
+                    key_state[ev.xkey.keycode] = true;
+               }
+          } else if ( ev.type == KeyRelease ) {
+               if ( ev.xkey.keycode < Platform_Key::PLATFORM_KEY_COUNT ) {
+                    key_state[ev.xkey.keycode] = false;
+               }
           }
      }
 }

@@ -36,6 +36,11 @@ extern "C" GRAPHICS_API void buffer_vertex_data( uint8_t* data, size_t size );
 extern "C" GRAPHICS_API void define_vertex_attrib( uint32_t index, size_t size, Data_Type type, size_t stride, uint8_t* data );
 extern "C" GRAPHICS_API void enable_vertex_attrib( uint32_t index );
 
+extern "C" GRAPHICS_API Fbo_Handle create_fbo( bool add_depth );
+extern "C" GRAPHICS_API void delete_fbo( Fbo_Handle fbo );
+extern "C" GRAPHICS_API void bind_fbo( Fbo_Handle fbo );
+extern "C" GRAPHICS_API void unbind_fbo( void );
+
 extern "C" GRAPHICS_API void draw_data( Draw_Mode mode, int first, size_t count );
 
 } // end namespace Engine
