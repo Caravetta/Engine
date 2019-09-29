@@ -40,6 +40,18 @@ typedef void (APIENTRY * PFNGLUNIFORM4FPROC) ( GLint location, GLfloat v0, GLflo
 typedef void (APIENTRY * PFNGLUNIFORMMATRIX4FVPROC) ( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
 typedef GLint (APIENTRY * PFNGLGETUNIFORMLOCATIONPROC) ( GLuint program, const GLchar* name );
 
+typedef void (APIENTRY * PFNGLGENFRAMEBUFFERSPROC) ( GLsizei n, GLuint* ids );
+typedef void (APIENTRY * PFNGLBINDFRAMEBUFFERPROC) ( GLenum target, GLuint framebuffer );
+typedef GLenum (APIENTRY * PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC) ( GLuint framebuffer, GLenum target );
+typedef void (APIENTRY * PFNGLDELETEFRAMEBUFFERSPROC) ( GLsizei n, GLuint* framebuffers );
+typedef void (APIENTRY * PFNGLGENTEXTURESPROC) ( GLsizei n, GLuint* textures );
+typedef void (APIENTRY * PFNGLBINDTEXTUREPROC) ( GLenum target, GLuint texture );
+typedef void (APIENTRY * PFNGLTEXIMAGE2DPROC) ( GLenum target, GLint level, GLint internalformat,
+                                                GLsizei width, GLsizei height, GLint border,
+                                                 GLenum format, GLenum type, const GLvoid* data );
+typedef void (APIENTRY * PFNGLTEXPARAMETERIPROC) ( GLenum target, GLenum pname, GLint param );
+typedef void (APIENTRY * PFNGLFRAMEBUFFERTEXTURE2DPROC) ( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
+
 
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC     wglCreateContextAttribsARB;
 extern PFNWGLCHOOSEPIXELFORMATARBPROC        wglChoosePixelFormatARB;
@@ -53,7 +65,6 @@ extern PFNGLATTACHSHADERPROC                 glAttachShader;
 extern PFNGLLINKPROGRAMPROC                  glLinkProgram;
 extern PFNGLGETPROGRAMIVPROC                 glGetProgramiv;
 extern PFNGLDELETEPROGRAMPROC                glDeleteProgram;
-
 extern PFNGLGENBUFFERSPROC                   glGenBuffers;
 extern PFNGLBINDBUFFERPROC                   glBindBuffer;
 extern PFNGLBUFFERDATAPROC                   glBufferData;
@@ -62,7 +73,6 @@ extern PFNGLDISABLEVERTEXATTRIBARRAYPROC     glDisableVertexAttribArray;
 extern PFNGLVERTEXATTRIBPOINTERPROC          glVertexAttribPointer;
 extern PFNGLDRAWARRAYSPROC                   glDrawArrays;
 extern PFNGLUSEPROGRAMPROC                   glUseProgram;
-
 extern PFNGLGENVERTEXARRAYPROC               glGenVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC              glBindVertexArray;
 extern PFNGLUNIFORM1FPROC                    glUniform1f;
@@ -71,6 +81,14 @@ extern PFNGLUNIFORM3FPROC                    glUniform3f;
 extern PFNGLUNIFORM4FPROC                    glUniform4f;
 extern PFNGLUNIFORMMATRIX4FVPROC             glUniformMatrix4fv;
 extern PFNGLGETUNIFORMLOCATIONPROC           glGetUniformLocation;
+
+extern PFNGLGENFRAMEBUFFERSPROC              glGenFramebuffers;
+extern PFNGLBINDFRAMEBUFFERPROC              glBindFramebuffer;
+extern PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC  glCheckNamedFramebufferStatus;
+extern PFNGLDELETEFRAMEBUFFERSPROC           glDeleteFramebuffers;
+extern PFNGLGENTEXTURESPROC                  glGenTextures;
+extern PFNGLBINDTEXTUREPROC                  glBindTexture;
+extern PFNGLFRAMEBUFFERTEXTURE2DPROC         glFramebufferTexture2D;
 
 Rc_t init_opengl( void );
 
