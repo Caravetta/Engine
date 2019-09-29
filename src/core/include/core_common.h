@@ -16,12 +16,16 @@ namespace Engine {
           #define ENGINE_API __declspec(dllimport)
      #endif
 
+     #define GAME_API __declspec(dllexport)
+
      #define ALIGN_PRE( ALIGNMENT ) __declspec( align( ALIGNMENT ) )
      #define ALIGN_POST( ALIGNMENT )
 
      #define FORCE_INLINE __forceinline
 #elif LINUX
      #define ENGINE_API __attribute__ ((visibility ("default")))
+
+     #define GAME_API __attribute__ ((visibility ("default")))
 
      #define ALIGN_PRE( ALIGNMENT )
      #define ALIGN_POST( ALIGNMENT ) __attribute__( ( aligned( ALIGNMENT ) ) )

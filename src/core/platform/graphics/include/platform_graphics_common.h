@@ -34,6 +34,9 @@ enum Depth_Func {
      DEPTH_LESS_FUNC = 0,
 };
 
+#define INVALID_FBO_HANDLE 0
+typedef uint64_t Fbo_Handle;
+
 } // end namespace Engine
 
 #endif
