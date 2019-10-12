@@ -60,11 +60,13 @@ set_clear_color_proc        set_clear_color            = NULL;
 graphics_clear_proc         graphics_clear             = NULL;
 set_view_port_proc          set_view_port              = NULL;
 enable_graphics_option_proc enable_graphics_option     = NULL;
+disable_graphics_option_proc disable_graphics_option   = NULL;
 set_depth_func_proc         set_depth_func             = NULL;
 create_program_file_proc    create_program_file        = NULL;
 create_program_string_proc  create_program_string      = NULL;
 use_program_proc            use_program                = NULL;
 fetch_uniform_id_proc       fetch_uniform_id           = NULL;
+upload_uniform_int1_proc    upload_uniform_int1        = NULL;
 upload_uniform_float1_proc  upload_uniform_float1      = NULL;
 upload_uniform_float2_proc  upload_uniform_float2      = NULL;
 upload_uniform_float3_proc  upload_uniform_float3      = NULL;
@@ -78,10 +80,13 @@ buffer_vertex_data_proc     buffer_vertex_data         = NULL;
 define_vertex_attrib_proc   define_vertex_attrib       = NULL;
 enable_vertex_attrib_proc   enable_vertex_attrib       = NULL;
 create_fbo_proc             create_fbo                 = NULL;
+set_fbo_color_texture_proc  set_fbo_color_texture      = NULL;
 delete_fbo_proc             delete_fbo                 = NULL;
 bind_fbo_proc               bind_fbo                   = NULL;
 unbind_fbo_proc             unbind_fbo                 = NULL;
+bind_texture_proc           bind_texture               = NULL;
 draw_data_proc              draw_data                  = NULL;
+create_texture_proc         create_texture             = NULL;
 
 
 Rc_t load_graphics_api( Graphics_API graphics_api )
@@ -99,12 +104,14 @@ Rc_t load_graphics_api( Graphics_API graphics_api )
      LOAD_LIB_FUNC(set_clear_color);
      LOAD_LIB_FUNC(graphics_clear);
      LOAD_LIB_FUNC(enable_graphics_option);
+     LOAD_LIB_FUNC(disable_graphics_option);
      LOAD_LIB_FUNC(set_depth_func);
      LOAD_LIB_FUNC(set_view_port);
      LOAD_LIB_FUNC(create_program_file);
      LOAD_LIB_FUNC(create_program_string);
      LOAD_LIB_FUNC(use_program);
      LOAD_LIB_FUNC(fetch_uniform_id);
+     LOAD_LIB_FUNC(upload_uniform_int1);
      LOAD_LIB_FUNC(upload_uniform_float1);
      LOAD_LIB_FUNC(upload_uniform_float2);
      LOAD_LIB_FUNC(upload_uniform_float3);
@@ -118,10 +125,13 @@ Rc_t load_graphics_api( Graphics_API graphics_api )
      LOAD_LIB_FUNC(define_vertex_attrib);
      LOAD_LIB_FUNC(enable_vertex_attrib);
      LOAD_LIB_FUNC(create_fbo);
+     LOAD_LIB_FUNC(set_fbo_color_texture);
      LOAD_LIB_FUNC(delete_fbo);
      LOAD_LIB_FUNC(bind_fbo);
      LOAD_LIB_FUNC(unbind_fbo);
+     LOAD_LIB_FUNC(bind_texture);
      LOAD_LIB_FUNC(draw_data);
+     LOAD_LIB_FUNC(create_texture);
 
      init_graphics_platform();
 

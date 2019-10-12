@@ -84,6 +84,11 @@ extern "C" void enable_graphics_option( Graphics_Option option )
      glEnable(options_array[option]);
 }
 
+extern "C" void disable_graphics_option( Graphics_Option option )
+{
+     glDisable(options_array[option]);
+}
+
 extern "C" void set_depth_func( Depth_Func type )
 {
      glDepthFunc(depth_func_array[type]);
@@ -130,6 +135,11 @@ extern "C" int32_t create_program_string( uint8_t* strings )
           OpenGL::glGetShaderiv(shader_ids[ii], GL_COMPILE_STATUS, &is_ok);
           if ( !is_ok ) {
                LOG_ERROR("%s: Failed to load shader", __FUNCTION__);
+               GLint maxLength = 0;
+	          OpenGL::glGetShaderiv(shader_ids[ii], GL_INFO_LOG_LENGTH, &maxLength);
+               std::vector<char> errorLog(maxLength);
+               OpenGL::glGetShaderInfoLog(shader_ids[ii], maxLength, &maxLength, &errorLog[0]);
+               LOG("%s", (char*)errorLog.data());
                //TODO(JOSH): need tp clean up other shaders that where created
                OpenGL::glDeleteShader(shader_ids[ii]);
                id = -1;
@@ -157,24 +167,22 @@ extern "C" int32_t create_program_string( uint8_t* strings )
 
 extern "C" void use_program( int32_t program_id )
 {
-     if ( program_id == -1 ) {
-          glColorMask(false, false, false, false);
-          glDepthMask(GL_TRUE);
-          glDepthFunc(GL_LESS);
-          glEnable(GL_DEPTH_TEST);
-          glClear(GL_DEPTH_BUFFER_BIT);
-     } else if ( program_id == -2 ) {
-
-          glColorMask(true, true, true, true);
-          glClear(GL_COLOR_BUFFER_BIT);
-     } else {
-          OpenGL::glUseProgram(program_id);
-     }
+          //glColorMask(false, false, false, false);
+          //glDepthMask(GL_TRUE);
+          //glDepthFunc(GL_LESS);
+          //glEnable(GL_DEPTH_TEST);
+          //glClear(GL_DEPTH_BUFFER_BIT);
+     OpenGL::glUseProgram(program_id);
 }
 
 extern "C" int32_t fetch_uniform_id( int32_t program_id, uint8_t* name )
 {
      return OpenGL::glGetUniformLocation(program_id, ((std::string*)name)->c_str());;
+}
+
+extern "C" void upload_uniform_int1( int32_t location, int value )
+{
+     OpenGL::glUniform1i(location, value);
 }
 
 extern "C" void upload_uniform_float1( int32_t location, float value )
@@ -243,26 +251,31 @@ extern "C" void enable_vertex_attrib( uint32_t index )
      OpenGL::glEnableVertexAttribArray(index);
 }
 
-struct Fbo_Data {
-     unsigned int framebuffer;
-     unsigned int texColorBuffer;
-     unsigned int texDepth;
-};
-
-extern "C" Fbo_Handle create_fbo( bool add_depth )
+extern "C" Texture_Handle create_texture( int width, int height )
 {
-     Fbo_Data* data = new (std::nothrow) Fbo_Data;
-     if ( data == NULL ) {
-          LOG_ERROR("Failed to allocate memory for FBO");
-          return INVALID_FBO_HANDLE;
-     }
+     Texture_Handle handle;
 
-     OpenGL::glGenFramebuffers(1, &data->framebuffer);
+     OpenGL::glGenTextures(1, &handle);
+     OpenGL::glBindTexture(GL_TEXTURE_2D, handle);
+     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+                          0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+     OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+     OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+     OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
+
+     return handle;
+}
+
+extern "C" Fbo_Handle create_fbo( void )
+{
+     Fbo_Handle handle;
+
+     OpenGL::glGenFramebuffers(1, (unsigned int*)&handle);
+#if 0
      OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, data->framebuffer);
-
      OpenGL::glGenTextures(1, &data->texColorBuffer);
      OpenGL::glBindTexture(GL_TEXTURE_2D, data->texColorBuffer);
-     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600,
+     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                           0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -274,7 +287,7 @@ extern "C" Fbo_Handle create_fbo( bool add_depth )
      if ( add_depth ) {
           OpenGL::glGenTextures(1, &data->texDepth);
           OpenGL::glBindTexture(GL_TEXTURE_2D, data->texDepth);
-          OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 800, 600,
+          OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height,
                                0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -284,8 +297,14 @@ extern "C" Fbo_Handle create_fbo( bool add_depth )
      }
 
      OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
+     return handle;
+}
 
-     return (uint64_t)data;
+extern "C" void set_fbo_color_texture( int color_texture )
+{
+     OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                    GL_TEXTURE_2D, color_texture, 0);
 }
 
 extern "C" void delete_fbo( Fbo_Handle fbo )
@@ -295,20 +314,19 @@ extern "C" void delete_fbo( Fbo_Handle fbo )
 
 extern "C" void bind_fbo( Fbo_Handle fbo )
 {
-     Fbo_Data* data = (Fbo_Data*)fbo;
-     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, data->framebuffer);
-     //glBlendFunc(GL_ONE, GL_ONE);
-     glColorMask(false, false, false, false);
-     glDepthMask(GL_TRUE);
-     glDepthFunc(GL_LESS);
-     glEnable(GL_DEPTH_TEST);
-     glClear(GL_DEPTH_BUFFER_BIT);
+     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, (unsigned int)fbo);
 }
 
 extern "C" void unbind_fbo( void )
 {
      OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+extern "C" void bind_texture( int texture_id )
+{
+     glActiveTexture(GL_TEXTURE0);
+     glBindTexture(GL_TEXTURE_2D, texture_id);
+     }
 
 extern "C" void draw_data( Draw_Mode mode, int first, size_t count )
 {

@@ -23,6 +23,11 @@ int32_t Shader::uniform_id( const std::string& name )
      return fetch_uniform_id(__id, (uint8_t*)&name);
 }
 
+void Shader::set_uniform_int1( int32_t location, int value )
+{
+     upload_uniform_int1(location, value);
+}
+
 void Shader::set_uniform_float1( int32_t location, float value )
 {
      upload_uniform_float1(location, value);

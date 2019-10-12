@@ -34,8 +34,19 @@ enum Depth_Func {
      DEPTH_LESS_FUNC = 0,
 };
 
+enum Texture_Format {
+     RGB_FORMAT,
+     RED_FORMAT,
+     RG_FORMAT,
+     DEPTH_COMPONENT_FORMAT,
+     BGR_FORMAT,
+};
+
 #define INVALID_FBO_HANDLE 0
 typedef uint64_t Fbo_Handle;
+
+#define INVALID_TEXTURE_HANDLE 0
+typedef unsigned int Texture_Handle;
 
 } // end namespace Engine
 

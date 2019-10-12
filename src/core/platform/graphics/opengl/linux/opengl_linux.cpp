@@ -34,6 +34,7 @@ glDrawArraysProc                   glDrawArrays                  = NULL;
 glUseProgramProc                   glUseProgram                  = NULL;
 glGenVertexArraysProc              glGenVertexArrays             = NULL;
 glBindVertexArrayProc              glBindVertexArray             = NULL;
+glUniform1iProc                    glUniform1i                   = NULL;
 glUniform1fProc                    glUniform1f                   = NULL;
 glUniform2fProc                    glUniform2f                   = NULL;
 glUniform3fProc                    glUniform3f                   = NULL;
@@ -50,6 +51,8 @@ glBindTextureProc                     glBindTexture                   = NULL;
 glTexImage2DProc                      glTexImage2D                    = NULL;
 glTexParameteriProc                   glTexParameteri                 = NULL;
 glFramebufferTexture2DProc            glFramebufferTexture2D          = NULL;
+
+glGetShaderInfoLogProc                glGetShaderInfoLog              = NULL;
 
 Rc_t init_opengl( void )
 {
@@ -74,6 +77,7 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glUseProgram, glUseProgramProc);
      OPENGL_LOAD(glGenVertexArrays, glGenVertexArraysProc);
      OPENGL_LOAD(glBindVertexArray, glBindVertexArrayProc);
+     OPENGL_LOAD(glUniform1i, glUniform1iProc);
      OPENGL_LOAD(glUniform1f, glUniform1fProc);
      OPENGL_LOAD(glUniform2f, glUniform2fProc);
      OPENGL_LOAD(glUniform3f, glUniform3fProc);
@@ -89,6 +93,8 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glTexImage2D, glTexImage2DProc);
      OPENGL_LOAD(glTexParameteri, glTexParameteriProc);
      OPENGL_LOAD(glFramebufferTexture2D, glFramebufferTexture2DProc);
+
+     OPENGL_LOAD(glGetShaderInfoLog, glGetShaderInfoLogProc);
 
 
 
