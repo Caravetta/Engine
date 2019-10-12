@@ -33,6 +33,45 @@ char frag[] = "                           \
                }\n                        \
               ";
 
+char pass_vert[] = "                                                                 \
+               #version 330 core\n                                                   \
+                                                                                     \
+               layout(location = 0) in vec3 vertexPosition_modelspace;\n             \
+                                                                                     \
+               out vec2 uv;\n                                                        \
+                                                                                     \
+               void main(){\n                                                        \
+                    gl_Position = vec4(vertexPosition_modelspace, 1);\n              \
+                    uv = (vertexPosition_modelspace.xy+vec2(1,1))/2.0;\n             \
+               }\n                                                                   \
+              ";
+
+
+char pass_frag1[] = "                                        \
+               #version 330 core\n                          \
+                out vec4 color;\n                       \
+                in vec2 uv;\n                               \
+                                                            \
+               uniform sampler2D text;\n                     \
+			mat3 sx = mat3( 1.0, 2.0, 1.0, 0.0, 0.0, 0.0, -1.0, -2.0, -1.0 );\n\
+			mat3 sy = mat3( 1.0, 0.0, -1.0, 2.0, 0.0, -2.0, 1.0, 0.0, -1.0 );\n\
+               void main()\n                                \
+               {\n                                          \
+			  vec3 diffuse = texture(text, uv.st).rgb;\n\
+    		       mat3 I;\n\
+    			  for (int i=0; i<3; i++) {\n\
+        			for (int j=0; j<3; j++) {\n\
+            			vec3 sample  = texelFetch(text, ivec2(gl_FragCoord) + ivec2(i-1,j-1), 0 ).rgb;\n\
+            			I[i][j] = length(sample);\n\
+				}\n\
+    			  }\n\
+			  float gx = dot(sx[0], I[0]) + dot(sx[1], I[1]) + dot(sx[2], I[2]);\n\
+			  float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);\n\
+		       float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));\n\
+			  color = vec4(diffuse - vec3(g), 1.0);\n\
+               }\n                                          \
+              ";
+
 struct Mesh_Handle {
      COMPONENT_DECLARE( Mesh_Handle );
 
@@ -57,6 +96,31 @@ static const float g_vertex_buffer_data[] = {
     -0.5f, -0.5f, 0.0f,
 };
 
+struct Outline_Pass : public Engine::Render_Pass {
+     Engine::Render_Texture* _outline;
+     Engine::Material* _material;
+
+     Outline_Pass( Engine::Material& material )
+     {
+          _material = &material;
+     };
+
+     void configure( void )
+     {
+          Engine::Render_Texture_Info texture_info(WINDOW_WIDTH, WINDOW_HEIGHT, Engine::Texture_Format::RGB_FORMAT);
+          _outline = new (std::nothrow) Engine::Render_Texture(texture_info);
+     };
+
+     void execute( Engine::Render_Context& context )
+     {
+          blit(context, context.cur_color_texture(), *_outline, *_material);
+     };
+
+     void cleanup( void )
+     {
+     };
+};
+
 int main(int argc, char** argv) {
 
      Engine::Rc_t rc = Engine::engine_init();
@@ -71,6 +135,11 @@ int main(int argc, char** argv) {
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
 
      Engine::Shader test_shader(shader_strings);
+
+     std::vector<Engine::Shader_String> pass1_shader_strings = {{Engine::VERTEX_SHADER, pass_vert, sizeof(pass_vert)},
+                                                               {Engine::FRAGMENT_SHADER, pass_frag1, sizeof(pass_frag1)}};
+
+     Engine::Shader pass1_shader(pass1_shader_strings);
 
      Engine::Entity entity = Engine::create_entity();
 
@@ -100,11 +169,6 @@ int main(int argc, char** argv) {
      Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
      Engine::enable_vertex_attrib(0);
 
-     uint32_t vertexbuffer_id1 = Engine::create_vertex_buffer();
-     Engine::bind_vertex_buffer(vertexbuffer_id);
-     Engine::buffer_vertex_data((uint8_t*)g_vertex_buffer_data, sizeof(g_vertex_buffer_data));
-     Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
-     Engine::enable_vertex_attrib(0);
      Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45),
                                                              (float)window.width()/(float)window.height(),
                                                              1.0f,
@@ -119,11 +183,9 @@ int main(int argc, char** argv) {
      int32_t color_location = test_shader.uniform_id("color");
      int32_t mvp_location = test_shader.uniform_id("mvp");
 
-     //Engine::Fbo_Handle fbo = Engine::create_fbo( true );
-     //LOG("JOSH FBO IN TEST %" PRIu64 "", fbo);
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
-     #define ENTS 10
+     #define ENTS 1000
 
      Engine::Transform transforms[ENTS];
 
@@ -136,10 +198,29 @@ int main(int argc, char** argv) {
      Engine::Vector3f cam_pos(0, 0, 0);
      Engine::Vector3f cam_rot(0, 0, 0);
 
+     Engine::Render_Texture_Info texture_info(WINDOW_WIDTH, WINDOW_HEIGHT, Engine::Texture_Format::RGB_FORMAT);
+
+     Engine::Render_Texture base(texture_info);
+
+     Engine::Render_Context render_context;
+     render_context.init();
+
+     Engine::Material outline_material(pass1_shader);
+     Outline_Pass outline_pass(outline_material);
+
+     outline_pass.configure();
+
      while( window.is_closed() == false ) {
           window.update();
-          //Engine::bind_fbo(fbo);
+
+          Engine::enable_graphics_option(Engine::DEPTH_TEST);
+          Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
+
+          render_context.bind();
+          render_context.set_color_texture(base);
+
           Engine::set_view_port(0, 0, window.width(), window.height());
+
           Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
           Engine::use_program(test_shader.id());
@@ -165,39 +246,23 @@ int main(int argc, char** argv) {
           auto t_now = std::chrono::high_resolution_clock::now();
           float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
 
-          //Engine::use_program(-1);
 
           for ( size_t ii = 0; ii < ENTS; ii++ ) {
-               //transforms[ii].rotation = Engine::Vector3f(time*30, time*20, time*40);
+               transforms[ii].rotation = Engine::Vector3f(time*30, time*20, time*40);
                Engine::Matrix4f model_transform = Engine::model_transform(transforms[ii].position,
                                                                           transforms[ii].scale,
                                                                           transforms[ii].rotation);
 
                Engine::Matrix4f mvp = ortho * view_transform * model_transform;
                test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
+
                Engine::enable_vertex_attrib(0);
                Engine::bind_vertex_buffer(vertexbuffer_id);
                Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
           }
-#if 0
-          Engine::use_program(-2);
-          Engine::use_program(test_shader.id());
 
-          test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
-
-          for ( size_t ii = 0; ii < ENTS; ii++ ) {
-               //transforms[ii].rotation = Engine::Vector3f(time*30, time*20, time*40);
-               Engine::Matrix4f model_transform = Engine::model_transform(transforms[ii].position,
-                                                                          transforms[ii].scale,
-                                                                          transforms[ii].rotation);
-
-               Engine::Matrix4f mvp = ortho * view_transform * model_transform;
-               test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
-               Engine::enable_vertex_attrib(0);
-               Engine::bind_vertex_buffer(vertexbuffer_id);
-               Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
-          }
-#endif
+          outline_pass.execute(render_context);
+          render_context.bit_to_screen();
           window.swap_buffers();
      }
 }

@@ -38,6 +38,11 @@ set(engine_core_src
     input/key_input.cpp
     graphics/window.cpp
     graphics/shader.cpp
+    graphics/render_texture_info.cpp
+    graphics/render_texture.cpp
+    graphics/render_pass.cpp
+    graphics/render_context.cpp
+    graphics/material.cpp
     memory/page_allocator.cpp
     engine_core.cpp
     test.cpp)

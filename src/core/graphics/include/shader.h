@@ -18,6 +18,7 @@ public:
      Shader( const std::vector<Shader_String>& strings );
      int32_t id( void );
      int32_t uniform_id( const std::string& name );
+     void set_uniform_int1( int32_t location, int value );
      void set_uniform_float1( int32_t location, float value );
      void set_uniform_float2( int32_t location, float value_1, float value_2 );
      void set_uniform_float3( int32_t location, float value_1, float value_2, float value_3 );
