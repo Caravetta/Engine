@@ -98,6 +98,14 @@ PFNGLUNIFORM4FPROC                 glUniform4f                   = NULL;
 PFNGLUNIFORMMATRIX4FVPROC          glUniformMatrix4fv            = NULL;
 PFNGLGETUNIFORMLOCATIONPROC        glGetUniformLocation          = NULL;
 
+PFNGLGENFRAMEBUFFERSPROC              glGenFramebuffers          = NULL;
+PFNGLBINDFRAMEBUFFERPROC              glBindFramebuffer          = NULL;
+PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC  glCheckNamedFramebufferStatus = NULL;
+PFNGLDELETEFRAMEBUFFERSPROC           glDeleteFramebuffers       = NULL;
+PFNGLGENTEXTURESPROC                  glGenTextures              = NULL;
+PFNGLBINDTEXTUREPROC                  glBindTexture              = NULL;
+PFNGLFRAMEBUFFERTEXTURE2DPROC         glFramebufferTexture2D     = NULL;
+
 LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
      switch( msg )
@@ -220,6 +228,14 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glUniform4f, PFNGLUNIFORM4FPROC);
      OPENGL_LOAD(glUniformMatrix4fv, PFNGLUNIFORMMATRIX4FVPROC);
      OPENGL_LOAD(glGetUniformLocation, PFNGLGETUNIFORMLOCATIONPROC);
+
+     OPENGL_LOAD(glGenFramebuffers, PFNGLGENFRAMEBUFFERSPROC);
+     OPENGL_LOAD(glBindFramebuffer, PFNGLBINDFRAMEBUFFERPROC);
+     OPENGL_LOAD(glCheckNamedFramebufferStatus, PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC);
+     OPENGL_LOAD(glDeleteFramebuffers, PFNGLDELETEFRAMEBUFFERSPROC);
+     OPENGL_LOAD(glGenTextures, PFNGLGENTEXTURESPROC);
+     OPENGL_LOAD(glBindTexture, PFNGLBINDTEXTUREPROC);
+     OPENGL_LOAD(glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DPROC);
 
      // Release the temporary rendering context now that the extensions have been loaded.
      wglMakeCurrent(NULL, NULL);
