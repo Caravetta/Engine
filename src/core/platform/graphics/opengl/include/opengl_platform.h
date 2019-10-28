@@ -33,12 +33,12 @@ extern "C" GRAPHICS_API uint32_t create_vertex_array( void );
 extern "C" GRAPHICS_API void bind_vertex_array( uint32_t array_id );
 
 extern "C" GRAPHICS_API uint32_t create_vertex_buffer( void );
-extern "C" GRAPHICS_API void bind_vertex_buffer( uint32_t buffer_id );
-extern "C" GRAPHICS_API void buffer_vertex_data( uint8_t* data, size_t size );
+extern "C" GRAPHICS_API void bind_vertex_buffer( Buffer_Type type, uint32_t buffer_id );
+extern "C" GRAPHICS_API void buffer_vertex_data( Buffer_Type type, uint8_t* data, size_t size );
 extern "C" GRAPHICS_API void define_vertex_attrib( uint32_t index, size_t size, Data_Type type, size_t stride, uint8_t* data );
 extern "C" GRAPHICS_API void enable_vertex_attrib( uint32_t index );
 
-extern "C" GRAPHICS_API Texture_Handle create_texture( int width, int height );
+extern "C" GRAPHICS_API Texture_Handle create_texture( int width, int height, uint8_t* data, Texture_Format format );
 
 extern "C" GRAPHICS_API Fbo_Handle create_fbo( void );
 extern "C" GRAPHICS_API void set_fbo_color_texture( int color_texture );
@@ -49,6 +49,7 @@ extern "C" GRAPHICS_API void unbind_fbo( void );
 extern "C" GRAPHICS_API void bind_texture( int texture_id );
 
 extern "C" GRAPHICS_API void draw_data( Draw_Mode mode, int first, size_t count );
+extern "C" GRAPHICS_API void draw_elements_data( Draw_Mode mode, int first, size_t count );
 
 } // end namespace Engine
 

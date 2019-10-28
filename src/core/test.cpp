@@ -72,14 +72,6 @@ char pass_frag1[] = "                                        \
                }\n                                          \
               ";
 
-struct Mesh_Handle {
-     COMPONENT_DECLARE( Mesh_Handle );
-
-     uint64_t handle;
-};
-
-COMPONENT_DEFINE( Mesh_Handle );
-
 float RandomFloat(float a, float b) {
     float random = ((float) rand()) / (float) RAND_MAX;
     float diff = b - a;
@@ -87,13 +79,15 @@ float RandomFloat(float a, float b) {
     return a + r;
 }
 
-static const float g_vertex_buffer_data[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.5f,  0.5f, 0.0f,
-     0.5f,  0.5f, 0.0f,
-    -0.5f,  0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
+float vertices[] = {
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left
+};
+unsigned int indices[] = {
+    0, 1, 3,   // first triangle
+    1, 2, 3    // second triangle
 };
 
 struct Outline_Pass : public Engine::Render_Pass {
@@ -130,6 +124,7 @@ int main(int argc, char** argv) {
      }
 
      Engine::Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Test");
+     Engine::Window window1(WINDOW_WIDTH, WINDOW_HEIGHT, "Test1");
 
      std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
@@ -141,33 +136,31 @@ int main(int argc, char** argv) {
 
      Engine::Shader pass1_shader(pass1_shader_strings);
 
-     Engine::Entity entity = Engine::create_entity();
+     Engine::Mesh_Data mesh_data;
+     mesh_data.positions.resize(12);
+     memcpy(mesh_data.positions.data(), vertices, sizeof(vertices));
+     mesh_data.indices.resize(6);
+     memcpy(mesh_data.indices.data(), indices, sizeof(indices));
+     Engine::load_mesh(Engine::STATIC_MESH, "Test_Mesh", mesh_data);
 
-     Engine::add_components(entity, {Engine::component_id<Engine::Transform>(),
-                                     Engine::component_id<Mesh_Handle>()});
+     Engine::Mesh_Handle mesh_handle = Engine::mesh_handle("Test_Mesh");
 
-     Engine::Entity_Group group({Engine::component_id<Engine::Transform>(),
-                                 Engine::component_id<Mesh_Handle>()});
+     uint32_t square_vertexArray_id = Engine::create_vertex_array();
+     Engine::bind_vertex_array(square_vertexArray_id);
 
-     Engine::Component_Data_Array<Mesh_Handle> mesh_handles(group);
+     uint32_t square_inc_vertexbuffer_id = Engine::create_vertex_buffer();
+     Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, square_inc_vertexbuffer_id);
+     Engine::buffer_vertex_data(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, (uint8_t*)indices, sizeof(indices));
+     Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, 0);
 
-     for ( size_t ii = 0; ii < mesh_handles.size(); ii++ ) {
-          LOG("MESH idx %zd = %" PRIu64 "", ii, mesh_handles[ii].handle);
-          mesh_handles[ii].handle = ii + 1000;
-     }
-
-     for ( size_t ii = 0; ii < mesh_handles.size(); ii++ ) {
-          LOG("MESH idx %zd = %" PRIu64 "", ii, mesh_handles[ii].handle);
-     }
-
-     uint32_t vertexArray_id = Engine::create_vertex_array();
-     Engine::bind_vertex_array(vertexArray_id);
-
-     uint32_t vertexbuffer_id = Engine::create_vertex_buffer();
-     Engine::bind_vertex_buffer(vertexbuffer_id);
-     Engine::buffer_vertex_data((uint8_t*)g_vertex_buffer_data, sizeof(g_vertex_buffer_data));
-     Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+     uint32_t square_vertexbuffer_id = Engine::create_vertex_buffer();
+     Engine::bind_vertex_buffer(Engine::Buffer_Type::ARRAY_BUFFER, square_vertexbuffer_id);
+     Engine::buffer_vertex_data(Engine::Buffer_Type::ARRAY_BUFFER, (uint8_t*)vertices, sizeof(vertices));
      Engine::enable_vertex_attrib(0);
+     Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+     Engine::bind_vertex_buffer(Engine::Buffer_Type::ARRAY_BUFFER, 0);
+
+     Engine::bind_vertex_array(0);
 
      Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45),
                                                              (float)window.width()/(float)window.height(),
@@ -187,12 +180,20 @@ int main(int argc, char** argv) {
 
      #define ENTS 1000
 
-     Engine::Transform transforms[ENTS];
+     std::vector<Engine::Entity> entities;
 
      for ( size_t ii = 0; ii < ENTS; ii++ ) {
-          transforms[ii].position = Engine::Vector3f(RandomFloat(-2, 2), RandomFloat(-2, 2), RandomFloat(4, 10));
-          transforms[ii].scale = Engine::Vector3f(0.1, 0.1, 0);
-          transforms[ii].rotation = Engine::Vector3f(70, 0, 0);
+          Engine::Entity entity = Engine::create_entity();
+          entities.push_back(entity);
+
+          Engine::add_components(entity, {Engine::component_id<Engine::Transform>(),
+                                          Engine::component_id<Engine::Mesh_Info>()});
+
+          Engine::Transform* transform = Engine::get_component<Engine::Transform>(entity);
+
+          transform->position = Engine::Vector3f(RandomFloat(-2, 2), RandomFloat(-2, 2), RandomFloat(4, 10));
+          transform->scale = Engine::Vector3f(0.1, 0.1, 0);
+          transform->rotation = Engine::Vector3f(70, 0, 0);
      }
 
      Engine::Vector3f cam_pos(0, 0, 0);
@@ -210,8 +211,9 @@ int main(int argc, char** argv) {
 
      outline_pass.configure();
 
-     while( window.is_closed() == false ) {
+     while( window.is_closed() == false && window1.is_closed() == false ) {
           window.update();
+          window1.update();
 
           Engine::enable_graphics_option(Engine::DEPTH_TEST);
           Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
@@ -246,24 +248,37 @@ int main(int argc, char** argv) {
           auto t_now = std::chrono::high_resolution_clock::now();
           float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
 
+          Engine::Entity_Group group({Engine::component_id<Engine::Mesh_Info>(),
+                                      Engine::component_id<Engine::Transform>()});
 
-          for ( size_t ii = 0; ii < ENTS; ii++ ) {
-               transforms[ii].rotation = Engine::Vector3f(time*30, time*20, time*40);
-               Engine::Matrix4f model_transform = Engine::model_transform(transforms[ii].position,
-                                                                          transforms[ii].scale,
-                                                                          transforms[ii].rotation);
+          Engine::Component_Data_Array<Engine::Transform> trans_infos(group);
+
+          Engine::bind_vertex_array(square_vertexArray_id);
+          Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, square_inc_vertexbuffer_id);
+
+          for ( size_t ii = 0; ii < entities.size(); ii++ ) {
+               Engine::Transform& trans = trans_infos[ii];
+               Engine::Transform* transform_p = Engine::get_component<Engine::Transform>(entities[ii]);
+
+               if ( transform_p != &trans ) {
+                    LOG("transform_p:%p trans:%p", transform_p, &trans);
+               }
+
+               trans.rotation = Engine::Vector3f(time*30, time*20, time*40);
+               Engine::Matrix4f model_transform = Engine::model_transform(trans.position,
+                                                                          trans.scale,
+                                                                          trans.rotation);
 
                Engine::Matrix4f mvp = ortho * view_transform * model_transform;
                test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
 
-               Engine::enable_vertex_attrib(0);
-               Engine::bind_vertex_buffer(vertexbuffer_id);
-               Engine::draw_data(Engine::TRIANGLE_MODE, 0, 6);
+               Engine::draw_elements_data(Engine::TRIANGLE_MODE, 0, 6);
           }
 
           outline_pass.execute(render_context);
           render_context.bit_to_screen();
           window.swap_buffers();
+          window1.swap_buffers();
      }
 }
 

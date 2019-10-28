@@ -30,6 +30,16 @@ GLenum options_array[] = {
      GL_DEPTH_TEST,
 };
 
+GLenum buffer_types[] = {
+     GL_ELEMENT_ARRAY_BUFFER,
+     GL_ARRAY_BUFFER,
+};
+
+GLenum texture_format[] = {
+     GL_RGB,
+     GL_RGBA,
+};
+
 extern "C" Rc_t init_graphics_platform( void )
 {
      return OpenGL::init_opengl();
@@ -216,14 +226,14 @@ extern "C" uint32_t create_vertex_buffer( void )
      return id;
 }
 
-extern "C" void bind_vertex_buffer( uint32_t buffer_id )
+extern "C" void bind_vertex_buffer( Buffer_Type type, uint32_t buffer_id )
 {
-     OpenGL::glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+     OpenGL::glBindBuffer(buffer_types[type], buffer_id);
 }
 
-extern "C" void buffer_vertex_data( uint8_t* data, size_t size )
+extern "C" void buffer_vertex_data( Buffer_Type type, uint8_t* data, size_t size )
 {
-     OpenGL::glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+     OpenGL::glBufferData(buffer_types[type], size, data, GL_STATIC_DRAW);
 }
 
 extern "C" void define_vertex_attrib( uint32_t index, size_t size,
@@ -237,14 +247,14 @@ extern "C" void enable_vertex_attrib( uint32_t index )
      OpenGL::glEnableVertexAttribArray(index);
 }
 
-extern "C" Texture_Handle create_texture( int width, int height )
+extern "C" Texture_Handle create_texture( int width, int height, uint8_t* data, Texture_Format format )
 {
      Texture_Handle handle;
 
      OpenGL::glGenTextures(1, &handle);
      OpenGL::glBindTexture(GL_TEXTURE_2D, handle);
-     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-                          0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, texture_format[format], width, height,
+                          0, texture_format[format], GL_UNSIGNED_BYTE, data);
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
      OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
@@ -317,6 +327,11 @@ extern "C" void bind_texture( int texture_id )
 extern "C" void draw_data( Draw_Mode mode, int first, size_t count )
 {
      OpenGL::glDrawArrays(draw_mode[mode], first, count);
+}
+
+extern "C" void draw_elements_data( Draw_Mode mode, int first, size_t count )
+{
+     OpenGL::glDrawElements(draw_mode[mode], count, GL_UNSIGNED_INT, 0);
 }
 
 } // end namespace Engine

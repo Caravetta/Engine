@@ -36,10 +36,16 @@ enum Depth_Func {
 
 enum Texture_Format {
      RGB_FORMAT,
+     RGBA_FORMAT,
      RED_FORMAT,
      RG_FORMAT,
      DEPTH_COMPONENT_FORMAT,
      BGR_FORMAT,
+};
+
+enum Buffer_Type {
+     ELEMENT_ARRAY_BUFFER,
+     ARRAY_BUFFER,
 };
 
 #define INVALID_FBO_HANDLE 0

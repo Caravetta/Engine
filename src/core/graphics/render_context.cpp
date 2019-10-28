@@ -54,10 +54,16 @@ Render_Context::~Render_Context( void )
 void Render_Context::init( void )
 {
      __fbo = create_fbo();
+
+     __fbo_vertex_array_id = create_vertex_array();
      __fbo_vertexbuffer_id = create_vertex_buffer();
-     bind_vertex_buffer(__fbo_vertexbuffer_id);
-     buffer_vertex_data((uint8_t*)g_quad_vertex_buffer_data, sizeof(g_quad_vertex_buffer_data));
+     bind_vertex_array(__fbo_vertex_array_id);
+     bind_vertex_buffer(ARRAY_BUFFER, __fbo_vertexbuffer_id);
+     buffer_vertex_data(ARRAY_BUFFER, (uint8_t*)g_quad_vertex_buffer_data, sizeof(g_quad_vertex_buffer_data));
      define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+	enable_vertex_attrib(0);
+     bind_vertex_buffer(ARRAY_BUFFER, 0);
+     bind_vertex_array(0);
 
 	if ( __blit_shader == NULL ) {
 		std::vector<Shader_String> blit_shader_strings = {{VERTEX_SHADER, blit_vert, sizeof(blit_vert)},
@@ -89,7 +95,7 @@ Render_Texture& Render_Context::cur_depth_texture( void )
 
 uint32_t Render_Context::quad_id( void )
 {
-     return __fbo_vertexbuffer_id;
+     return __fbo_vertex_array_id;
 }
 
 void Render_Context::bind( void )
@@ -112,9 +118,9 @@ void Render_Context::bit_to_screen( void )
 	bind_texture(__color_texture->texture());
 	int32_t texture_location = __blit_shader->uniform_id("text");
 	__blit_shader->set_uniform_int1(texture_location, 0);
-	enable_vertex_attrib(0);
-	bind_vertex_buffer(__fbo_vertexbuffer_id);
+     bind_vertex_array(__fbo_vertex_array_id);
 	draw_data(Engine::TRIANGLE_MODE, 0, 6);
+     bind_vertex_array(0);
 }
 
 } // end namespace Engine

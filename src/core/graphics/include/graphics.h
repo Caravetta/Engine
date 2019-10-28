@@ -9,5 +9,6 @@
 #include "render_pass.h"
 #include "render_context.h"
 #include "material.h"
+#include "mesh.h"
 
 #endif //__GRAPHICS_H__

@@ -5,7 +5,7 @@ namespace Engine {
 Render_Texture::Render_Texture( Render_Texture_Info& texture_info )
 {
      //gen texture here
-     __texture_handle = create_texture(texture_info.width(), texture_info.height());
+     __texture_handle = create_texture(texture_info.width(), texture_info.height(), NULL, Texture_Format::RGB_FORMAT);
 }
 
 Render_Texture::~Render_Texture( void )

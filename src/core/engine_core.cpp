@@ -24,6 +24,11 @@ Rc_t engine_init( void )
           LOG_ERROR("Failed to setup ECS system rc=%d", rc);
      }
 
+     rc = init_mesh_asset_manager();
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to setup Mesh Asset system rc=%d", rc);
+     }
+
      return rc;
 }
 

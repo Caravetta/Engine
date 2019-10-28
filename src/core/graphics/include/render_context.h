@@ -11,6 +11,7 @@ namespace Engine {
 class Render_Context {
 private:
      Fbo_Handle __fbo;
+     uint32_t __fbo_vertex_array_id;
      uint32_t __fbo_vertexbuffer_id;
      Render_Texture* __color_texture;
      Render_Texture* __depth_texture;

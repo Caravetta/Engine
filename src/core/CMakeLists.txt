@@ -37,6 +37,7 @@ set(engine_core_src
     math/matrix4f.cpp
     input/key_input.cpp
     graphics/window.cpp
+    graphics/mesh.cpp
     graphics/shader.cpp
     graphics/render_texture_info.cpp
     graphics/render_texture.cpp
@@ -53,6 +54,7 @@ set(engine_core_linux_src
     platform/linux/window_linux.cpp)
 
 add_executable(Engine-Core ${engine_core_src} ${engine_core_linux_src})
+add_library(EngineCore STATIC ${engine_core_src} ${engine_core_linux_src})
 
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 set(engine_core_win_src
@@ -83,8 +85,32 @@ target_include_directories(Engine-Core PUBLIC
                            ../libs/glm/glm/gtx
                            ../libs/glm/glm/simd)
 
+target_include_directories(EngineCore PUBLIC
+                           include
+                           data_structures/include
+                           ecs/include
+                           utils/include
+                           reflection/include
+                           math/include
+                           memory/include
+                           platform/include
+                           platform/opengl/include
+                           platform/opengl/include
+                           platform/graphics/include
+                           input/include
+                           graphics/include
+                           ../libs/glm/glm
+                           ../libs/glm/glm/detail
+                           ../libs/glm/glm/ext
+                           ../libs/glm/glm/gtc
+                           ../libs/glm/glm/gtx
+                           ../libs/glm/glm/simd)
+
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 target_include_directories(Engine-Core PUBLIC
+                           platform/linux/include)
+
+target_include_directories(EngineCore PUBLIC
                            platform/linux/include)
 
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )

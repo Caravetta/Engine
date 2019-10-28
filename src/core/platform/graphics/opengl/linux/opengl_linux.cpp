@@ -53,6 +53,7 @@ glTexParameteriProc                   glTexParameteri                 = NULL;
 glFramebufferTexture2DProc            glFramebufferTexture2D          = NULL;
 
 glGetShaderInfoLogProc                glGetShaderInfoLog              = NULL;
+glDrawElementsProc                    glDrawElements                  = NULL;
 
 Rc_t init_opengl( void )
 {
@@ -95,6 +96,7 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glFramebufferTexture2D, glFramebufferTexture2DProc);
 
      OPENGL_LOAD(glGetShaderInfoLog, glGetShaderInfoLogProc);
+     OPENGL_LOAD(glDrawElements, glDrawElementsProc);
 
 
 

@@ -16,6 +16,7 @@ private:
 public:
      Entity_Group( std::vector<Component_ID> components );
      Entity_Group( std::vector<Component_ID> include, std::vector<Component_ID> exclude );
+     void print_group_info( void );
 };
 
 } // end namespace Engine

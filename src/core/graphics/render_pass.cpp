@@ -19,9 +19,10 @@ void Render_Pass::blit( Render_Context& context, Render_Texture& source,
 
 
      uint32_t buff_id = context.quad_id();
-     enable_vertex_attrib(0);
-     bind_vertex_buffer(buff_id);
+     //enable_vertex_attrib(0);
+     bind_vertex_array(buff_id);
      draw_data(Engine::TRIANGLE_MODE, 0, 6);
+     bind_vertex_array(0);
 }
 
 } // end namespace Engine

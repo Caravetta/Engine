@@ -577,6 +577,7 @@ void comp_data_system_debug_print( void )
           Chunk* cur_chunk = data_node.head;
           while( cur_chunk != NULL ) {
                LOG("\tChunk: [ %" PRIu32 " ]", chunk_idx++);
+               LOG("\t\tData Pointer %p", cur_chunk->data);
                LOG("\t\tNumber of Entities: %" PRIu16 "", cur_chunk->n_ents);
                cur_chunk = cur_chunk->next;
           }

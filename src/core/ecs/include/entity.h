@@ -21,13 +21,13 @@ Rc_t init_entity_system( void );
 
 Entity create_entity( void );
 Entity create_entity( std::vector<Component_ID> components );
+
 //Entity create_entity( Prefab prefab );
 void delete_entity( Entity entity );
 
 Rc_t add_component( Entity entity, Component_ID id );
 Rc_t add_components( Entity entity, std::vector<Component_ID> components );
-//Rc_t add_component( Entity entity, Component_Info component );
-//Rc_t add_components( Entity entity, std::vector<Component_Info> components );
+
 Rc_t remove_component( Entity entity, Component_ID id );
 Rc_t remove_components( Entity entity, std::vector<Component_ID> components );
 
