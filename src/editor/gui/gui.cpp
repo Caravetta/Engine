@@ -48,13 +48,21 @@ struct Gui_Info {
 
 Gui_Info* gui_info = NULL;
 
-Engine::Rc_t init_gui( const int32_t fb_width, const int32_t fb_height )
+void gui_key_event_callback( char key, bool is_pressed );
+void gui_mouse_pos_callback( int x_pos, int y_pos );
+void gui_mouse_button_callback( int button, bool is_pressed );
+void gui_resize_callback( int32_t width, int32_t height );
+
+Engine::Rc_t init_gui( Engine::Window& window )
 {
      if ( gui_info == NULL ) {
           gui_info = new (std::nothrow) Gui_Info;
           if ( gui_info == NULL ) {
                return Engine::MEMORY_ALLOC_FAILED;
           }
+
+          int32_t fb_width = (int32_t)window.width();
+          int32_t fb_height = (int32_t)window.height();
 
           IMGUI_CHECKVERSION();
           ImGui::CreateContext();
@@ -113,6 +121,21 @@ Engine::Rc_t init_gui( const int32_t fb_width, const int32_t fb_height )
           Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, 0);
 
           Engine::bind_vertex_array(0);
+
+          // setup gui style
+          ImGui::GetStyle().WindowRounding = 0.0f;// <- Set this on init or use ImGui::PushStyleVar()
+          ImGui::GetStyle().ChildRounding = 0.0f;
+          ImGui::GetStyle().FrameRounding = 0.0f;
+          ImGui::GetStyle().GrabRounding = 0.0f;
+          ImGui::GetStyle().PopupRounding = 0.0f;
+          ImGui::GetStyle().ScrollbarRounding = 0.0f;
+          ImGui::GetStyle().Alpha = 1;
+
+          //setup callbacks
+          window.add_key_callback(gui_key_event_callback);
+          window.add_mouse_position_callback(gui_mouse_pos_callback);
+          window.add_mouse_button_callback(gui_mouse_button_callback);
+          window.add_resize_callback(gui_resize_callback);
      }
 
      return Engine::SUCCESS;
@@ -248,5 +271,14 @@ void gui_resize_callback( int32_t width, int32_t height )
      ImGuiIO& io = ImGui::GetIO();
 
      io.DisplaySize = ImVec2((float)width, (float)height);
+
+     Engine::delete_texture((Engine::Texture_Handle)(intptr_t)io.Fonts->TexID);
+     int32_t lwidth;
+     int32_t lheight;
+     uint8_t* pixels;
+     io.Fonts->GetTexDataAsRGBA32(&pixels, &lwidth, &lheight);
+
+     Engine::Texture_Handle font_text = Engine::create_texture(lwidth, lheight, pixels, Engine::Texture_Format::RGBA_FORMAT);
+     io.Fonts->TexID = (ImTextureID)(intptr_t)font_text;
 }
 

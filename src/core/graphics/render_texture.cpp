@@ -13,6 +13,12 @@ Render_Texture::~Render_Texture( void )
      //TODO(JOSH): need to handle
 }
 
+void Render_Texture::reload( int32_t width, int32_t height )
+{
+     delete_texture(__texture_handle);
+     __texture_handle = create_texture(width, height, NULL, Texture_Format::RGB_FORMAT);
+}
+
 Texture_Handle Render_Texture::texture( void )
 {
      return __texture_handle;

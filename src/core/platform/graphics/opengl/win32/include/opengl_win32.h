@@ -54,6 +54,9 @@ typedef void (APIENTRY * PFNGLFRAMEBUFFERTEXTURE2DPROC) ( GLenum target, GLenum 
 typedef void (APIENTRY * PFNGLUNIFORM1IPROC) ( GLint location, GLint v0 );
 typedef void (APIENTRY * PFNGLGETSHADERINFOLOGPROC) ( GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog );
 typedef void (APIENTRY * PFNGLDRAWELEMENTSPROC) ( GLenum mode, GLsizei count, GLenum type, const GLvoid * indices);
+typedef GLint (APIENTRY * PFNGLGETATTRIBLOCATIONPROC) ( GLuint program, const GLchar *name );
+typedef void (APIENTRY * PFNGLSCISSORPROC) ( GLint x, GLint y, GLsizei width, GLsizei height );
+typedef void (APIENTRY * PFNGLBLENDEQUATIONPROC) ( GLenum mode );
 
 
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC     wglCreateContextAttribsARB;
@@ -96,6 +99,9 @@ extern PFNGLFRAMEBUFFERTEXTURE2DPROC         glFramebufferTexture2D;
 extern PFNGLUNIFORM1IPROC                    glUniform1i;
 extern PFNGLGETSHADERINFOLOGPROC             glGetShaderInfoLog;
 extern PFNGLDRAWELEMENTSPROC                 glDrawElements;
+extern PFNGLGETATTRIBLOCATIONPROC            glGetAttribLocation;
+extern PFNGLSCISSORPROC                      glScissor;
+extern PFNGLBLENDEQUATIONPROC                glBlendEquation;
 
 Rc_t init_opengl( void );
 

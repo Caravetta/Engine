@@ -35,8 +35,6 @@ static bool __is_extension_supported(const char *ext_list, const char *extension
 
 struct platform_window_t* platform_window_create( int width, int height, std::string title )
 {
-     LOG("NUM KEYS %d", PLATFORM_KEY_COUNT);
-
      platform_window_t* window = new platform_window_t;
 
      window->width = width;
@@ -81,7 +79,6 @@ void platform_window_update( struct platform_window_t* platform_window )
                XGetWindowAttributes(platform_window->display, platform_window->window, &attributes);
                platform_window->width = attributes.width;
                platform_window->height = attributes.height;
-               LOG("width %d height %d", attributes.width, attributes.height);
           }
           if ( ev.type == ClientMessage ) {
                if ( ev.xclient.data.l[0] == platform_window->atom_delete_window ) {

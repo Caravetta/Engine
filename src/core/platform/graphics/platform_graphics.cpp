@@ -90,6 +90,7 @@ draw_data_proc              draw_data                  = NULL;
 create_texture_proc         create_texture             = NULL;
 draw_elements_data_proc     draw_elements_data         = NULL;
 scissor_box_proc            scissor_box                = NULL;
+delete_texture_proc         delete_texture             = NULL;
 
 
 Rc_t load_graphics_api( Graphics_API graphics_api )
@@ -138,6 +139,7 @@ Rc_t load_graphics_api( Graphics_API graphics_api )
      LOAD_LIB_FUNC(create_texture);
      LOAD_LIB_FUNC(draw_elements_data);
      LOAD_LIB_FUNC(scissor_box);
+     LOAD_LIB_FUNC(delete_texture);
 
      init_graphics_platform();
 

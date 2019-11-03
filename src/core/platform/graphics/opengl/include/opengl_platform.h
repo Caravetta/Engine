@@ -40,6 +40,7 @@ extern "C" GRAPHICS_API void define_vertex_attrib( uint32_t index, size_t size, 
 extern "C" GRAPHICS_API void enable_vertex_attrib( uint32_t index );
 
 extern "C" GRAPHICS_API Texture_Handle create_texture( int width, int height, uint8_t* data, Texture_Format format );
+extern "C" GRAPHICS_API void delete_texture( Texture_Handle handle );
 
 extern "C" GRAPHICS_API Fbo_Handle create_fbo( void );
 extern "C" GRAPHICS_API void set_fbo_color_texture( int color_texture );

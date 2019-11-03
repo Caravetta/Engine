@@ -105,7 +105,11 @@ extern "C" void enable_graphics_option( Graphics_Option option )
 {
      glEnable(options_array[option]);
      if ( option == BLEND_OPTION ) {
+#ifdef LINUX
           glBlendEquation(GL_FUNC_ADD);
+#elif WINDOWS
+          OpenGL::glBlendEquation(GL_FUNC_ADD);
+#endif
           glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
      }
 }
@@ -383,7 +387,19 @@ extern "C" void draw_elements_data( Draw_Mode mode, size_t count, Data_Type type
 
 extern "C" void scissor_box( int x, int y, size_t width, size_t height )
 {
+#ifdef LINUX
      OpenGL::glScissor(x, y, width, height);
+#elif WINDOWS
+     glScissor(x, y, width, height);
+#endif
+}
+
+extern "C" void delete_texture( Texture_Handle handle )
+{
+#ifdef LINUX
+#elif WINDOWS
+     glDeleteTextures(1, &handle);
+#endif
 }
 
 } // end namespace Engine

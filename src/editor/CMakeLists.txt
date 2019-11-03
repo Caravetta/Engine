@@ -50,6 +50,7 @@ set(editor_src
     gui/imgui.cpp
     gui/imgui_draw.cpp
     gui/imgui_widgets.cpp
+    entity_manager.cpp
     editor.cpp)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
@@ -69,6 +70,7 @@ add_executable(Editor ${editor_src} ${editor_win_src})
 endif()
 
 target_include_directories(Editor PUBLIC
+                           include
                            gui/include
                            ../core/
                            ../core/include

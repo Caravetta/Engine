@@ -4,6 +4,7 @@
 #ifdef WINDOWS
      #include "window_win32.h"
      #include "input_win32.h"
+     #include "timer_win32.h"
 #elif LINUX
      #include "window_linux.h"
      #include "input_linux.h"

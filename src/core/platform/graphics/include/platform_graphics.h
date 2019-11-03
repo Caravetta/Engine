@@ -43,6 +43,7 @@ typedef void (*draw_data_proc) ( Draw_Mode mode, int first, size_t count );
 typedef void (*draw_elements_data_proc) ( Draw_Mode mode, size_t count, Data_Type type, void* offset );
 typedef Texture_Handle (*create_texture_proc) ( int width, int height, uint8_t* data, Texture_Format format );
 typedef void (*scissor_box_proc) ( int x, int y, size_t width, size_t height );
+typedef void (*delete_texture_proc) ( Texture_Handle handle );
 
 extern init_graphics_platform_proc init_graphics_platform;
 extern create_render_context_proc  create_render_context;
@@ -81,6 +82,7 @@ extern draw_data_proc              draw_data;
 extern create_texture_proc         create_texture;
 extern draw_elements_data_proc     draw_elements_data;
 extern scissor_box_proc            scissor_box;
+extern delete_texture_proc         delete_texture;
 
 enum Graphics_API {
      OPENGL_GRAPHICS_API,
