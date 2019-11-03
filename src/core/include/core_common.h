@@ -58,5 +58,9 @@ namespace Engine {
 } // end namespace Engine
 
 typedef float float32_t;
+typedef void (*key_event_cb)( char key, bool is_pressed );
+typedef void (*mouse_position_cb)( int x_pos, int y_pos );
+typedef void (*mouse_button_cb)( int button, bool is_pressed );
+typedef void (*resize_cb)( int32_t width, int32_t height );
 
 #endif //__CORE_COMMON_H__

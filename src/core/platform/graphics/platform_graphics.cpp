@@ -65,6 +65,7 @@ set_depth_func_proc         set_depth_func             = NULL;
 create_program_file_proc    create_program_file        = NULL;
 create_program_string_proc  create_program_string      = NULL;
 use_program_proc            use_program                = NULL;
+fetch_attrib_id_proc        fetch_attrib_id            = NULL;
 fetch_uniform_id_proc       fetch_uniform_id           = NULL;
 upload_uniform_int1_proc    upload_uniform_int1        = NULL;
 upload_uniform_float1_proc  upload_uniform_float1      = NULL;
@@ -88,6 +89,7 @@ bind_texture_proc           bind_texture               = NULL;
 draw_data_proc              draw_data                  = NULL;
 create_texture_proc         create_texture             = NULL;
 draw_elements_data_proc     draw_elements_data         = NULL;
+scissor_box_proc            scissor_box                = NULL;
 
 
 Rc_t load_graphics_api( Graphics_API graphics_api )
@@ -111,6 +113,7 @@ Rc_t load_graphics_api( Graphics_API graphics_api )
      LOAD_LIB_FUNC(create_program_file);
      LOAD_LIB_FUNC(create_program_string);
      LOAD_LIB_FUNC(use_program);
+     LOAD_LIB_FUNC(fetch_attrib_id);
      LOAD_LIB_FUNC(fetch_uniform_id);
      LOAD_LIB_FUNC(upload_uniform_int1);
      LOAD_LIB_FUNC(upload_uniform_float1);
@@ -134,6 +137,7 @@ Rc_t load_graphics_api( Graphics_API graphics_api )
      LOAD_LIB_FUNC(draw_data);
      LOAD_LIB_FUNC(create_texture);
      LOAD_LIB_FUNC(draw_elements_data);
+     LOAD_LIB_FUNC(scissor_box);
 
      init_graphics_platform();
 

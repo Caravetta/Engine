@@ -68,7 +68,7 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
           if ( num_indices != 0 ) {
                uint32_t indicie_buffer_id = create_vertex_buffer();
                bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, indicie_buffer_id);
-               buffer_vertex_data(Buffer_Type::ELEMENT_ARRAY_BUFFER, (uint8_t*)mesh.data->indices.data(), sizeof(uint32_t) * num_indices);
+               buffer_vertex_data(Buffer_Type::ELEMENT_ARRAY_BUFFER, (uint8_t*)mesh.data->indices.data(), sizeof(uint32_t) * num_indices, STATIC_DRAW);
                bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, 0);
           }
 
@@ -76,9 +76,9 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
           if ( num_positions != 0 ) {
                uint32_t position_buffer_id = create_vertex_buffer();
                bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, position_buffer_id);
-               buffer_vertex_data(Buffer_Type::ARRAY_BUFFER, (uint8_t*)mesh.data->positions.data(), sizeof(float) * num_positions);
+               buffer_vertex_data(Buffer_Type::ARRAY_BUFFER, (uint8_t*)mesh.data->positions.data(), sizeof(float) * num_positions, STATIC_DRAW);
                enable_vertex_attrib(POSITION_ID);
-               define_vertex_attrib(POSITION_ID, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+               define_vertex_attrib(POSITION_ID, 3, false, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
                bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, 0);
           } else {
                LOG_ERROR("There is no postion data");

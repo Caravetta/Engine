@@ -59,8 +59,8 @@ void Render_Context::init( void )
      __fbo_vertexbuffer_id = create_vertex_buffer();
      bind_vertex_array(__fbo_vertex_array_id);
      bind_vertex_buffer(ARRAY_BUFFER, __fbo_vertexbuffer_id);
-     buffer_vertex_data(ARRAY_BUFFER, (uint8_t*)g_quad_vertex_buffer_data, sizeof(g_quad_vertex_buffer_data));
-     define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+     buffer_vertex_data(ARRAY_BUFFER, (uint8_t*)g_quad_vertex_buffer_data, sizeof(g_quad_vertex_buffer_data), STATIC_DRAW);
+     define_vertex_attrib(0, 3, false, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
 	enable_vertex_attrib(0);
      bind_vertex_buffer(ARRAY_BUFFER, 0);
      bind_vertex_array(0);

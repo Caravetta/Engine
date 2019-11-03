@@ -18,6 +18,7 @@ typedef void (*set_view_port_proc) ( int x, int y, size_t width, size_t height )
 typedef int32_t (*create_program_file_proc) ( uint8_t* files );
 typedef int32_t (*create_program_string_proc) ( uint8_t* strings );
 typedef void (*use_program_proc) ( int32_t program_id );
+typedef int32_t (*fetch_attrib_id_proc) ( int32_t program_id, uint8_t* name );
 typedef int32_t (*fetch_uniform_id_proc) ( int32_t program_id, uint8_t* name );
 typedef void (*upload_uniform_int1_proc) ( int32_t location, int value );
 typedef void (*upload_uniform_float1_proc) ( int32_t location, float value );
@@ -29,8 +30,8 @@ typedef uint32_t (*create_vertex_array_proc) ( void );
 typedef void (*bind_vertex_array_proc) ( uint32_t array_id );
 typedef uint32_t (*create_vertex_buffer_proc) ( void );
 typedef void (*bind_vertex_buffer_proc) ( Buffer_Type type, uint32_t buffer_id );
-typedef void (*buffer_vertex_data_proc) ( Buffer_Type type, uint8_t* data, size_t size );
-typedef void (*define_vertex_attrib_proc) ( uint32_t index, size_t size, Data_Type type, size_t stride, uint8_t* data );
+typedef void (*buffer_vertex_data_proc) ( Buffer_Type type, uint8_t* data, size_t size, Usage_Type usage );
+typedef void (*define_vertex_attrib_proc) ( uint32_t index, size_t size, bool normalized, Data_Type type, size_t stride, uint8_t* data );
 typedef void (*enable_vertex_attrib_proc) ( uint32_t index );
 typedef Fbo_Handle (*create_fbo_proc) ( void );
 typedef void (*set_fbo_color_texture_proc) ( int color_texture );
@@ -39,8 +40,9 @@ typedef void (*bind_fbo_proc) ( Fbo_Handle fbo );
 typedef void (*unbind_fbo_proc) ( void );
 typedef void (*bind_texture_proc) ( int texture_id );
 typedef void (*draw_data_proc) ( Draw_Mode mode, int first, size_t count );
-typedef void (*draw_elements_data_proc) ( Draw_Mode mode, int first, size_t count );
+typedef void (*draw_elements_data_proc) ( Draw_Mode mode, size_t count, Data_Type type, void* offset );
 typedef Texture_Handle (*create_texture_proc) ( int width, int height, uint8_t* data, Texture_Format format );
+typedef void (*scissor_box_proc) ( int x, int y, size_t width, size_t height );
 
 extern init_graphics_platform_proc init_graphics_platform;
 extern create_render_context_proc  create_render_context;
@@ -54,6 +56,7 @@ extern set_view_port_proc          set_view_port;
 extern create_program_file_proc    create_program_file;
 extern create_program_string_proc  create_program_string;
 extern use_program_proc            use_program;
+extern fetch_attrib_id_proc        fetch_attrib_id;
 extern fetch_uniform_id_proc       fetch_uniform_id;
 extern upload_uniform_int1_proc    upload_uniform_int1;
 extern upload_uniform_float1_proc  upload_uniform_float1;
@@ -77,6 +80,7 @@ extern bind_texture_proc           bind_texture;
 extern draw_data_proc              draw_data;
 extern create_texture_proc         create_texture;
 extern draw_elements_data_proc     draw_elements_data;
+extern scissor_box_proc            scissor_box;
 
 enum Graphics_API {
      OPENGL_GRAPHICS_API,

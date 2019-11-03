@@ -46,10 +46,10 @@ set(editor_src
     ../core/graphics/material.cpp
     ../core/memory/page_allocator.cpp
     ../core/engine_core.cpp
-    imgui/gui.cpp
-    imgui/imgui.cpp
-    imgui/imgui_draw.cpp
-    imgui/imgui_widgets.cpp
+    gui/gui.cpp
+    gui/imgui.cpp
+    gui/imgui_draw.cpp
+    gui/imgui_widgets.cpp
     editor.cpp)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
@@ -69,7 +69,7 @@ add_executable(Editor ${editor_src} ${editor_win_src})
 endif()
 
 target_include_directories(Editor PUBLIC
-                           imgui/include
+                           gui/include
                            ../core/
                            ../core/include
                            ../core/data_structures/include

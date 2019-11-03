@@ -18,6 +18,11 @@ int32_t Shader::id( void )
      return __id;
 }
 
+int32_t Shader::attribute_id( const std::string& name )
+{
+     return fetch_attrib_id(__id, (uint8_t*)&name);
+}
+
 int32_t Shader::uniform_id( const std::string& name )
 {
      return fetch_uniform_id(__id, (uint8_t*)&name);

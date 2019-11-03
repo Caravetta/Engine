@@ -16,6 +16,14 @@ namespace Engine {
 
 GLenum type_array[] = {
      GL_FLOAT,
+     GL_UNSIGNED_BYTE,
+     GL_UNSIGNED_SHORT,
+     GL_UNSIGNED_INT,
+};
+
+GLenum usage_type[] = {
+     GL_STATIC_DRAW,
+     GL_STREAM_DRAW,
 };
 
 GLenum draw_mode[] = {
@@ -28,6 +36,9 @@ GLenum depth_func_array[] = {
 
 GLenum options_array[] = {
      GL_DEPTH_TEST,
+     GL_BLEND,
+     GL_CULL_FACE,
+     GL_SCISSOR_TEST,
 };
 
 GLenum buffer_types[] = {
@@ -80,6 +91,7 @@ extern "C" void graphics_clear( uint64_t clear_mask )
 
      mask |= (clear_mask & COLOR_BUFFER_CLEAR) ? GL_COLOR_BUFFER_BIT : 0;
      mask |= (clear_mask & DEPTH_BUFFER_CLEAR) ? GL_DEPTH_BUFFER_BIT : 0;
+     mask |= (clear_mask & ACCUM_BUFFER_CLEAR) ? GL_ACCUM_BUFFER_BIT : 0;
 
      glClear(mask);
 }
@@ -92,6 +104,10 @@ extern "C" void set_view_port( int x, int y, size_t width, size_t height )
 extern "C" void enable_graphics_option( Graphics_Option option )
 {
      glEnable(options_array[option]);
+     if ( option == BLEND_OPTION ) {
+          glBlendEquation(GL_FUNC_ADD);
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+     }
 }
 
 extern "C" void disable_graphics_option( Graphics_Option option )
@@ -185,6 +201,11 @@ extern "C" void use_program( int32_t program_id )
      OpenGL::glUseProgram(program_id);
 }
 
+extern "C" int32_t fetch_attrib_id( int32_t program_id, uint8_t* name )
+{
+     return OpenGL::glGetAttribLocation(program_id, ((std::string*)name)->c_str());;
+}
+
 extern "C" int32_t fetch_uniform_id( int32_t program_id, uint8_t* name )
 {
      return OpenGL::glGetUniformLocation(program_id, ((std::string*)name)->c_str());;
@@ -245,15 +266,17 @@ extern "C" void bind_vertex_buffer( Buffer_Type type, uint32_t buffer_id )
      OpenGL::glBindBuffer(buffer_types[type], buffer_id);
 }
 
-extern "C" void buffer_vertex_data( Buffer_Type type, uint8_t* data, size_t size )
+extern "C" void buffer_vertex_data( Buffer_Type type, uint8_t* data, size_t size, Usage_Type usage )
 {
-     OpenGL::glBufferData(buffer_types[type], size, data, GL_STATIC_DRAW);
+     OpenGL::glBufferData(buffer_types[type], size, data, usage_type[usage]);
 }
 
-extern "C" void define_vertex_attrib( uint32_t index, size_t size,
+extern "C" void define_vertex_attrib( uint32_t index, size_t size, bool normalized,
                                       Data_Type type, size_t stride, uint8_t* data )
 {
-     OpenGL::glVertexAttribPointer(index, (GLsizei)size, type_array[type], GL_FALSE, (GLsizei)stride, (void*)data);
+     OpenGL::glVertexAttribPointer(index, size, type_array[type],
+                                   (normalized == true ? GL_TRUE : GL_FALSE),
+                                   stride, (void*)data);
 }
 
 extern "C" void enable_vertex_attrib( uint32_t index )
@@ -353,9 +376,14 @@ extern "C" void draw_data( Draw_Mode mode, int first, size_t count )
      OpenGL::glDrawArrays(draw_mode[mode], first, (GLsizei)count);
 }
 
-extern "C" void draw_elements_data( Draw_Mode mode, int first, size_t count )
+extern "C" void draw_elements_data( Draw_Mode mode, size_t count, Data_Type type, void* offset )
 {
-     OpenGL::glDrawElements(draw_mode[mode], (GLsizei)count, GL_UNSIGNED_INT, 0);
+     OpenGL::glDrawElements(draw_mode[mode], count, type_array[type], offset);
+}
+
+extern "C" void scissor_box( int x, int y, size_t width, size_t height )
+{
+     OpenGL::glScissor(x, y, width, height);
 }
 
 } // end namespace Engine

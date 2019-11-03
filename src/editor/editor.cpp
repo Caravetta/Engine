@@ -4,33 +4,10 @@
 #define WINDOW_WIDTH     800
 #define WINDOW_HEIGHT    600
 
-char gui_vert[] = "                                                        \
-                    #version 330 core\n                                    \
-                    layout (location = 0) in vec2 Position;\n              \
-                    layout (location = 1) in vec2 UV;\n                    \
-                    layout (location = 2) in vec4 Color;\n                 \
-                    uniform mat4 ProjMtx;\n                                \
-                    out vec2 Frag_UV;\n                                    \
-                    out vec4 Frag_Color;\n                                 \
-                    void main()\n                                          \
-                    {\n                                                    \
-                         Frag_UV = UV;\n                                   \
-                         Frag_Color = Color;\n                             \
-                         gl_Position = ProjMtx * vec4(Position.xy,0,1);\n  \
-                    }\n                                                    \
-                  ";
-
-char gui_frag[] = "                                                                  \
-                    #version 330 core\n                                              \
-                    in vec2 Frag_UV;\n                                               \
-                    in vec4 Frag_Color;\n                                            \
-                    uniform sampler2D Texture;\n                                     \
-                    out vec4 Out_Color;\n                                            \
-                    void main()\n                                                    \
-                    {\n                                                              \
-                         Out_Color = Frag_Color * texture(Texture, Frag_UV.st);\n    \
-                    }\n                                                              \
-                  ";                                                                 \
+void key_test( char key, bool is_pressed )
+{
+     LOG("JOSH %c", key);
+}
 
 int main()
 {
@@ -42,19 +19,34 @@ int main()
 
      Engine::Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Test");
 
-     rc = init_gui();
+     rc = init_gui(WINDOW_WIDTH, WINDOW_HEIGHT);
      if ( rc != Engine::SUCCESS ) {
           LOG_ERROR("init_gui failed rc=%d", (int)rc);
           return -1;
      }
 
-     std::vector<Engine::Shader_String> gui_shader_strings = {{Engine::VERTEX_SHADER, gui_vert, sizeof(gui_vert)},
-                                                              {Engine::FRAGMENT_SHADER, gui_frag, sizeof(gui_frag)}};
+     window.add_key_callback(key_test);
+     window.add_key_callback(gui_key_event_callback);
+     window.add_mouse_position_callback(gui_mouse_pos_callback);
+     window.add_mouse_button_callback(gui_mouse_button_callback);
+     window.add_resize_callback(gui_resize_callback);
 
-     Engine::Shader gui_shader(gui_shader_strings);
+     Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
      while ( window.is_closed() == false ) {
           window.update();
+
+          Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
+
+          gui_start_frame();
+
+          ImGui::Begin("Hello, world!");
+
+          ImGui::Text("This is some useful text.");
+
+          ImGui::End();
+
+          render_gui();
 
           window.swap_buffers();
      }

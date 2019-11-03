@@ -18,6 +18,10 @@ public:
      bool is_closed( void );
      int width( void );
      int height( void );
+     void add_key_callback( key_event_cb callback );
+     void add_mouse_position_callback( mouse_position_cb callback );
+     void add_mouse_button_callback( mouse_button_cb callback );
+     void add_resize_callback( resize_cb callback );
 };
 
 } // end namespace Engine

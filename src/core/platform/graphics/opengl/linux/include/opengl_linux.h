@@ -49,7 +49,9 @@ typedef void (*glTexImage2DProc) ( GLenum target, GLint level, GLint internalfor
                                    GLenum format, GLenum type, const GLvoid* data);
 typedef void (*glTexParameteriProc) ( GLenum target, GLenum pname, GLint param );
 typedef void (*glFramebufferTexture2DProc) ( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
-typedef void (*glDrawElementsProc) ( GLenum mode, GLsizei count, GLenum type, const GLvoid * indices);
+typedef void (*glDrawElementsProc) ( GLenum mode, GLsizei count, GLenum type, const GLvoid * indices );
+typedef GLint (*glGetAttribLocationProc) ( GLuint program, const GLchar *name );
+typedef void (*glScissorProc) ( GLint x, GLint y, GLsizei width, GLsizei height );
 
 extern glShaderSourceProc                    glShaderSource;
 extern glCreateShaderProc                    glCreateShader;
@@ -90,6 +92,8 @@ extern glTexImage2DProc                      glTexImage2D;
 extern glTexParameteriProc                   glTexParameteri;
 extern glFramebufferTexture2DProc            glFramebufferTexture2D;
 extern glDrawElementsProc                    glDrawElements;
+extern glGetAttribLocationProc               glGetAttribLocation;
+extern glScissorProc                         glScissor;
 
 Rc_t init_opengl( void );
 

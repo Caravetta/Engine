@@ -32,6 +32,7 @@ set(engine_core_src
     reflection/reflection_system.cpp
     platform/graphics/platform_graphics.cpp
     utils/crc32.cpp
+    utils/timer.cpp
     math/vector3f.cpp
     math/vector4f.cpp
     math/matrix4f.cpp
@@ -51,6 +52,7 @@ set(engine_core_src
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 set(engine_core_linux_src
     platform/linux/input_linux.cpp
+    platform/linux/timer_linux.cpp
     platform/linux/window_linux.cpp)
 
 add_executable(Engine-Core ${engine_core_src} ${engine_core_linux_src})
