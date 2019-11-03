@@ -2,6 +2,7 @@
 #include <X11/Xutil.h>
 #include <X11/keysymdef.h>
 #include <cstring>
+#include <vector>
 #include "window_linux.h"
 #include "platform_graphics.h"
 #include "input_linux.h"
@@ -22,6 +23,10 @@ struct platform_window_t {
      XVisualInfo* vis_info;
      Atom atom_delete_window;
      std::string title;
+     std::vector<key_event_cb> key_callbacks;
+     std::vector<mouse_position_cb> mouse_pos_callbacks;
+     std::vector<mouse_button_cb> mouse_button_callbacks;
+     std::vector<resize_cb> resize_callbacks;
 };
 
 static bool __is_extension_supported(const char *ext_list, const char *extension) {
@@ -55,7 +60,9 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
           return NULL;
      }
 
-     XSelectInput(window->display, window->window, KeyPressMask | KeyReleaseMask );
+     XSelectInput(window->display, window->window,
+                  KeyPressMask | KeyReleaseMask | PointerMotionMask |
+                  ButtonPressMask | ButtonReleaseMask | StructureNotifyMask );
 
      // show the window
      XClearWindow(window->display, window->window);
@@ -74,6 +81,7 @@ void platform_window_update( struct platform_window_t* platform_window )
                XGetWindowAttributes(platform_window->display, platform_window->window, &attributes);
                platform_window->width = attributes.width;
                platform_window->height = attributes.height;
+               LOG("width %d height %d", attributes.width, attributes.height);
           }
           if ( ev.type == ClientMessage ) {
                if ( ev.xclient.data.l[0] == platform_window->atom_delete_window ) {
@@ -82,12 +90,33 @@ void platform_window_update( struct platform_window_t* platform_window )
           } else if ( ev.type == DestroyNotify ) {
                platform_window->is_closed = true;
           } else if ( ev.type == KeyPress ) {
-               if ( ev.xkey.keycode < Platform_Key::PLATFORM_KEY_COUNT ) {
-                    key_state[ev.xkey.keycode] = true;
+               char c_key = (char)XLookupKeysym(&ev.xkey, 0);
+               for ( size_t ii = 0; ii < platform_window->key_callbacks.size(); ii++ ) {
+                    platform_window->key_callbacks[ii](c_key, true);
                }
           } else if ( ev.type == KeyRelease ) {
-               if ( ev.xkey.keycode < Platform_Key::PLATFORM_KEY_COUNT ) {
-                    key_state[ev.xkey.keycode] = false;
+               char c_key = (char)XLookupKeysym(&ev.xkey, 0);
+               for ( size_t ii = 0; ii < platform_window->key_callbacks.size(); ii++ ) {
+                    platform_window->key_callbacks[ii](c_key, false);
+               }
+          } else if ( ev.type == MotionNotify ) {
+               int mx = ev.xmotion.x;
+               int my = ev.xmotion.y;
+               for ( size_t ii = 0; ii < platform_window->mouse_pos_callbacks.size(); ii++) {
+                    platform_window->mouse_pos_callbacks[ii](mx, my);
+               }
+          } else if ( ev.type == ButtonPress ) {
+               for ( size_t ii = 0; ii < platform_window->mouse_button_callbacks.size(); ii++) {
+                    platform_window->mouse_button_callbacks[ii](ev.xbutton.button, true);
+               }
+          } else if ( ev.type == ButtonRelease ) {
+               for ( size_t ii = 0; ii < platform_window->mouse_button_callbacks.size(); ii++) {
+                    platform_window->mouse_button_callbacks[ii](ev.xbutton.button, false);
+               }
+          } else if ( ev.type == ConfigureNotify ) {
+               LOG("width %d height %d", ev.xconfigure.width, ev.xconfigure.height);
+               for ( size_t ii = 0; ii < platform_window->resize_callbacks.size(); ii ++ ) {
+                    platform_window->resize_callbacks[ii]((int32_t)ev.xconfigure.width, (int32_t)ev.xconfigure.height);
                }
           }
      }
@@ -112,6 +141,30 @@ int platform_window_get_width( struct platform_window_t* platform_window )
 int platform_window_get_height( struct platform_window_t* platform_window )
 {
      return platform_window->height;
+}
+
+int platform_window_add_key_event_cb( struct platform_window_t* platform_window, key_event_cb callback )
+{
+     platform_window->key_callbacks.push_back(callback);
+     return 0;
+}
+
+int platform_window_add_mouse_pos_cb( struct platform_window_t* platform_window, mouse_position_cb callback )
+{
+     platform_window->mouse_pos_callbacks.push_back(callback);
+     return 0;
+}
+
+int platform_window_add_mouse_button_cb( struct platform_window_t* platform_window, mouse_button_cb callback )
+{
+     platform_window->mouse_button_callbacks.push_back(callback);
+     return 0;
+}
+
+int platform_window_add_resize_cb( struct platform_window_t* platform_window, resize_cb callback )
+{
+     platform_window->resize_callbacks.push_back(callback);
+     return 0;
 }
 
 } // end namespace Engine

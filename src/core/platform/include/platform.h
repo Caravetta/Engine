@@ -6,6 +6,7 @@
 #elif LINUX
      #include "window_linux.h"
      #include "input_linux.h"
+     #include "timer_linux.h"
 #else
      #error
 #endif

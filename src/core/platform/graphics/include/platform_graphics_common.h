@@ -16,10 +16,19 @@ namespace Engine {
 enum Clear_Mask {
      COLOR_BUFFER_CLEAR = 1 << 0,
      DEPTH_BUFFER_CLEAR = 1 << 1,
+     ACCUM_BUFFER_CLEAR = 1 << 2,
 };
 
 enum Data_Type {
      FLOAT_DATA = 0,
+     UNSIGNED_BYTE,
+     UNSIGNED_SHORT,
+     UNSIGNED_INT,
+};
+
+enum Usage_Type {
+     STATIC_DRAW,
+     STREAM_DRAW,
 };
 
 enum Draw_Mode {
@@ -27,7 +36,10 @@ enum Draw_Mode {
 };
 
 enum Graphics_Option {
-     DEPTH_TEST = 0,
+     DEPTH_TEST_OPTION = 0,
+     BLEND_OPTION,
+     CULL_FACE_OPTION,
+     SCISSOR_TEST_OPTION,
 };
 
 enum Depth_Func {

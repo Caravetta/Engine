@@ -54,6 +54,8 @@ glFramebufferTexture2DProc            glFramebufferTexture2D          = NULL;
 
 glGetShaderInfoLogProc                glGetShaderInfoLog              = NULL;
 glDrawElementsProc                    glDrawElements                  = NULL;
+glGetAttribLocationProc               glGetAttribLocation             = NULL;
+glScissorProc                         glScissor                       = NULL;
 
 Rc_t init_opengl( void )
 {
@@ -97,6 +99,8 @@ Rc_t init_opengl( void )
 
      OPENGL_LOAD(glGetShaderInfoLog, glGetShaderInfoLogProc);
      OPENGL_LOAD(glDrawElements, glDrawElementsProc);
+     OPENGL_LOAD(glGetAttribLocation, glGetAttribLocationProc);
+     OPENGL_LOAD(glScissor, glScissorProc);
 
 
 
@@ -120,6 +124,8 @@ struct platform_window_t {
 };
 
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+typedef void (*glXSwapIntervalEXTProc)(Display*, GLXDrawable, int);
+typedef int (*glXSwapIntervalMESAProc)(unsigned int);
 
 static bool __is_extension_supported(const char *ext_list, const char *extension) {
      return strstr(ext_list, extension) != 0;
@@ -231,6 +237,15 @@ Rc_t init_render_context( struct platform_window_t* window )
      glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
      glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc) glXGetProcAddressARB( (const GLubyte *) "glXCreateContextAttribsARB" );
 
+     glXSwapIntervalEXTProc   glXSwapIntervalEXT = 0;
+     glXSwapIntervalEXT = (glXSwapIntervalEXTProc)glXGetProcAddressARB( (const GLubyte *) "glXSwapIntervalEXT" );
+     if ( glXSwapIntervalEXT == NULL ) {
+          LOG_ERROR("Failed to load glXSwapIntervalEXT");
+     }
+
+     glXSwapIntervalMESAProc glXSwapIntervalMESA = 0;
+     glXSwapIntervalMESA = (glXSwapIntervalMESAProc)glXGetProcAddressARB( (const GLubyte *) "glXSwapIntervalMESA" );
+
      int context_attributes[] = {
           GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
           GLX_CONTEXT_MINOR_VERSION_ARB, 2,
@@ -258,6 +273,18 @@ Rc_t init_render_context( struct platform_window_t* window )
      }
 
      glXMakeCurrent(window->display, window->window, context);
+
+     if ( __is_extension_supported( glxExts, "EXT_swap_control") == true ) {
+          LOG("EXT_swap_control supported");
+          glXSwapIntervalEXT(window->display, window->window, 0);
+     } else if ( __is_extension_supported( glxExts, "MESA_swap_control") == true ) {
+          LOG("MESA_swap_control supported");
+          glXSwapIntervalMESA(0);
+     } else if ( __is_extension_supported( glxExts, "SGI_swap_control") == true ) {
+          LOG("SGI_swap_control supported");
+     } else {
+
+     }
 
      window->vis_info = vis_info;
 

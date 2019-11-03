@@ -6,6 +6,8 @@
 
 namespace Engine {
 
+//typedef void (*key_event_cb)( char key, bool is_pressed );
+
 enum Key {
      W_KEY = PLATFORM_W_KEY,
      A_KEY = PLATFORM_A_KEY,

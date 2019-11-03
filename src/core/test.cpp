@@ -150,14 +150,14 @@ int main(int argc, char** argv) {
 
      uint32_t square_inc_vertexbuffer_id = Engine::create_vertex_buffer();
      Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, square_inc_vertexbuffer_id);
-     Engine::buffer_vertex_data(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, (uint8_t*)indices, sizeof(indices));
+     Engine::buffer_vertex_data(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, (uint8_t*)indices, sizeof(indices), Engine::STATIC_DRAW);
      Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, 0);
 
      uint32_t square_vertexbuffer_id = Engine::create_vertex_buffer();
      Engine::bind_vertex_buffer(Engine::Buffer_Type::ARRAY_BUFFER, square_vertexbuffer_id);
-     Engine::buffer_vertex_data(Engine::Buffer_Type::ARRAY_BUFFER, (uint8_t*)vertices, sizeof(vertices));
+     Engine::buffer_vertex_data(Engine::Buffer_Type::ARRAY_BUFFER, (uint8_t*)vertices, sizeof(vertices), Engine::STATIC_DRAW);
      Engine::enable_vertex_attrib(0);
-     Engine::define_vertex_attrib(0, 3, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+     Engine::define_vertex_attrib(0, 3, false, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
      Engine::bind_vertex_buffer(Engine::Buffer_Type::ARRAY_BUFFER, 0);
 
      Engine::bind_vertex_array(0);
@@ -169,7 +169,7 @@ int main(int argc, char** argv) {
 
      auto t_start = std::chrono::high_resolution_clock::now();
 
-     Engine::enable_graphics_option(Engine::DEPTH_TEST);
+     Engine::enable_graphics_option(Engine::DEPTH_TEST_OPTION);
      Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
@@ -178,7 +178,7 @@ int main(int argc, char** argv) {
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
-     #define ENTS 1000
+     #define ENTS 10
 
      std::vector<Engine::Entity> entities;
 
@@ -211,11 +211,16 @@ int main(int argc, char** argv) {
 
      outline_pass.configure();
 
+     Engine::Timer frame_time;
+
+     frame_time.start();
+
      while( window.is_closed() == false && window1.is_closed() == false ) {
+          frame_time.start();
           window.update();
           window1.update();
 
-          Engine::enable_graphics_option(Engine::DEPTH_TEST);
+          Engine::enable_graphics_option(Engine::DEPTH_TEST_OPTION);
           Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
           render_context.bind();
@@ -272,13 +277,15 @@ int main(int argc, char** argv) {
                Engine::Matrix4f mvp = ortho * view_transform * model_transform;
                test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
 
-               Engine::draw_elements_data(Engine::TRIANGLE_MODE, 0, 6);
+               Engine::draw_elements_data(Engine::TRIANGLE_MODE, 6, Engine::UNSIGNED_INT, 0);
           }
 
           outline_pass.execute(render_context);
           render_context.bit_to_screen();
           window.swap_buffers();
           window1.swap_buffers();
+          float dt = (float)frame_time.elapsed_milli_sec();
+          LOG("DT %fms", dt);
      }
 }
 
