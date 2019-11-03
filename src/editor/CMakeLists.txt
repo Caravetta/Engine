@@ -61,6 +61,7 @@ add_executable(Editor ${editor_src} ${editor_linux_src})
 
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 set(editor_win_src
+    ../core/platform/win32/input_win32.cpp
     ../core/platform/win32/window_win32.cpp)
 
 add_executable(Editor ${editor_src} ${editor_win_src})

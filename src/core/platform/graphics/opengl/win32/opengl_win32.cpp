@@ -106,6 +106,10 @@ PFNGLGENTEXTURESPROC                  glGenTextures              = NULL;
 PFNGLBINDTEXTUREPROC                  glBindTexture              = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DPROC         glFramebufferTexture2D     = NULL;
 
+PFNGLUNIFORM1IPROC                    glUniform1i                = NULL;
+PFNGLGETSHADERINFOLOGPROC             glGetShaderInfoLog         = NULL;
+PFNGLDRAWELEMENTSPROC                 glDrawElements             = NULL;
+
 LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
      switch( msg )
@@ -236,6 +240,9 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glGenTextures, PFNGLGENTEXTURESPROC);
      OPENGL_LOAD(glBindTexture, PFNGLBINDTEXTUREPROC);
      OPENGL_LOAD(glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DPROC);
+     OPENGL_LOAD(glUniform1i, PFNGLUNIFORM1IPROC);
+     OPENGL_LOAD(glGetShaderInfoLog, PFNGLGETSHADERINFOLOGPROC);
+     OPENGL_LOAD(glDrawElements, PFNGLDRAWELEMENTSPROC);
 
      // Release the temporary rendering context now that the extensions have been loaded.
      wglMakeCurrent(NULL, NULL);

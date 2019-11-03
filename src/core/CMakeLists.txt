@@ -58,9 +58,11 @@ add_library(EngineCore STATIC ${engine_core_src} ${engine_core_linux_src})
 
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 set(engine_core_win_src
+    platform/win32/input_win32.cpp
     platform/win32/window_win32.cpp)
 
 add_executable(Engine-Core ${engine_core_src} ${engine_core_win_src})
+add_library(EngineCore STATIC ${engine_core_src} ${engine_core_win_src})
 
 endif()
 
@@ -115,6 +117,9 @@ target_include_directories(EngineCore PUBLIC
 
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 target_include_directories(Engine-Core PUBLIC
+                           platform/win32/include)
+
+target_include_directories(EngineCore PUBLIC
                            platform/win32/include)
 
 target_link_libraries(Engine-Core user32 gdi32 opengl32 winmm)

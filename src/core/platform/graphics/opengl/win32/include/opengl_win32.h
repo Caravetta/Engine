@@ -51,6 +51,9 @@ typedef void (APIENTRY * PFNGLTEXIMAGE2DPROC) ( GLenum target, GLint level, GLin
                                                  GLenum format, GLenum type, const GLvoid* data );
 typedef void (APIENTRY * PFNGLTEXPARAMETERIPROC) ( GLenum target, GLenum pname, GLint param );
 typedef void (APIENTRY * PFNGLFRAMEBUFFERTEXTURE2DPROC) ( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
+typedef void (APIENTRY * PFNGLUNIFORM1IPROC) ( GLint location, GLint v0 );
+typedef void (APIENTRY * PFNGLGETSHADERINFOLOGPROC) ( GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog );
+typedef void (APIENTRY * PFNGLDRAWELEMENTSPROC) ( GLenum mode, GLsizei count, GLenum type, const GLvoid * indices);
 
 
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC     wglCreateContextAttribsARB;
@@ -89,6 +92,10 @@ extern PFNGLDELETEFRAMEBUFFERSPROC           glDeleteFramebuffers;
 extern PFNGLGENTEXTURESPROC                  glGenTextures;
 extern PFNGLBINDTEXTUREPROC                  glBindTexture;
 extern PFNGLFRAMEBUFFERTEXTURE2DPROC         glFramebufferTexture2D;
+
+extern PFNGLUNIFORM1IPROC                    glUniform1i;
+extern PFNGLGETSHADERINFOLOGPROC             glGetShaderInfoLog;
+extern PFNGLDRAWELEMENTSPROC                 glDrawElements;
 
 Rc_t init_opengl( void );
 

@@ -42,7 +42,7 @@ Rc_t init_mesh_asset_manager( void )
 
 Rc_t load_mesh( Mesh_Type type, std::string file )
 {
-
+     return SUCCESS;
 }
 
 Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
@@ -121,6 +121,9 @@ Mesh_Render_Info mesh_render_info( Mesh_Handle mesh_handle )
           Mesh_Render_Info render_info = {0};
           return render_info;
      }
+
+     Mesh_Render_Info render_info = {0};
+     return render_info;
 }
 
 COMPONENT_DEFINE( Mesh_Info );

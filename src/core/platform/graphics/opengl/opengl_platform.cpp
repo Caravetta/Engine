@@ -86,7 +86,7 @@ extern "C" void graphics_clear( uint64_t clear_mask )
 
 extern "C" void set_view_port( int x, int y, size_t width, size_t height )
 {
-     glViewport(x, y, width, height);
+     glViewport(x, y, (GLsizei)width, (GLsizei)height);
 }
 
 extern "C" void enable_graphics_option( Graphics_Option option )
@@ -253,7 +253,7 @@ extern "C" void buffer_vertex_data( Buffer_Type type, uint8_t* data, size_t size
 extern "C" void define_vertex_attrib( uint32_t index, size_t size,
                                       Data_Type type, size_t stride, uint8_t* data )
 {
-     OpenGL::glVertexAttribPointer(index, size, type_array[type], GL_FALSE, stride, (void*)data);
+     OpenGL::glVertexAttribPointer(index, (GLsizei)size, type_array[type], GL_FALSE, (GLsizei)stride, (void*)data);
 }
 
 extern "C" void enable_vertex_attrib( uint32_t index )
@@ -267,11 +267,21 @@ extern "C" Texture_Handle create_texture( int width, int height, uint8_t* data, 
 
      OpenGL::glGenTextures(1, &handle);
      OpenGL::glBindTexture(GL_TEXTURE_2D, handle);
+
+#ifdef LINUX
      OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, texture_format[format], width, height,
                           0, texture_format[format], GL_UNSIGNED_BYTE, data);
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#elif WINDOWS
+     glTexImage2D(GL_TEXTURE_2D, 0, texture_format[format], width, height,
+                  0, texture_format[format], GL_UNSIGNED_BYTE, data);
+     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#endif
+
      OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
+
 
      return handle;
 }
@@ -334,18 +344,18 @@ extern "C" void unbind_fbo( void )
 
 extern "C" void bind_texture( int texture_id )
 {
-     glActiveTexture(GL_TEXTURE0);
+     //glActiveTexture(GL_TEXTURE0);
      glBindTexture(GL_TEXTURE_2D, texture_id);
-     }
+}
 
 extern "C" void draw_data( Draw_Mode mode, int first, size_t count )
 {
-     OpenGL::glDrawArrays(draw_mode[mode], first, count);
+     OpenGL::glDrawArrays(draw_mode[mode], first, (GLsizei)count);
 }
 
 extern "C" void draw_elements_data( Draw_Mode mode, int first, size_t count )
 {
-     OpenGL::glDrawElements(draw_mode[mode], count, GL_UNSIGNED_INT, 0);
+     OpenGL::glDrawElements(draw_mode[mode], (GLsizei)count, GL_UNSIGNED_INT, 0);
 }
 
 } // end namespace Engine
