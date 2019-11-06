@@ -66,7 +66,7 @@ set(editor_win_src
     ../core/platform/win32/input_win32.cpp
     ../core/platform/win32/window_win32.cpp)
 
-add_executable(Editor ${editor_src} ${editor_win_src})
+add_executable(Editor WIN32 ${editor_src} ${editor_win_src})
 
 endif()
 

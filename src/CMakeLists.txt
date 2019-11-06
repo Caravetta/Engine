@@ -1,5 +1,4 @@
-add_subdirectory(utils)
+#add_subdirectory(utils)
 add_subdirectory(core)
-add_subdirectory(sandbox)
 add_subdirectory(editor)
 add_subdirectory(modules)

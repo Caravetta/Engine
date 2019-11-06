@@ -32,7 +32,7 @@ void init_systems( void )
 {
      std::vector<System*>& systems = system_manager->systems;
 
-     for ( size_t ii; ii < systems.size(); ii++ ) {
+     for ( size_t ii = 0; ii < systems.size(); ii++ ) {
           systems[ii]->init();
      }
 }
@@ -41,7 +41,7 @@ void update_systems( float time_step )
 {
      std::vector<System*>& systems = system_manager->systems;
 
-     for ( size_t ii; ii < systems.size(); ii++ ) {
+     for ( size_t ii = 0; ii < systems.size(); ii++ ) {
           systems[ii]->update(time_step);
      }
 }
@@ -50,7 +50,7 @@ void shutdown_systems( void )
 {
      std::vector<System*>& systems = system_manager->systems;
 
-     for ( size_t ii; ii < systems.size(); ii++ ) {
+     for ( size_t ii = 0; ii < systems.size(); ii++ ) {
           systems[ii]->shutdown();
      }
 }

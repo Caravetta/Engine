@@ -1,9 +1,12 @@
 #include "gui.h"
 #include "engine_core.h"
 #include "entity_manager.h"
+#ifdef WINDOWS
+#include <windows.h>
+#endif
 
-#define WINDOW_WIDTH     800
-#define WINDOW_HEIGHT    600
+#define WINDOW_WIDTH     1600
+#define WINDOW_HEIGHT    1000
 
 std::vector<Engine::Render_Texture*> render_textures;
 
@@ -14,9 +17,12 @@ void fb_resize_callback( int32_t width, int32_t height )
      }
 }
 
+#ifdef WINDOWS
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+#else
 int main()
+#endif
 {
-     Engine::Mesh_Info mesh;
      Engine::Rc_t rc = Engine::engine_init();
      if ( rc != Engine::SUCCESS ) {
           LOG_ERROR("Failed to init engine rc=%d", rc);
@@ -51,6 +57,8 @@ int main()
 
      size_t selected = 100000000;
      bool entity_selected = false;
+     char ent_buffer[50] = {0};
+     bool was_selected = false;
 
      float button_width = 0;
      bool add_comp = false;
@@ -90,28 +98,50 @@ int main()
                                      ImGuiWindowFlags_NoBackground);
           ImGui::BeginMenuBar();
           if ( ImGui::BeginMenu("File", true) ) {
+               ImGui::Spacing();
+               if ( ImGui::MenuItem("New Project") == true ) {
+                    LOG("Create New Project");
+               }
+               ImGui::Spacing();
+               if ( ImGui::MenuItem("Open Project") == true ) {
+                    LOG("Open Project");
+               }
+               ImGui::Spacing();
+               ImGui::Spacing();
+               ImGui::Separator();
+               ImGui::Spacing();
+
+               ImGui::Spacing();
                if ( ImGui::MenuItem("Exit") == true ) {
                     break;
                }
+               ImGui::Spacing();
                ImGui::EndMenu();
           }
           if ( ImGui::BeginMenu("Edit", true) ) {
+               ImGui::Spacing();
                if ( ImGui::BeginMenu("Test") ) {
+                    ImGui::Spacing();
                     if ( ImGui::MenuItem("Test1") == true ) {
                     }
+                    ImGui::Spacing();
                     ImGui::EndMenu();
 
                }
                ImGui::EndMenu();
           }
           if ( ImGui::BeginMenu("GameObjects", true) ) {
+               ImGui::Spacing();
                if ( ImGui::BeginMenu("Create") ) {
+                    ImGui::Spacing();
                     if ( ImGui::MenuItem("Entity") == true ) {
                          entity_manager.create_entity();
                     }
+                    ImGui::Spacing();
                     ImGui::EndMenu();
 
                }
+               ImGui::Spacing();
                ImGui::EndMenu();
           }
           ImGui::EndMenuBar();
@@ -122,6 +152,16 @@ int main()
           ImGui::SetNextWindowSize(ImVec2((float)window.width() - instector_tab_width, console_tab_height));
           ImGui::Begin("Console", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
           ImGui::BeginTabBar("Tabs");
+          if ( ImGui::BeginTabItem("Assets") == true ) {
+               ImGui::SetNextWindowSize(ImVec2((float)((float)window.width() * 0.1), console_tab_height - 27));
+               ImGui::SetNextWindowPos(ImVec2(0, (float)window.height() - console_tab_height + 27));
+               ImGui::Begin("Asset List", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+               if ( ImGui::CollapsingHeader("Assets", ImGuiTreeNodeFlags_DefaultOpen) ) {
+
+               }
+               ImGui::End();
+               ImGui::EndTabItem();
+          }
           if ( ImGui::BeginTabItem("Console") == true ) {
                ImGui::EndTabItem();
           }
@@ -133,7 +173,7 @@ int main()
 
           //inspector tab
           ImGui::SetNextWindowPos(ImVec2((float)window.width() - instector_tab_width, 19));
-          ImGui::SetNextWindowSize(ImVec2(instector_tab_width, (float)window.height()));
+          ImGui::SetNextWindowSize(ImVec2(instector_tab_width, (float)window.height() - 20));
           ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
           ImGui::BeginTabBar("Tabs");
           if ( ImGui::BeginTabItem("Inspector") == true ) {
@@ -163,14 +203,25 @@ int main()
 
                     }
 
+                    ImGui::Separator();
+
+                    std::string* entity_name = entity_manager.entity_name(selected);
+                    memcpy(ent_buffer, entity_name->c_str(), entity_name->size());
+                    if ( ImGui::InputText( "Entity Name", ent_buffer, 50, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue ) ) {
+                         entity_manager.update_entity_name(selected, ent_buffer);
+                    }
+
+                    if ( ImGui::IsItemDeactivatedAfterEdit() ) {
+                         entity_manager.update_entity_name(selected, ent_buffer);
+                    }
+
                     std::vector<Engine::Component_ID> ent_comps = Engine::entity_components(selected_ent);
                     ImGui::NewLine();
                     for ( size_t kk = 0; kk < ent_comps.size(); kk++ ) {
                          const char* comp_name = Engine::get_component_name(ent_comps[kk]);
                          if ( ImGui::CollapsingHeader(comp_name, ImGuiTreeNodeFlags_DefaultOpen) ) {
                               Engine::Meta_Info* meta_info = Engine::Reflection::get_meta_info(comp_name);
-                              ImGui::Separator();
-                              //ImGui::NewLine();
+
                               if ( meta_info != NULL ) {
                                    uint8_t* comp_data = Engine::get_component_data(selected_ent, ent_comps[kk]);
 
@@ -196,6 +247,7 @@ int main()
                                    }
                               }
                               ImGui::NewLine();
+                              ImGui::Separator();
                          }
                     }
 

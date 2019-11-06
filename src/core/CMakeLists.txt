@@ -134,10 +134,10 @@ get_property(includes
              PROPERTY INTERFACE_INCLUDE_DIRECTORIES
             )
 
-add_custom_target(base_comp_gen
-                  COMMAND test
-                  COMMENT "Generating Base Component Data"
-                 )
+#add_custom_target(base_comp_gen
+#                  COMMAND test
+#                  COMMENT "Generating Base Component Data"
+#                 )
 
 add_dependencies(Engine-Core base_comp_gen)
 

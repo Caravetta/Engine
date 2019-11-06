@@ -36,3 +36,27 @@ std::vector<std::string>& Entity_Manager::get_entity_name_list( void )
      return entity_name_list;
 }
 
+std::string* Entity_Manager::entity_name( size_t selected )
+{
+     size_t max = entity_name_list.size();
+     if ( selected < max ) {
+          return &entity_name_list[selected];
+     }
+
+     return NULL;
+}
+
+void Entity_Manager::update_entity_name( size_t selected, char* new_name )
+{
+     uint32_t old_id = Engine::crc32(entity_name_list[selected].c_str());
+
+     size_t idx = entity_look_up[old_id];
+
+     entity_name_list[selected] = new_name;
+     uint32_t new_id = Engine::crc32(entity_name_list[selected].c_str());
+
+     entity_look_up.erase(old_id);
+     entity_look_up.insert({new_id, idx});
+
+}
+

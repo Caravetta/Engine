@@ -10,13 +10,11 @@
 namespace Engine {
 
 #ifdef WINDOWS
-     #ifdef ENGINE_EXPORT
+     //#ifdef ENGINE_EXPORT
           #define ENGINE_API __declspec(dllexport)
-     #else
-          #define ENGINE_API __declspec(dllimport)
-     #endif
-
-     #define GAME_API __declspec(dllexport)
+     //#else
+          //#define ENGINE_API __declspec(dllimport)
+     //#endif
 
      #define ALIGN_PRE( ALIGNMENT ) __declspec( align( ALIGNMENT ) )
      #define ALIGN_POST( ALIGNMENT )

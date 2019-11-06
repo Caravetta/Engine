@@ -23,7 +23,6 @@ typedef void (*populate_meta_info_func)( Meta_Info& );
      Engine::Meta_Info_Registrar<_type> _type::__s_registrar;     \
      const Engine::Meta_Info* _type::create_meta_info( void )        \
      {\
-          LOG("JOSH HEEEEEEEE %s", #_type); \
           Engine::Meta_Info::create<_type>(__s_meta_info, #_type);         \
           return __s_meta_info;                                            \
      } \

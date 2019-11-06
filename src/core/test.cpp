@@ -192,7 +192,7 @@ int main(int argc, char** argv) {
           Engine::Transform* transform = Engine::get_component<Engine::Transform>(entity);
 
           transform->position = Engine::Vector3f(RandomFloat(-2, 2), RandomFloat(-2, 2), RandomFloat(4, 10));
-          transform->scale = Engine::Vector3f(0.1, 0.1, 0);
+          transform->scale = Engine::Vector3f(0.1f, 0.1f, 0.0f);
           transform->rotation = Engine::Vector3f(70, 0, 0);
      }
 
@@ -235,9 +235,9 @@ int main(int argc, char** argv) {
           test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
 
           if ( Engine::is_key_pressed(Engine::W_KEY) ) {
-               cam_pos.z -= 0.1;
+               cam_pos.z -= 0.1f;
           } else if ( Engine::is_key_pressed(Engine::S_KEY) ) {
-               cam_pos.z += 0.1;
+               cam_pos.z += 0.1f;
           }
 
           if ( Engine::is_key_pressed(Engine::A_KEY) ) {

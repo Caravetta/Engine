@@ -19,6 +19,8 @@ public:
      void create_entity( void );
      Engine::Entity get_entity( size_t selected );
      std::vector<std::string>& get_entity_name_list( void );
+     std::string* entity_name( size_t selected );
+     void update_entity_name( size_t selected, char* new_name );
 
 };
 

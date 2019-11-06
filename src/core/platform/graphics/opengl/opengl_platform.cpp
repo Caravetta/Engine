@@ -278,9 +278,9 @@ extern "C" void buffer_vertex_data( Buffer_Type type, uint8_t* data, size_t size
 extern "C" void define_vertex_attrib( uint32_t index, size_t size, bool normalized,
                                       Data_Type type, size_t stride, uint8_t* data )
 {
-     OpenGL::glVertexAttribPointer(index, size, type_array[type],
+     OpenGL::glVertexAttribPointer(index, (GLsizei)size, type_array[type],
                                    (normalized == true ? GL_TRUE : GL_FALSE),
-                                   stride, (void*)data);
+                                   (GLsizei)stride, (void*)data);
 }
 
 extern "C" void enable_vertex_attrib( uint32_t index )
@@ -382,7 +382,7 @@ extern "C" void draw_data( Draw_Mode mode, int first, size_t count )
 
 extern "C" void draw_elements_data( Draw_Mode mode, size_t count, Data_Type type, void* offset )
 {
-     OpenGL::glDrawElements(draw_mode[mode], count, type_array[type], offset);
+     OpenGL::glDrawElements(draw_mode[mode], (GLsizei)count, type_array[type], offset);
 }
 
 extern "C" void scissor_box( int x, int y, size_t width, size_t height )
@@ -390,7 +390,7 @@ extern "C" void scissor_box( int x, int y, size_t width, size_t height )
 #ifdef LINUX
      OpenGL::glScissor(x, y, width, height);
 #elif WINDOWS
-     glScissor(x, y, width, height);
+     glScissor(x, y, (GLsizei)width, (GLsizei)height);
 #endif
 }
 

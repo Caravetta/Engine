@@ -56,7 +56,6 @@ void Meta_Info_Base_Registrar::add_to_list( Meta_Info_Base_Registrar* registrar 
 void Meta_Info_Base_Registrar::add_meta_info( const Meta_Info* meta_info )
 {
      uint32_t id = crc32(meta_info->__name);
-     LOG("name: %s id: %" PRIu32 "", meta_info->__name, id);
      meta_map.insert({id, meta_info});
 }
 

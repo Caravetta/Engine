@@ -17,7 +17,7 @@ inline void Vector3f::clamp( const Vector3f& min_vector, Vector3f& max_vector )
 inline Vector3f& Vector3f::normalize( void )
 {
      float32_t length_sqr = (x * x) + (y * y) + (z * z);
-     float32_t length = (length_sqr <= 0) ? 0 : sqrt(length_sqr);
+     float32_t length = (float32_t)((length_sqr <= 0) ? 0 : sqrt(length_sqr));
 
      *this = (length > NEAR_ZERO) ? *this / length : Vector3f(0, 0, 0);
 
