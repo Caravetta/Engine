@@ -4,8 +4,8 @@
 #include <vector>
 #include <string>
 #include "core_common.h"
-#include "reflection.h"
 #include "component.h"
+#include "reflection.h"
 
 namespace Engine {
 
@@ -46,8 +46,11 @@ struct Mesh_Render_Info {
 
 struct Mesh_Info {
      COMPONENT_DECLARE( Mesh_Info );
+     META_INFO_DECLARE( Mesh_Info );
 
-     Mesh_Handle handle;
+     static void populate_meta_info_func( Engine::Meta_Info& meta_info );
+
+     Engine::Mesh_Handle handle;
 };
 
 Rc_t init_mesh_asset_manager( void );

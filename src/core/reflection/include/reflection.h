@@ -5,5 +5,6 @@
 #include "meta_base.h"
 #include "meta_field.h"
 #include "meta_struct.h"
+#include "meta_info.h"
 
 #endif //__REFLECTION_H__

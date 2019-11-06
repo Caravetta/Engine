@@ -87,5 +87,10 @@ Rc_t remove_components( Entity entity, std::vector<Component_ID> components )
      return handle_remove_components(entity, components);
 }
 
+std::vector<Component_ID> entity_components( Entity entity )
+{
+     return get_components(entity);
+}
+
 } // end namespace Engine
 

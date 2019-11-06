@@ -2,15 +2,15 @@
 #define __VECTOR3F_H__
 
 #include "core_common.h"
-#include "meta_struct.h"
-#include "reflection_system.h"
 
 namespace Engine {
 
-struct Vector3f : Reflection::Struct {
+struct Vector3f {
 public:
-     META_STRUCT_DECLARE( Vector3f );
-     static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
+     //META_STRUCT_DECLARE( Vector3f );
+     //META_INFO_DECLARE( Vector3f );
+     //static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
+     //static void populate_meta_info_func( Engine::Meta_Info& meta_info );
 
      const static Vector3f BASIS_X;
      const static Vector3f BASIS_Y;

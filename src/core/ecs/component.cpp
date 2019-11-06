@@ -56,8 +56,26 @@ size_t component_size( Component_ID id )
      return component_system->comp_info[id].size;
 }
 
+std::vector<Component_ID> get_component_list( void )
+{
+     return Component_Base_Registrar::__component_list;
+}
+
+const char* get_component_name( Component_ID id )
+{
+     Component_ID max = (Component_ID)Component_Base_Registrar::__component_names.size();
+
+     if ( (id - 1) < max ) {
+          return Component_Base_Registrar::__component_names[id - 1];
+     }
+
+     return NULL;
+}
+
 Component_Base_Registrar* Component_Base_Registrar::__s_head = NULL;
 Component_Base_Registrar* Component_Base_Registrar::__s_tail = NULL;
+std::vector<Component_ID> Component_Base_Registrar::__component_list;
+std::vector<const char*> Component_Base_Registrar::__component_names;
 
 Component_Base_Registrar::Component_Base_Registrar( void )
 {

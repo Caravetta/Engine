@@ -28,6 +28,7 @@ void resize_map_info( size_t size );
 size_t map_info_size( void );
 
 uint8_t* get_component_data( Handle handle, Component_ID id );
+std::vector<Component_ID> get_components( Handle handle );
 
 void add_handle( Handle handle );
 void add_handle( Handle handle, std::vector<Component_ID>& ids );

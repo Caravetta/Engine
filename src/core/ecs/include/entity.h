@@ -31,6 +31,8 @@ Rc_t add_components( Entity entity, std::vector<Component_ID> components );
 Rc_t remove_component( Entity entity, Component_ID id );
 Rc_t remove_components( Entity entity, std::vector<Component_ID> components );
 
+std::vector<Component_ID> entity_components( Entity entity );
+
 template<class T> T* get_component( Entity entity );
 
 } // end namespace Engine
