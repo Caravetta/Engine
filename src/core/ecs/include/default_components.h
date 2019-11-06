@@ -13,23 +13,26 @@ namespace Engine {
 
 struct Transform {
      COMPONENT_DECLARE( Transform );
-     META_STRUCT_DECLARE( Transform );
-     static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
+     META_INFO_DECLARE( Transform );
+
+     static void populate_meta_info_func( Engine::Meta_Info& meta_info );
 
      Engine::Vector3f position;
      Engine::Vector3f scale;
      Engine::Vector3f rotation;
 };
 
-
+#if 0
 /*
  *   Base Camera Component
  */
 
 struct Base_Camera {
      COMPONENT_DECLARE( Base_Camera );
-     META_STRUCT_DECLARE( Base_Camera );
-     static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
+     //META_STRUCT_DECLARE( Base_Camera );
+     META_INFO_DECLARE( Base_Camera );
+     //static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
+     static void populate_meta_info_func( Engine::Meta_Info& meta_info );
 
      Engine::Vector3f position;
      Engine::Vector3f rotation;
@@ -44,14 +47,18 @@ struct Base_Camera {
 
 struct Basic_3D_Camera {
      COMPONENT_DECLARE( Basic_3D_Camera );
-     META_STRUCT_DECLARE( Basic_3D_Camera );
-     static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
+     //META_STRUCT_DECLARE( Basic_3D_Camera );
+     META_INFO_DECLARE( Basic_3D_Camera );
+     //static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
+     static void populate_meta_info_func( Engine::Meta_Info& meta_info );
 
      float field_of_view;
      float aspect_ratio;
      float near_plane;
      float far_plane;
 };
+
+#endif
 
 } // end namespace Engine
 

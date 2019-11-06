@@ -127,6 +127,12 @@ Mesh_Render_Info mesh_render_info( Mesh_Handle mesh_handle )
 }
 
 COMPONENT_DEFINE( Mesh_Info );
+META_INFO_DEFINE( Mesh_Info );
+
+void Mesh_Info::populate_meta_info_func( Engine::Meta_Info& meta_info )
+{
+     meta_info.add_field(&Mesh_Info::handle, "handle");
+}
 
 void _update_data_vecs( size_t num_handles )
 {

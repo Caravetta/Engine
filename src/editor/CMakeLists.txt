@@ -26,10 +26,6 @@ set(editor_src
     ../core/ecs/component_data_array.cpp
     ../core/ecs/default_components.cpp
     ../core/ecs/system.cpp
-    ../core/reflection/meta_base.cpp
-    ../core/reflection/meta_struct.cpp
-    ../core/reflection/meta_field.cpp
-    ../core/reflection/reflection_system.cpp
     ../core/platform/graphics/platform_graphics.cpp
     ../core/utils/crc32.cpp
     ../core/math/vector3f.cpp
@@ -51,6 +47,11 @@ set(editor_src
     gui/imgui_draw.cpp
     gui/imgui_widgets.cpp
     entity_manager.cpp
+    ../core/reflection/meta_base.cpp
+    ../core/reflection/meta_struct.cpp
+    ../core/reflection/meta_field.cpp
+    ../core/reflection/meta_info.cpp
+    ../core/reflection/reflection_system.cpp
     editor.cpp)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )

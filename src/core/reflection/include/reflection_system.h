@@ -3,6 +3,7 @@
 
 #include "core_common.h"
 #include "meta_base.h"
+#include "meta_info.h"
 //#include "meta_struct.h"
 
 namespace Engine {
@@ -17,6 +18,7 @@ Rc_t init_reflection_system( void );
 bool register_type( Meta_Base* type );
 
 Meta_Struct* get_meta_struct( const char* name );
+Meta_Info* get_meta_info( const char* name );
 
 } // end namespace Reflection
 } // end namespace Engine

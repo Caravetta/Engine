@@ -133,6 +133,20 @@ uint8_t* get_component_data( Handle handle, Component_ID id )
      return comp_data;
 }
 
+std::vector<Component_ID> get_components( Handle handle )
+{
+     std::vector<Entity_Map>& entity_map = component_data_system->entity_map;
+     uint32_t handle_idx = handle_index(handle);
+
+     Comp_Data_Node* data_node = _comp_list_exists(entity_map[handle_idx].node_idx);
+     if ( data_node == NULL ) {
+          std::vector<Component_ID> empty;
+          return empty;
+     }
+
+     return data_node->components;
+}
+
 Chunk* _get_chunk( Comp_Data_Node& data_node )
 {
      if ( (data_node.tail == NULL) || (data_node.ents_per_chunk == data_node.tail->n_ents) ) {

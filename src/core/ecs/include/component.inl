@@ -30,6 +30,8 @@ template<class T>
 void Component_Registrar<T>::component_register( Component_ID id )
 {
      T::setup_component(id);
+     Component_Base_Registrar::__component_list.push_back(id);
+     Component_Base_Registrar::__component_names.push_back(T::__name);
 }
 
 } // end namespace Engine

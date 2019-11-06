@@ -19,6 +19,7 @@ Rc_t init_reflection_system( void )
      }
 
      Meta_Base_Registrar::register_type(Registrar_Base_Types::META_STRUCT_TYPE);
+     Meta_Info_Base_Registrar::register_meta_info();
      return SUCCESS;
 }
 
@@ -50,6 +51,19 @@ Meta_Struct* get_meta_struct( const char* name )
      }
 
      return (Meta_Struct*)iter->second;
+}
+
+Meta_Info* get_meta_info( const char* name )
+{
+     uint32_t id = crc32(name);
+     std::unordered_map<uint32_t, const Meta_Info*>& map = Meta_Info_Base_Registrar::meta_map;
+
+     std::unordered_map<uint32_t, const Meta_Info*>::const_iterator iter = map.find(id);
+     if ( iter != map.end() ) {
+          return (Meta_Info*)iter->second;
+     }
+
+     return NULL;
 }
 
 } // end namespace Reflection

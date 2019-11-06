@@ -16,6 +16,7 @@ void fb_resize_callback( int32_t width, int32_t height )
 
 int main()
 {
+     Engine::Mesh_Info mesh;
      Engine::Rc_t rc = Engine::engine_init();
      if ( rc != Engine::SUCCESS ) {
           LOG_ERROR("Failed to init engine rc=%d", rc);
@@ -35,6 +36,8 @@ int main()
      Entity_Manager entity_manager;
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
+
+     std::vector<Engine::Component_ID> comps = Engine::get_component_list();
 
      // TODO(JOSH): need to move this
      Engine::Render_Texture_Info texture_info(window.width(), window.height(), Engine::Texture_Format::RGB_FORMAT);
@@ -71,7 +74,7 @@ int main()
           render_context.bind();
           render_context.set_color_texture(base);
 
-          Engine::set_view_port(0, 0, window.width(), window.height());
+          //Engine::set_view_port(0, 0, window.width(), window.height());
 
           Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
@@ -135,6 +138,7 @@ int main()
           ImGui::BeginTabBar("Tabs");
           if ( ImGui::BeginTabItem("Inspector") == true ) {
                if ( entity_selected ) {
+                    Engine::Entity selected_ent = entity_manager.get_entity(selected);
                     //ImGui::Indent((instector_tab_width / 2) - button_width);
                     if ( ImGui::Button("Add Component", ImVec2(instector_tab_width, 0)) ) {
                          add_comp = true;
@@ -146,12 +150,55 @@ int main()
                          ImGui::SetNextWindowSize(ImVec2(instector_tab_width - 12, 300));
                          ImGui::SetNextWindowPos(ImVec2((float)window.width() - instector_tab_width + 8, 70));
                          ImGui::Begin("End", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+                         for ( size_t kk = 0; kk < comps.size(); kk++ ) {
+                              if ( ImGui::Selectable(Engine::get_component_name(comps[kk]), false ) == true ) {
+                                   add_comp = false;
+                                   Engine::add_component(selected_ent, comps[kk]);
+                              }
+                         }
                          if (  !ImGui::IsWindowFocused() ) {
                               add_comp = false;
                          }
                          ImGui::End();
 
                     }
+
+                    std::vector<Engine::Component_ID> ent_comps = Engine::entity_components(selected_ent);
+                    ImGui::NewLine();
+                    for ( size_t kk = 0; kk < ent_comps.size(); kk++ ) {
+                         const char* comp_name = Engine::get_component_name(ent_comps[kk]);
+                         if ( ImGui::CollapsingHeader(comp_name, ImGuiTreeNodeFlags_DefaultOpen) ) {
+                              Engine::Meta_Info* meta_info = Engine::Reflection::get_meta_info(comp_name);
+                              ImGui::Separator();
+                              //ImGui::NewLine();
+                              if ( meta_info != NULL ) {
+                                   uint8_t* comp_data = Engine::get_component_data(selected_ent, ent_comps[kk]);
+
+                                   for ( size_t ll = 0; ll < meta_info->__fields.size(); ll++ ) {
+                                        switch ( meta_info->__fields[ll].type ) {
+                                        case Engine::META_TYPE_VECTOR3F: {
+                                             ImGui::InputFloat3(meta_info->__fields[ll].__name, (float*)comp_data);
+                                        } break;
+                                        case Engine::META_TYPE_FLOAT: {
+                                             ImGui::InputFloat(meta_info->__fields[ll].__name, (float*)comp_data);
+                                        } break;
+                                        case Engine::META_TYPE_U64: {
+                                             ImGui::InputScalar(meta_info->__fields[ll].__name, ImGuiDataType_U64, (void*)comp_data);
+                                        } break;
+                                        case Engine::META_TYPE_U32: {
+                                             ImGui::InputScalar(meta_info->__fields[ll].__name, ImGuiDataType_U32, (void*)comp_data);
+                                        } break;
+                                        default: {
+                                        } break;
+                                        }
+
+                                        comp_data = comp_data + meta_info->__fields[ll].__size;
+                                   }
+                              }
+                              ImGui::NewLine();
+                         }
+                    }
+
                }
                ImGui::EndTabItem();
           }

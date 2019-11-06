@@ -2,7 +2,8 @@
 
 namespace Engine {
 
-META_STRUCT_DEFINE( Vector3f );
+//META_STRUCT_DEFINE( Vector3f );
+//META_INFO_DEFINE( Vector3f );
 
 const Vector3f Vector3f::BASIS_X(1.0f, 0.0f, 0.0f);
 const Vector3f Vector3f::BASIS_Y(0.0f, 1.0f, 0.0f);
@@ -10,12 +11,21 @@ const Vector3f Vector3f::BASIS_Z(0.0f, 0.0f, 1.0f);
 const Vector3f Vector3f::ZERO;
 const Vector3f Vector3f::UNIT(1.0f, 1.0f, 1.0f);
 
+#if 0
 void Vector3f::populate_meta_struct_func( Engine::Meta_Struct& meta_struct )
 {
      meta_struct.add_field(&Vector3f::x, "x");
      meta_struct.add_field(&Vector3f::y, "y");
      meta_struct.add_field(&Vector3f::z, "z");
 }
+
+void Vector3f::populate_meta_info_func( Engine::Meta_Info& meta_info )
+{
+     //meta_struct.add_field(&Vector3f::x, "x");
+     //meta_struct.add_field(&Vector3f::y, "y");
+     //meta_struct.add_field(&Vector3f::z, "z");
+}
+#endif
 
 Vector3f::Vector3f( void )
 {

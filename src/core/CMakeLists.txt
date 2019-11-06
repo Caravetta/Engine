@@ -26,10 +26,6 @@ set(engine_core_src
     ecs/component_data_array.cpp
     ecs/default_components.cpp
     ecs/system.cpp
-    reflection/meta_base.cpp
-    reflection/meta_struct.cpp
-    reflection/meta_field.cpp
-    reflection/reflection_system.cpp
     platform/graphics/platform_graphics.cpp
     utils/crc32.cpp
     utils/timer.cpp
@@ -47,6 +43,11 @@ set(engine_core_src
     graphics/material.cpp
     memory/page_allocator.cpp
     engine_core.cpp
+    reflection/meta_base.cpp
+    reflection/meta_struct.cpp
+    reflection/meta_field.cpp
+    reflection/meta_info.cpp
+    reflection/reflection_system.cpp
     test.cpp)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )

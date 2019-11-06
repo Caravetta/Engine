@@ -112,6 +112,8 @@ void platform_window_update( struct platform_window_t* platform_window )
                }
           } else if ( ev.type == ConfigureNotify ) {
                LOG("width %d height %d", ev.xconfigure.width, ev.xconfigure.height);
+               platform_window->width = ev.xconfigure.width;
+               platform_window->height = ev.xconfigure.height;
                for ( size_t ii = 0; ii < platform_window->resize_callbacks.size(); ii ++ ) {
                     platform_window->resize_callbacks[ii]((int32_t)ev.xconfigure.width, (int32_t)ev.xconfigure.height);
                }

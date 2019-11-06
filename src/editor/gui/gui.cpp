@@ -129,6 +129,7 @@ Engine::Rc_t init_gui( Engine::Window& window )
           ImGui::GetStyle().GrabRounding = 0.0f;
           ImGui::GetStyle().PopupRounding = 0.0f;
           ImGui::GetStyle().ScrollbarRounding = 0.0f;
+          ImGui::GetStyle().TabRounding = 0.0f;
           ImGui::GetStyle().Alpha = 1;
 
           //setup callbacks
