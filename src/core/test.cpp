@@ -124,7 +124,6 @@ int main(int argc, char** argv) {
      }
 
      Engine::Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Test");
-     Engine::Window window1(WINDOW_WIDTH, WINDOW_HEIGHT, "Test1");
 
      std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
@@ -145,23 +144,6 @@ int main(int argc, char** argv) {
 
      Engine::Mesh_Handle mesh_handle = Engine::mesh_handle("Test_Mesh");
 
-     uint32_t square_vertexArray_id = Engine::create_vertex_array();
-     Engine::bind_vertex_array(square_vertexArray_id);
-
-     uint32_t square_inc_vertexbuffer_id = Engine::create_vertex_buffer();
-     Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, square_inc_vertexbuffer_id);
-     Engine::buffer_vertex_data(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, (uint8_t*)indices, sizeof(indices), Engine::STATIC_DRAW);
-     Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, 0);
-
-     uint32_t square_vertexbuffer_id = Engine::create_vertex_buffer();
-     Engine::bind_vertex_buffer(Engine::Buffer_Type::ARRAY_BUFFER, square_vertexbuffer_id);
-     Engine::buffer_vertex_data(Engine::Buffer_Type::ARRAY_BUFFER, (uint8_t*)vertices, sizeof(vertices), Engine::STATIC_DRAW);
-     Engine::enable_vertex_attrib(0);
-     Engine::define_vertex_attrib(0, 3, false, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
-     Engine::bind_vertex_buffer(Engine::Buffer_Type::ARRAY_BUFFER, 0);
-
-     Engine::bind_vertex_array(0);
-
      Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45),
                                                              (float)window.width()/(float)window.height(),
                                                              1.0f,
@@ -178,7 +160,7 @@ int main(int argc, char** argv) {
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
-     #define ENTS 10
+     #define ENTS 100
 
      std::vector<Engine::Entity> entities;
 
@@ -194,6 +176,9 @@ int main(int argc, char** argv) {
           transform->position = Engine::Vector3f(RandomFloat(-2, 2), RandomFloat(-2, 2), RandomFloat(4, 10));
           transform->scale = Engine::Vector3f(0.1f, 0.1f, 0.0f);
           transform->rotation = Engine::Vector3f(70, 0, 0);
+
+          Engine::Mesh_Info* mesh_info = Engine::get_component<Engine::Mesh_Info>(entity);
+          mesh_info->handle = mesh_handle;
      }
 
      Engine::Vector3f cam_pos(0, 0, 0);
@@ -215,10 +200,9 @@ int main(int argc, char** argv) {
 
      frame_time.start();
 
-     while( window.is_closed() == false && window1.is_closed() == false ) {
+     while( window.is_closed() == false ) {
           frame_time.start();
           window.update();
-          window1.update();
 
           Engine::enable_graphics_option(Engine::DEPTH_TEST_OPTION);
           Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
@@ -257,17 +241,13 @@ int main(int argc, char** argv) {
                                       Engine::component_id<Engine::Transform>()});
 
           Engine::Component_Data_Array<Engine::Transform> trans_infos(group);
-
-          Engine::bind_vertex_array(square_vertexArray_id);
-          Engine::bind_vertex_buffer(Engine::Buffer_Type::ELEMENT_ARRAY_BUFFER, square_inc_vertexbuffer_id);
+          Engine::Component_Data_Array<Engine::Mesh_Info> mesh_infos(group);
 
           for ( size_t ii = 0; ii < entities.size(); ii++ ) {
                Engine::Transform& trans = trans_infos[ii];
-               Engine::Transform* transform_p = Engine::get_component<Engine::Transform>(entities[ii]);
+               Engine::Mesh_Info mesh_info = mesh_infos[ii];
 
-               if ( transform_p != &trans ) {
-                    LOG("transform_p:%p trans:%p", transform_p, &trans);
-               }
+               Engine::bind_mesh(mesh_info.handle);
 
                trans.rotation = Engine::Vector3f(time*30, time*20, time*40);
                Engine::Matrix4f model_transform = Engine::model_transform(trans.position,
@@ -283,9 +263,8 @@ int main(int argc, char** argv) {
           outline_pass.execute(render_context);
           render_context.bit_to_screen();
           window.swap_buffers();
-          window1.swap_buffers();
           float dt = (float)frame_time.elapsed_milli_sec();
-          LOG("DT %fms", dt);
+          //LOG("DT %fms", dt);
      }
 }
 

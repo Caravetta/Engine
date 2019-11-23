@@ -46,6 +46,15 @@ set(editor_src
     gui/imgui.cpp
     gui/imgui_draw.cpp
     gui/imgui_widgets.cpp
+    gui/imgui_canvas.cpp
+    panels/menu_bar_panel.cpp
+    panels/console_panel.cpp
+    panels/hierarchy_panel.cpp
+    panels/inspector_panel.cpp
+    panels/scene_panel.cpp
+    panels/panels.cpp
+    basic_shapes/cube.cpp
+    editor_context.cpp
     entity_manager.cpp
     ../core/reflection/meta_base.cpp
     ../core/reflection/meta_struct.cpp
@@ -73,6 +82,8 @@ endif()
 target_include_directories(Editor PUBLIC
                            include
                            gui/include
+                           panels/include
+                           basic_shapes/include
                            ../core/
                            ../core/include
                            ../core/data_structures/include

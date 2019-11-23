@@ -32,5 +32,26 @@ Rc_t engine_init( void )
      return rc;
 }
 
+Engine_Core* Engine_Core::instance = NULL;
+
+Engine_Core::Engine_Core( void )
+{
+
+}
+
+Engine_Core* Engine_Core::get_instance( void )
+{
+     if ( instance == NULL ) {
+          instance = new (std::nothrow) Engine_Core;
+     }
+
+     return instance;;
+}
+
+extern "C" Engine_Core* get_engine_core( void )
+{
+     return Engine_Core::get_instance();
+}
+
 } // end namespace Engine
 

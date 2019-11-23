@@ -40,10 +40,12 @@ Rc_t init_mesh_asset_manager( void )
      return rc;
 }
 
+#if 0
 Rc_t load_mesh( Mesh_Type type, std::string file )
 {
      return SUCCESS;
 }
+#endif
 
 Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
 {
@@ -61,21 +63,21 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
 
      // load data into graphics card
      if ( type == Mesh_Type::STATIC_MESH ) {
-          uint32_t vert_array = create_vertex_array();
-          bind_vertex_array(vert_array);
+          mesh.vertex_array_id = create_vertex_array();
+          bind_vertex_array(mesh.vertex_array_id);
 
           size_t num_indices = mesh.data->indices.size();
           if ( num_indices != 0 ) {
-               uint32_t indicie_buffer_id = create_vertex_buffer();
-               bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, indicie_buffer_id);
+               mesh.indice_buffer_id = create_vertex_buffer();
+               bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, mesh.indice_buffer_id);
                buffer_vertex_data(Buffer_Type::ELEMENT_ARRAY_BUFFER, (uint8_t*)mesh.data->indices.data(), sizeof(uint32_t) * num_indices, STATIC_DRAW);
                bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, 0);
           }
 
           size_t num_positions = mesh.data->positions.size();
           if ( num_positions != 0 ) {
-               uint32_t position_buffer_id = create_vertex_buffer();
-               bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, position_buffer_id);
+               mesh.vertex_buffer_id = create_vertex_buffer();
+               bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, mesh.vertex_buffer_id);
                buffer_vertex_data(Buffer_Type::ARRAY_BUFFER, (uint8_t*)mesh.data->positions.data(), sizeof(float) * num_positions, STATIC_DRAW);
                enable_vertex_attrib(POSITION_ID);
                define_vertex_attrib(POSITION_ID, 3, false, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
@@ -139,6 +141,28 @@ void _update_data_vecs( size_t num_handles )
      //mesh_manager->mesh_data.resize(num_handles);
      mesh_manager->meshes.resize(num_handles);
      mesh_manager->vertex_ids.resize(num_handles);
+}
+
+Rc_t  bind_mesh( const Mesh_Handle& mesh_handle )
+{
+     Rc_t rc = SUCCESS;
+
+     if ( mesh_manager->handle_manager.valid_handle(mesh_handle) ) {
+          uint32_t idx = handle_index(mesh_handle);
+          Mesh& mesh = mesh_manager->meshes[idx];
+          size_t num_indices = mesh.data->indices.size();
+
+          if ( num_indices > 0 ) {
+               bind_vertex_array(mesh.vertex_array_id);
+               bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, mesh.indice_buffer_id);
+          } else {
+               //TODO(JOSH): need to support non indices
+          }
+     } else {
+          rc = ENGINE_ERROR;
+     }
+
+     return rc;
 }
 
 } // end namespace Engine

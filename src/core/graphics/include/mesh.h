@@ -31,6 +31,9 @@ struct Mesh {
      Mesh_Handle    handle;
      size_t         indices_offset;
      size_t         indices_count;
+     uint32_t       vertex_array_id;
+     uint32_t       indice_buffer_id;
+     uint32_t       vertex_buffer_id;
 };
 
 struct Mesh_Render_Info {
@@ -54,10 +57,11 @@ struct Mesh_Info {
 };
 
 Rc_t init_mesh_asset_manager( void );
-Rc_t load_mesh( Mesh_Type type, std::string file );
+//Rc_t load_mesh( Mesh_Type type, std::string file );
 Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data );
 Mesh_Handle mesh_handle( std::string mesh_name );
 Mesh_Render_Info mesh_render_info( Mesh_Handle handle );
+Rc_t  bind_mesh( const Mesh_Handle& mesh_handle );
 
 } // end namespace Engine
 
