@@ -26,6 +26,15 @@ float32_t tan( float32_t radians )
      return tanf(radians);
 }
 
+inline float32_t random_float( float32_t min, float32_t max )
+{
+     float random = ((float) rand()) / (float) RAND_MAX;
+     float diff = max - min;
+     float r = random * diff;
+
+     return min + r;
+}
+
 Matrix4f translate( const Vector3f& vector )
 {
      Matrix4f trans = Matrix4f::IDENTITY;

@@ -27,6 +27,10 @@ public:
      void set_uniform_mat4( int32_t location, Matrix4f* matrix );
 };
 
+Rc_t init_shader_manager( void );
+void add_shader( int32_t id, Shader& shader );
+Shader& get_shader( int32_t id );
+
 } // end namespace Engine
 
 #endif //__SHADER_H__

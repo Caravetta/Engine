@@ -28,6 +28,7 @@ set(editor_src
     ../core/ecs/system.cpp
     ../core/platform/graphics/platform_graphics.cpp
     ../core/utils/crc32.cpp
+    ../core/utils/timer.cpp
     ../core/math/vector3f.cpp
     ../core/math/vector4f.cpp
     ../core/math/matrix4f.cpp
@@ -40,6 +41,8 @@ set(editor_src
     ../core/graphics/render_pass.cpp
     ../core/graphics/render_context.cpp
     ../core/graphics/material.cpp
+    ../core/graphics/camera.cpp
+    ../core/graphics/basic_renderer.cpp
     ../core/memory/page_allocator.cpp
     ../core/engine_core.cpp
     gui/gui.cpp
@@ -66,9 +69,16 @@ set(editor_src
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 set(editor_linux_src
     ../core/platform/linux/input_linux.cpp
+    ../core/platform/linux/timer_linux.cpp
     ../core/platform/linux/window_linux.cpp)
 
 add_executable(Editor ${editor_src} ${editor_linux_src})
+
+#add_library( assimp SHARED IMPORTED )
+#set_target_properties( assimp PROPERTIES IMPORTED_LOCATION ${CMAKE_BINARY_DIR}/src/editor/libassimp.so )
+
+#TARGET_LINK_LIBRARIES(Editor assimp)
+
 
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 set(editor_win_src
@@ -97,7 +107,8 @@ target_include_directories(Editor PUBLIC
                            ../core/platform/opengl/include
                            ../core/platform/graphics/include
                            ../core/input/include
-                           ../core/graphics/include)
+                           ../core/graphics/include
+                           libs/assimp/include)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 target_include_directories(Editor PUBLIC

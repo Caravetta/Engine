@@ -12,7 +12,7 @@ public:
      virtual void shutdown( void ) {};
 };
 
-Rc_t init_system_systems( void );
+Rc_t init_system_manager( void );
 void register_system( System* system );
 template<class T> void register_system( void );
 

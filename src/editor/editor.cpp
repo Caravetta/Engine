@@ -11,6 +11,29 @@
 #define WINDOW_WIDTH     1600
 #define WINDOW_HEIGHT    1000
 
+char vert[] = "                                                                      \
+               #version 330 core\n                                                   \
+                                                                                     \
+               layout(location = 0) in vec3 vertexPosition_modelspace;\n             \
+                                                                                     \
+               uniform mat4 mvp;\n                                                   \
+                                                                                     \
+               void main(){\n                                                        \
+                    vec4 pos = mvp * vec4(vertexPosition_modelspace, 1);\n           \
+                    gl_Position = pos;\n                                             \
+               }\n                                                                   \
+              ";
+
+char frag[] = "                                        \
+               #version 330 core\n                     \
+                out vec3 color_out;\n                  \
+                                                       \
+               void main()\n                           \
+               {\n                                     \
+                   color_out = vec3(0.6, 0.6, 0.6);\n  \
+               }\n                                     \
+              ";
+
 std::vector<Engine::Render_Texture*> render_textures;
 
 void fb_resize_callback( int32_t width, int32_t height )
@@ -32,6 +55,8 @@ int main( void )
           return -1;
      }
 
+     Engine::register_system<Engine::Basic_Renderer>();
+
      Editor_Context& editor_context = *Editor_Context::get_instance();
 
      editor_context.window = new (std::nothrow) Engine::Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Editor");
@@ -46,7 +71,15 @@ int main( void )
           return -1;
      }
 
-     load_cube_mesh();
+     std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
+                                                          {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
+
+     Engine::Shader default_shader(shader_strings);
+
+     Engine::add_shader(default_shader.id(), default_shader);
+     editor_context.shader_map.insert({"Default_Shader", default_shader.id()});
+
+     load_cube_mesh(editor_context);
 
      init_panels(editor_context);
      editor_context.window->add_resize_callback(fb_resize_callback);
@@ -64,6 +97,20 @@ int main( void )
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
+     Engine::Camera camera;
+     camera.perspective = Engine::perspective_projection(Engine::radians(45),
+                                                         (float)editor_context.window->width()/(float)editor_context.window->height(),
+                                                         1.0f,
+                                                         100.0f);
+
+     camera.view = Engine::view_transform(Engine::Vector3f(0, 0, 0),
+                                          Engine::Vector3f(0, 0, 0),
+                                          Engine::Vector3f(0, 0, 0));
+
+     Engine::set_active_camera(camera);
+
+     Engine::init_systems();
+
      while ( editor_context.window->is_closed() == false ) {
           editor_context.window->update();
 
@@ -79,6 +126,7 @@ int main( void )
           Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
           // start render here
+          Engine::update_systems(0.0f);
 
           Engine::Render_Texture& end_texure = render_context.cur_color_texture();
 

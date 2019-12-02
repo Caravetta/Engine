@@ -143,7 +143,7 @@ void _update_data_vecs( size_t num_handles )
      mesh_manager->vertex_ids.resize(num_handles);
 }
 
-Rc_t  bind_mesh( const Mesh_Handle& mesh_handle )
+Rc_t  bind_mesh( const Mesh_Handle& mesh_handle, size_t& ind )
 {
      Rc_t rc = SUCCESS;
 
@@ -153,6 +153,7 @@ Rc_t  bind_mesh( const Mesh_Handle& mesh_handle )
           size_t num_indices = mesh.data->indices.size();
 
           if ( num_indices > 0 ) {
+               ind = num_indices;
                bind_vertex_array(mesh.vertex_array_id);
                bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, mesh.indice_buffer_id);
           } else {

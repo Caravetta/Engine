@@ -1,4 +1,6 @@
 
+#include <new>
+
 namespace Engine {
 
 template<class T>

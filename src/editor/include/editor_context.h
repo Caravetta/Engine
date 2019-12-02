@@ -1,6 +1,8 @@
 #ifndef __EDITOR_CONTEXT_H__
 #define __EDITOR_CONTEXT_H__
 
+#include <string>
+#include <unordered_map>
 #include "engine_core.h"
 #include "entity_manager.h"
 
@@ -21,15 +23,17 @@ struct Panels {
 
 struct Editor_Context {
 public:
-     Engine::Window*                    window;
-     float                              window_width;
-     float                              window_height;
-     Entity_Manager                     entity_manager;
-     bool                               entity_selected;
-     size_t                             selected_entity;
-     std::vector<Engine::Component_ID>  component_list;
-     Panels                             panels;
-     Engine::Texture_Handle             scene_texture;
+     Engine::Window*                                        window;
+     float                                                  window_width;
+     float                                                  window_height;
+     Entity_Manager                                         entity_manager;
+     bool                                                   entity_selected;
+     size_t                                                 selected_entity;
+     std::vector<Engine::Component_ID>                      component_list;
+     Panels                                                 panels;
+     Engine::Texture_Handle                                 scene_texture;
+     std::unordered_map<std::string, Engine::Mesh_Handle>   mesh_map;
+     std::unordered_map<std::string, int32_t>               shader_map;
 
      static Editor_Context* get_instance( void );
 

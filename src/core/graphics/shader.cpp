@@ -1,3 +1,4 @@
+#include <unordered_map>
 #include "shader.h"
 #include "platform_graphics.h"
 
@@ -56,6 +57,43 @@ void Shader::set_uniform_float4( int32_t location, float value_1, float value_2,
 void Shader::set_uniform_mat4( int32_t location, Matrix4f* matrix )
 {
      upload_uniform_mat4(location, (uint8_t*)matrix);
+}
+
+struct Shader_Manager {
+     std::unordered_map<int32_t, Shader*> shader_map;
+};
+
+Shader_Manager* shader_manager = NULL;
+
+Rc_t init_shader_manager( void )
+{
+     Rc_t rc = SUCCESS;
+
+     if ( shader_manager == NULL ) {
+          shader_manager = new (std::nothrow) Shader_Manager;
+          if ( shader_manager == NULL ) {
+               rc = MEMORY_ALLOC_FAILED;
+          }
+     }
+
+     return rc;
+}
+
+void add_shader( int32_t id, Shader& shader )
+{
+     shader_manager->shader_map.insert({id, &shader});
+}
+
+Shader& get_shader( int32_t id )
+{
+     Shader* shader = NULL;
+
+     std::unordered_map<int32_t, Shader*>::const_iterator iter = shader_manager->shader_map.find(id);
+     if ( iter != shader_manager->shader_map.end() ) {
+          shader = iter->second;
+     }
+
+     return *shader;
 }
 
 } // end namespace Engine

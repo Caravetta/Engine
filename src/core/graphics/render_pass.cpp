@@ -13,9 +13,11 @@ void Render_Pass::blit( Render_Context& context, Render_Texture& source,
      context.set_color_texture(dest);
      bind_texture(source.texture());
 
-     use_program(material.shader().id());
-     int32_t texture_location = material.shader().uniform_id("text");
-     material.shader().set_uniform_int1(texture_location, 0);
+     Shader shader = get_shader(material.shader_id);
+
+     use_program(shader.id());
+     int32_t texture_location = shader.uniform_id("text");
+     shader.set_uniform_int1(texture_location, 0);
 
 
      uint32_t buff_id = context.quad_id();

@@ -10,13 +10,17 @@ Entity_Manager::~Entity_Manager( void )
      // do nothing
 }
 
-void Entity_Manager::create_entity( void )
+Engine::Entity Entity_Manager::create_entity( void )
 {
-     entity_handle_list.push_back(Engine::create_entity());
+     Engine::Entity entity = Engine::create_entity();
+
+     entity_handle_list.push_back(entity);
      std::string name = "Entity_" + std::to_string(entity_handle_list.size());
      entity_name_list.push_back(name);
      uint32_t id = Engine::crc32(name.c_str());
      entity_look_up.insert({id, (entity_name_list.size() - 1)});
+
+     return entity;
 }
 
 Engine::Entity Entity_Manager::get_entity( size_t selected )

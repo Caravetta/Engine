@@ -59,6 +59,25 @@ void update_menu_bar_panel( Editor_Context& context )
                if ( ImGui::MenuItem("Entity") == true ) {
                     context.entity_manager.create_entity();
                }
+               if ( ImGui::MenuItem("Cube") == true ) {
+                    Engine::Entity entity = context.entity_manager.create_entity();
+
+                    Engine::add_components(entity, {Engine::component_id<Engine::Transform>(),
+                                                    Engine::component_id<Engine::Mesh_Info>(),
+                                                    Engine::component_id<Engine::Material>()});
+
+                    Engine::Transform* transform = Engine::get_component<Engine::Transform>(entity);
+                    transform->position = Engine::Vector3f(0, 0, 0);
+                    transform->scale = Engine::Vector3f(1.0f, 1.0f, 1.0f);
+                    transform->rotation = Engine::Vector3f(0, 0, 0);
+
+                    Engine::Mesh_Info* mesh_info = Engine::get_component<Engine::Mesh_Info>(entity);
+                    mesh_info->handle = context.mesh_map["Default_Cube"];
+
+                    Engine::Material* material_info = Engine::get_component<Engine::Material>(entity);
+                    material_info->shader_id = context.shader_map["Default_Shader"];
+
+               }
                ImGui::Spacing();
                ImGui::EndMenu();
 

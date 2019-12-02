@@ -12,6 +12,8 @@ inline float32_t sin( float32_t radians );
 inline float32_t cos( float32_t radians );
 inline float32_t tan( float32_t radians );
 
+inline float32_t random_float( float32_t min, float32_t max );
+
 inline Matrix4f translate( const Vector3f& vector );
 inline Matrix4f translate( Matrix4f matrix, Vector3f vector );
 

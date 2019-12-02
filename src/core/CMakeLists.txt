@@ -41,6 +41,8 @@ set(engine_core_src
     graphics/render_pass.cpp
     graphics/render_context.cpp
     graphics/material.cpp
+    graphics/basic_renderer.cpp
+    graphics/camera.cpp
     memory/page_allocator.cpp
     engine_core.cpp
     reflection/meta_base.cpp

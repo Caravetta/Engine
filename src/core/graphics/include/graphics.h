@@ -10,5 +10,7 @@
 #include "render_context.h"
 #include "material.h"
 #include "mesh.h"
+#include "camera.h"
+#include "basic_renderer.h"
 
 #endif //__GRAPHICS_H__

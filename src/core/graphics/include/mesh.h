@@ -61,7 +61,7 @@ Rc_t init_mesh_asset_manager( void );
 Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data );
 Mesh_Handle mesh_handle( std::string mesh_name );
 Mesh_Render_Info mesh_render_info( Mesh_Handle handle );
-Rc_t  bind_mesh( const Mesh_Handle& mesh_handle );
+Rc_t  bind_mesh( const Mesh_Handle& mesh_handle, size_t& ind );
 
 } // end namespace Engine
 

@@ -1,5 +1,6 @@
 #include <vector>
 #include "system.h"
+#include "timer.h"
 
 namespace Engine {
 
@@ -9,7 +10,7 @@ struct System_Manager {
 
 System_Manager* system_manager = NULL;
 
-Rc_t init_system_systems( void )
+Rc_t init_system_manager( void )
 {
      Rc_t rc = SUCCESS;
 
@@ -41,8 +42,13 @@ void update_systems( float time_step )
 {
      std::vector<System*>& systems = system_manager->systems;
 
+     Engine::Timer system_time;
+
      for ( size_t ii = 0; ii < systems.size(); ii++ ) {
+          //system_time.start();
           systems[ii]->update(time_step);
+          //float dt = (float)system_time.elapsed_milli_sec();
+          //LOG("SYS Time %f", dt);
      }
 }
 
@@ -50,8 +56,13 @@ void shutdown_systems( void )
 {
      std::vector<System*>& systems = system_manager->systems;
 
+     Engine::Timer system_time;
+
      for ( size_t ii = 0; ii < systems.size(); ii++ ) {
+          system_time.start();
           systems[ii]->shutdown();
+          float dt = (float)system_time.elapsed_milli_sec();
+          LOG("SYS Time %f", dt);
      }
 }
 

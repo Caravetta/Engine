@@ -15,7 +15,7 @@ Rc_t init_ecs( void )
           LOG_ERROR("Failed to initiate component system");
      }
 
-     rc = init_system_systems();
+     rc = init_system_manager();
      if ( rc != SUCCESS ) {
           LOG_ERROR("Failed to initiate system system");
      }

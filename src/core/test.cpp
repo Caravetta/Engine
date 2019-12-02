@@ -1,4 +1,5 @@
 #include "engine_core.h"
+#include "basic_renderer.h"
 #if 0
 #include "glm.hpp"
 #include "matrix_transform.hpp"
@@ -72,13 +73,6 @@ char pass_frag1[] = "                                        \
                }\n                                          \
               ";
 
-float RandomFloat(float a, float b) {
-    float random = ((float) rand()) / (float) RAND_MAX;
-    float diff = b - a;
-    float r = random * diff;
-    return a + r;
-}
-
 float vertices[] = {
      0.5f,  0.5f, 0.0f,  // top right
      0.5f, -0.5f, 0.0f,  // bottom right
@@ -123,17 +117,24 @@ int main(int argc, char** argv) {
           return -1;
      }
 
+     Engine::register_system<Engine::Basic_Renderer>();
+
      Engine::Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Test");
+
+     Engine::init_systems();
 
      std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
 
      Engine::Shader test_shader(shader_strings);
 
+     Engine::add_shader(test_shader.id(), test_shader);
+
      std::vector<Engine::Shader_String> pass1_shader_strings = {{Engine::VERTEX_SHADER, pass_vert, sizeof(pass_vert)},
                                                                {Engine::FRAGMENT_SHADER, pass_frag1, sizeof(pass_frag1)}};
 
      Engine::Shader pass1_shader(pass1_shader_strings);
+     Engine::add_shader(pass1_shader.id(), pass1_shader);
 
      Engine::Mesh_Data mesh_data;
      mesh_data.positions.resize(12);
@@ -144,10 +145,18 @@ int main(int argc, char** argv) {
 
      Engine::Mesh_Handle mesh_handle = Engine::mesh_handle("Test_Mesh");
 
-     Engine::Matrix4f ortho = Engine::perspective_projection(Engine::radians(45),
-                                                             (float)window.width()/(float)window.height(),
-                                                             1.0f,
-                                                             100.0f);
+     Engine::Camera camera;
+
+     camera.perspective = Engine::perspective_projection(Engine::radians(45),
+                                                         (float)window.width()/(float)window.height(),
+                                                         1.0f,
+                                                         100.0f);
+
+     camera.view = Engine::view_transform(Engine::Vector3f(0, 0, 0),
+                                          Engine::Vector3f(0, 0, 0),
+                                          Engine::Vector3f(0, 0, 0));
+
+     Engine::set_active_camera(camera);
 
      auto t_start = std::chrono::high_resolution_clock::now();
 
@@ -160,7 +169,7 @@ int main(int argc, char** argv) {
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
-     #define ENTS 100
+     #define ENTS 10000
 
      std::vector<Engine::Entity> entities;
 
@@ -169,16 +178,20 @@ int main(int argc, char** argv) {
           entities.push_back(entity);
 
           Engine::add_components(entity, {Engine::component_id<Engine::Transform>(),
-                                          Engine::component_id<Engine::Mesh_Info>()});
+                                          Engine::component_id<Engine::Mesh_Info>(),
+                                          Engine::component_id<Engine::Material>()});
 
           Engine::Transform* transform = Engine::get_component<Engine::Transform>(entity);
 
-          transform->position = Engine::Vector3f(RandomFloat(-2, 2), RandomFloat(-2, 2), RandomFloat(4, 10));
+          transform->position = Engine::Vector3f(Engine::random_float(-2, 2), Engine::random_float(-2, 2), Engine::random_float(4, 10));
           transform->scale = Engine::Vector3f(0.1f, 0.1f, 0.0f);
           transform->rotation = Engine::Vector3f(70, 0, 0);
 
           Engine::Mesh_Info* mesh_info = Engine::get_component<Engine::Mesh_Info>(entity);
           mesh_info->handle = mesh_handle;
+
+          Engine::Material* material_info = Engine::get_component<Engine::Material>(entity);
+          material_info->shader_id = test_shader.id();
      }
 
      Engine::Vector3f cam_pos(0, 0, 0);
@@ -191,7 +204,7 @@ int main(int argc, char** argv) {
      Engine::Render_Context render_context;
      render_context.init();
 
-     Engine::Material outline_material(pass1_shader);
+     Engine::Material outline_material = { pass1_shader.id() };
      Outline_Pass outline_pass(outline_material);
 
      outline_pass.configure();
@@ -214,9 +227,9 @@ int main(int argc, char** argv) {
 
           Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
-          Engine::use_program(test_shader.id());
+          //Engine::use_program(test_shader.id());
 
-          test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
+          //test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
 
           if ( Engine::is_key_pressed(Engine::W_KEY) ) {
                cam_pos.z -= 0.1f;
@@ -229,14 +242,15 @@ int main(int argc, char** argv) {
           } else if ( Engine::is_key_pressed(Engine::D_KEY) ) {
                cam_rot.y -= 1;
           }
-
+#if 0
           Engine::Matrix4f view_transform = Engine::view_transform(cam_pos,
                                                                    Engine::Vector3f(0, 0, 0),
                                                                    cam_rot);
-
+#endif
           auto t_now = std::chrono::high_resolution_clock::now();
           float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
-
+          Engine::update_systems(0.0f);
+#if 0
           Engine::Entity_Group group({Engine::component_id<Engine::Mesh_Info>(),
                                       Engine::component_id<Engine::Transform>()});
 
@@ -254,17 +268,17 @@ int main(int argc, char** argv) {
                                                                           trans.scale,
                                                                           trans.rotation);
 
-               Engine::Matrix4f mvp = ortho * view_transform * model_transform;
+               Engine::Matrix4f mvp = camera.perspective * camera.view * model_transform;
                test_shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
 
                Engine::draw_elements_data(Engine::TRIANGLE_MODE, 6, Engine::UNSIGNED_INT, 0);
           }
-
+#endif
           outline_pass.execute(render_context);
           render_context.bit_to_screen();
           window.swap_buffers();
           float dt = (float)frame_time.elapsed_milli_sec();
-          //LOG("DT %fms", dt);
+          LOG("DT %fms", dt);
      }
 }
 

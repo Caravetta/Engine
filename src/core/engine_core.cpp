@@ -29,6 +29,11 @@ Rc_t engine_init( void )
           LOG_ERROR("Failed to setup Mesh Asset system rc=%d", rc);
      }
 
+     rc = init_shader_manager();
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to setup Shader Asset system rc=%d", rc);
+     }
+
      return rc;
 }
 
