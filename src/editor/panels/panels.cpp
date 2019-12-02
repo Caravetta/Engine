@@ -11,7 +11,7 @@ void _layout_resize_callback( int32_t width, int32_t height )
      context.window_width = window_width;
      context.window_height = window_height;
 
-	context.panels.menu_bar.width = window_width + 2.0f;
+     context.panels.menu_bar.width = window_width + 2.0f;
      context.panels.menu_bar.height = 0.0f;
      context.panels.menu_bar.x_position = -1.0f;
      context.panels.menu_bar.y_position = 0.0f;
@@ -39,6 +39,7 @@ void _layout_resize_callback( int32_t width, int32_t height )
 
 int init_panels( Editor_Context& context )
 {
+	_layout_resize_callback(context.window->width(), context.window->height());
 
 	context.window->add_resize_callback(_layout_resize_callback);
 
