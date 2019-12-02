@@ -67,7 +67,7 @@ set(engine_core_win_src
     platform/win32/timer_win32.cpp
     platform/win32/window_win32.cpp)
 
-#add_executable(Engine-Core ${engine_core_src} ${engine_core_win_src})
+add_executable(Engine-Core ${engine_core_src} ${engine_core_win_src})
 add_library(EngineCore MODULE ${engine_core_src} ${engine_core_win_src})
 
 endif()
