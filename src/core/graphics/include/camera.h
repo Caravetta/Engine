@@ -8,6 +8,10 @@
 namespace Engine {
 
 struct Camera {
+     META_INFO_DECLARE( Camera );
+
+     static void populate_meta_info_func( Engine::Meta_Info& meta_info );
+
      Matrix4f  perspective;
      Matrix4f  view;
      Transform transform;

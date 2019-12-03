@@ -39,11 +39,11 @@ extern "C" GRAPHICS_API void buffer_vertex_data( Buffer_Type type, uint8_t* data
 extern "C" GRAPHICS_API void define_vertex_attrib( uint32_t index, size_t size, bool normalized, Data_Type type, size_t stride, uint8_t* data );
 extern "C" GRAPHICS_API void enable_vertex_attrib( uint32_t index );
 
-extern "C" GRAPHICS_API Texture_Handle create_texture( int width, int height, uint8_t* data, Texture_Format format );
+extern "C" GRAPHICS_API Texture_Handle create_texture( int width, int height, uint8_t* data, Texture_Format internal_format, Texture_Format format, Data_Type type );
 extern "C" GRAPHICS_API void delete_texture( Texture_Handle handle );
 
 extern "C" GRAPHICS_API Fbo_Handle create_fbo( void );
-extern "C" GRAPHICS_API void set_fbo_color_texture( int color_texture );
+extern "C" GRAPHICS_API void set_fbo_color_texture( int color_texture, Attachment_Type attachment );
 extern "C" GRAPHICS_API void delete_fbo( Fbo_Handle fbo );
 extern "C" GRAPHICS_API void bind_fbo( Fbo_Handle fbo );
 extern "C" GRAPHICS_API void unbind_fbo( void );
@@ -53,6 +53,8 @@ extern "C" GRAPHICS_API void bind_texture( int texture_id );
 extern "C" GRAPHICS_API void draw_data( Draw_Mode mode, int first, size_t count );
 extern "C" GRAPHICS_API void draw_elements_data( Draw_Mode mode, size_t count, Data_Type type, void* offset );
 extern "C" GRAPHICS_API void scissor_box( int x, int y, size_t width, size_t height );
+
+extern "C" GRAPHICS_API void set_draw_buffers( Attachment_Type* attachments, size_t n_attachments );
 
 } // end namespace Engine
 

@@ -95,7 +95,7 @@ struct Outline_Pass : public Engine::Render_Pass {
 
      void configure( void )
      {
-          Engine::Render_Texture_Info texture_info(WINDOW_WIDTH, WINDOW_HEIGHT, Engine::Texture_Format::RGB_FORMAT);
+          Engine::Render_Texture_Info texture_info(WINDOW_WIDTH, WINDOW_HEIGHT, Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
           _outline = new (std::nothrow) Engine::Render_Texture(texture_info);
      };
 
@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
      Engine::Vector3f cam_pos(0, 0, 0);
      Engine::Vector3f cam_rot(0, 0, 0);
 
-     Engine::Render_Texture_Info texture_info(WINDOW_WIDTH, WINDOW_HEIGHT, Engine::Texture_Format::RGB_FORMAT);
+     Engine::Render_Texture_Info texture_info(WINDOW_WIDTH, WINDOW_HEIGHT, Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
 
      Engine::Render_Texture base(texture_info);
 

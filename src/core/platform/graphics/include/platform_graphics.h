@@ -34,14 +34,14 @@ typedef void (*buffer_vertex_data_proc) ( Buffer_Type type, uint8_t* data, size_
 typedef void (*define_vertex_attrib_proc) ( uint32_t index, size_t size, bool normalized, Data_Type type, size_t stride, uint8_t* data );
 typedef void (*enable_vertex_attrib_proc) ( uint32_t index );
 typedef Fbo_Handle (*create_fbo_proc) ( void );
-typedef void (*set_fbo_color_texture_proc) ( int color_texture );
+typedef void (*set_fbo_color_texture_proc) ( int color_texture, Attachment_Type attachment );
 typedef void (*delete_fbo_proc) ( Fbo_Handle fbo );
 typedef void (*bind_fbo_proc) ( Fbo_Handle fbo );
 typedef void (*unbind_fbo_proc) ( void );
 typedef void (*bind_texture_proc) ( int texture_id );
 typedef void (*draw_data_proc) ( Draw_Mode mode, int first, size_t count );
 typedef void (*draw_elements_data_proc) ( Draw_Mode mode, size_t count, Data_Type type, void* offset );
-typedef Texture_Handle (*create_texture_proc) ( int width, int height, uint8_t* data, Texture_Format format );
+typedef Texture_Handle (*create_texture_proc) ( int width, int height, uint8_t* data, Texture_Format internal_format, Texture_Format format, Data_Type type );
 typedef void (*scissor_box_proc) ( int x, int y, size_t width, size_t height );
 typedef void (*delete_texture_proc) ( Texture_Handle handle );
 

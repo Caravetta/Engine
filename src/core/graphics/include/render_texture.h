@@ -9,6 +9,9 @@ namespace Engine {
 
 struct Render_Texture {
 private:
+     Texture_Format __internal_format;
+     Texture_Format __format;
+     Data_Type      __type;
      Texture_Handle __texture_handle;
 
 public:

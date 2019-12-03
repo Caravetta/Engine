@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include "return_codes.h"
+#include "logger.h"
 
 namespace Engine {
 
@@ -46,8 +47,18 @@ namespace Engine {
 
 #define UNORDERED_MAP_ITER( x, y ) std::unordered_map<x, y>::const_iterator
 
-#define LOG( ... ) printf( __VA_ARGS__ ); printf("\n");
-#define LOG_ERROR(...) printf( __VA_ARGS__ ); printf("\n");
+//#define LOG( ... ) printf( __VA_ARGS__ ); printf("\n");
+//#define LOG_ERROR(...) printf( __VA_ARGS__ ); printf("\n");
+
+#define LOG( ... ) { \
+        sprintf(Engine::Logger::tmp_log_buf, __VA_ARGS__);\
+	Engine::Logger::get_instance()->log(Engine::Logger::tmp_log_buf, 0);\
+	}
+
+#define LOG_ERROR(...) { \
+        sprintf(Engine::Logger::tmp_log_buf, __VA_ARGS__);\
+	Engine::Logger::get_instance()->log(Engine::Logger::tmp_log_buf, 0);\
+	}
 
 #define NEAR_ZERO 1e-15f
 

@@ -29,6 +29,7 @@ set(engine_core_src
     platform/graphics/platform_graphics.cpp
     utils/crc32.cpp
     utils/timer.cpp
+    utils/logger.cpp
     math/vector3f.cpp
     math/vector4f.cpp
     math/matrix4f.cpp

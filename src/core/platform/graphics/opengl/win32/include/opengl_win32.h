@@ -57,6 +57,7 @@ typedef void (APIENTRY * PFNGLDRAWELEMENTSPROC) ( GLenum mode, GLsizei count, GL
 typedef GLint (APIENTRY * PFNGLGETATTRIBLOCATIONPROC) ( GLuint program, const GLchar *name );
 typedef void (APIENTRY * PFNGLSCISSORPROC) ( GLint x, GLint y, GLsizei width, GLsizei height );
 typedef void (APIENTRY * PFNGLBLENDEQUATIONPROC) ( GLenum mode );
+typedef void (APIENTRY * PFNGLDRAWBUFFERSPROC) ( GLsizei n, const GLenum *bufs );
 
 
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC     wglCreateContextAttribsARB;
@@ -102,6 +103,7 @@ extern PFNGLDRAWELEMENTSPROC                 glDrawElements;
 extern PFNGLGETATTRIBLOCATIONPROC            glGetAttribLocation;
 extern PFNGLSCISSORPROC                      glScissor;
 extern PFNGLBLENDEQUATIONPROC                glBlendEquation;
+extern PFNGLDRAWBUFFERSPROC                  glDrawBuffers;
 
 Rc_t init_opengl( void );
 

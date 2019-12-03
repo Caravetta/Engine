@@ -20,6 +20,7 @@ endif()
 
 
 set(opengl_lib_src
+    ../../../utils/logger.cpp
     opengl_platform.cpp)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )

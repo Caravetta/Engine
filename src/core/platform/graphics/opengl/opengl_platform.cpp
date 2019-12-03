@@ -49,6 +49,13 @@ GLenum buffer_types[] = {
 GLenum texture_format[] = {
      GL_RGB,
      GL_RGBA,
+     GL_RGB16F,
+};
+
+GLenum attachments_type[] = {
+     GL_COLOR_ATTACHMENT0,
+     GL_COLOR_ATTACHMENT1,
+     GL_COLOR_ATTACHMENT2,
 };
 
 extern "C" Rc_t init_graphics_platform( void )
@@ -68,20 +75,6 @@ extern "C" void swap_buffer( struct platform_window_t* window )
 
 extern "C" void set_clear_color( float r, float g, float b, float a )
 {
-#if 0
-     OpenGL::glGenFramebuffers(1, &framebuffer);
-     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-     OpenGL::glGenTextures(1, &texColorBuffer);
-     OpenGL::glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-     OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
-     // attach it to currently bound framebuffer object
-     OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
-#endif
-
      glClearColor(r, g, b, a);
 }
 
@@ -288,7 +281,8 @@ extern "C" void enable_vertex_attrib( uint32_t index )
      OpenGL::glEnableVertexAttribArray(index);
 }
 
-extern "C" Texture_Handle create_texture( int width, int height, uint8_t* data, Texture_Format format )
+extern "C" Texture_Handle create_texture( int width, int height, uint8_t* data, Texture_Format internal_format,
+                                          Texture_Format format, Data_Type type )
 {
      Texture_Handle handle;
 
@@ -296,13 +290,13 @@ extern "C" Texture_Handle create_texture( int width, int height, uint8_t* data, 
      OpenGL::glBindTexture(GL_TEXTURE_2D, handle);
 
 #ifdef LINUX
-     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, texture_format[format], width, height,
-                          0, texture_format[format], GL_UNSIGNED_BYTE, data);
+     OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, texture_format[internal_format], width, height,
+                          0, texture_format[format], type_array[type], data);
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
      OpenGL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 #elif WINDOWS
-     glTexImage2D(GL_TEXTURE_2D, 0, texture_format[format], width, height,
-                  0, texture_format[format], GL_UNSIGNED_BYTE, data);
+     glTexImage2D(GL_TEXTURE_2D, 0, texture_format[internal_format], width, height,
+                  0, texture_format[format], type_array[type], data);
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 #endif
@@ -348,9 +342,9 @@ extern "C" Fbo_Handle create_fbo( void )
      return handle;
 }
 
-extern "C" void set_fbo_color_texture( int color_texture )
+extern "C" void set_fbo_color_texture( int color_texture, Attachment_Type attachment )
 {
-     OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+     OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, attachments_type[attachment],
                                     GL_TEXTURE_2D, color_texture, 0);
 }
 
@@ -400,6 +394,17 @@ extern "C" void delete_texture( Texture_Handle handle )
 #elif WINDOWS
      glDeleteTextures(1, &handle);
 #endif
+}
+
+extern "C" void set_draw_buffers( Attachment_Type* attachments, size_t n_attachments )
+{
+     unsigned int attachments_list[10];
+
+     for ( size_t ii = 0; ii < n_attachments; ii++ ) {
+          attachments_list[ii] = attachments_type[attachments[ii]];
+     }
+
+     OpenGL::glDrawBuffers(n_attachments, attachments_list);
 }
 
 } // end namespace Engine

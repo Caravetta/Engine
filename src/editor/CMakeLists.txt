@@ -29,6 +29,7 @@ set(editor_src
     ../core/platform/graphics/platform_graphics.cpp
     ../core/utils/crc32.cpp
     ../core/utils/timer.cpp
+    ../core/utils/logger.cpp
     ../core/math/vector3f.cpp
     ../core/math/vector4f.cpp
     ../core/math/matrix4f.cpp

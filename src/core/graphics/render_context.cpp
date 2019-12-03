@@ -75,7 +75,7 @@ void Render_Context::init( void )
 void Render_Context::set_color_texture( Render_Texture& texture )
 {
      __color_texture = &texture;
-     set_fbo_color_texture(texture.texture());
+     set_fbo_color_texture(texture.texture(), Attachment_Type::COLOR_ATTACHMENT_0);
 }
 
 Render_Texture& Render_Context::cur_color_texture( void )

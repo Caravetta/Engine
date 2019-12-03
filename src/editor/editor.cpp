@@ -86,9 +86,11 @@ int main( void )
      editor_context.component_list = Engine::get_component_list();
 
      // TODO(JOSH): need to move this
-     Engine::Render_Texture_Info texture_info(editor_context.window->width(), editor_context.window->height(), Engine::Texture_Format::RGB_FORMAT);
+     Engine::Render_Texture_Info texture_info(editor_context.window->width(), editor_context.window->height(),
+                                              Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
      Engine::Render_Texture base(texture_info);
-     Engine::Render_Texture_Info gui_texture_info(editor_context.window->width(), editor_context.window->height(), Engine::Texture_Format::RGB_FORMAT);
+     Engine::Render_Texture_Info gui_texture_info(editor_context.window->width(), editor_context.window->height(),
+                                                  Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
      Engine::Render_Texture gui_base(gui_texture_info);
      Engine::Render_Context render_context;
      render_textures.push_back(&base);

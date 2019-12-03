@@ -6,7 +6,6 @@ namespace Engine {
 
 Rc_t engine_init( void )
 {
-
      load_graphics_api(OPENGL_GRAPHICS_API);
 
      Rc_t rc = init_page_allocator( 16000, 50 );

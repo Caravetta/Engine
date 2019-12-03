@@ -69,6 +69,17 @@ Engine::Rc_t init_gui( Engine::Window& window )
           ImGuiIO& io = ImGui::GetIO();
           ImGui::StyleColorsDark();
 
+#ifdef WINDOWS
+          //setup special key mappings
+	  io.KeyMap[ImGuiKey_Backspace] = 8;
+	  io.KeyMap[ImGuiKey_Space] = 32;
+	  io.KeyMap[ImGuiKey_Enter] = 13;
+#elif Linux
+
+#else
+    #error
+#endif
+
           io.DisplaySize = ImVec2((float)fb_width, (float)fb_height);
           gui_info->fb_width = fb_width;
           gui_info->fb_height = fb_height;
@@ -79,7 +90,8 @@ Engine::Rc_t init_gui( Engine::Window& window )
           uint8_t* pixels;
           io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
-          Engine::Texture_Handle font_text = Engine::create_texture(width, height, pixels, Engine::Texture_Format::RGBA_FORMAT);
+          Engine::Texture_Handle font_text = Engine::create_texture(width, height, pixels,Engine::Texture_Format::RGBA_FORMAT,
+                                                                    Engine::Texture_Format::RGBA_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
           io.Fonts->TexID = (ImTextureID)(intptr_t)font_text;
 
           // setup gui shader
@@ -244,9 +256,22 @@ void gui_key_event_callback( char key, bool is_pressed )
 {
      ImGuiIO& io = ImGui::GetIO();
 
+     LOG("Key %c:%d", key, key);
+
      if ( is_pressed == true ) {
-          io.AddInputCharacter(key);
+
+	  if ( key >= 65 && key <= 90 ) {
+	       char new_key = io.KeysDown[16] ? key : key + 32;
+               io.AddInputCharacter(new_key);
+	  } else {
+               io.AddInputCharacter(key);
+	  }
+	  io.KeysDown[key] = true;
+     } else {
+	  io.KeysDown[key] = false;
      }
+
+     io.KeyShift = io.KeysDown[16];
 }
 
 void gui_mouse_pos_callback( int x_pos, int y_pos )
@@ -279,7 +304,8 @@ void gui_resize_callback( int32_t width, int32_t height )
      uint8_t* pixels;
      io.Fonts->GetTexDataAsRGBA32(&pixels, &lwidth, &lheight);
 
-     Engine::Texture_Handle font_text = Engine::create_texture(lwidth, lheight, pixels, Engine::Texture_Format::RGBA_FORMAT);
+     Engine::Texture_Handle font_text = Engine::create_texture(lwidth, lheight, pixels, Engine::Texture_Format::RGBA_FORMAT,
+                                                               Engine::Texture_Format::RGBA_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
      io.Fonts->TexID = (ImTextureID)(intptr_t)font_text;
 }
 

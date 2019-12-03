@@ -4,9 +4,44 @@
 
 namespace Engine {
 
+char g_buf_vert[] = "                                            \
+                      #version 330 core\n                        \
+                      layout(location = 0) in vec3 Position;\n   \
+                                                                 \
+                      out vec3 FragPos;\n                        \
+                                                                 \
+                      uniform mat4 model;\n                      \
+                      uniform mat4 view;\n                       \
+                      uniform mat4 projection\n                  \
+                                                                           \
+                      void main()\n                                        \
+                      {\n                                                  \
+                         vec4 worldPos = model * vec4(Position, 1.0);\n    \
+                         FragPos = worldPos.xyz;\n                         \
+                         gl_Position = projection * view * worldPos;\n     \
+                      }\n                                                  \
+                    ";
+
+char g_buf_frag[] = "                                                      \
+                      #version 330 core\n                                  \
+                      layout (location = 0) out vec3 gPosition;\n          \
+                                                                           \
+                      in vec3 FragPos;\n                                   \
+                                                                           \
+                      void main()\n                                        \
+                      {\n                                                  \
+                         gPosition = FragPos;\n                            \
+                      }\n                                                  \
+                    ";
+
+
+Render_Texture* position_texture = NULL;
+
 void Basic_Renderer::init( void )
 {
-
+     Render_Texture_Info position_format(800, 600, Engine::Texture_Format::RGB_16F_FORMAT,
+                                         Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::FLOAT_DATA);
+     position_texture = new (std::nothrow) Render_Texture(position_format);
 }
 
 void Basic_Renderer::update( float time_step )
@@ -22,7 +57,7 @@ void Basic_Renderer::update( float time_step )
      Engine::Camera camera = get_active_camera();
 
      for ( size_t ii = 0; ii < trans_infos.size(); ii++ ) {
-          Engine::Transform& trans = trans_infos[ii];
+          Engine::Transform trans = trans_infos[ii];
           Engine::Mesh_Info mesh_info = mesh_infos[ii];
           Engine::Material material = material_infos[ii];
 
