@@ -74,7 +74,7 @@ Engine::Rc_t init_gui( Engine::Window& window )
 	  io.KeyMap[ImGuiKey_Backspace] = 8;
 	  io.KeyMap[ImGuiKey_Space] = 32;
 	  io.KeyMap[ImGuiKey_Enter] = 13;
-#elif Linux
+#elif LINUX
 
 #else
     #error
@@ -255,8 +255,6 @@ Engine::Rc_t render_gui( void )
 void gui_key_event_callback( char key, bool is_pressed )
 {
      ImGuiIO& io = ImGui::GetIO();
-
-     LOG("Key %c:%d", key, key);
 
      if ( is_pressed == true ) {
 

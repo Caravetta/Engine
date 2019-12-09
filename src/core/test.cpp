@@ -231,15 +231,15 @@ int main(int argc, char** argv) {
 
           //test_shader.set_uniform_float3(color_location, 0.3f, 0, 0.3f);
 
-          if ( Engine::is_key_pressed(Engine::W_KEY) ) {
+          if ( Engine::is_key_pressed(Engine::KEY_W) ) {
                cam_pos.z -= 0.1f;
-          } else if ( Engine::is_key_pressed(Engine::S_KEY) ) {
+          } else if ( Engine::is_key_pressed(Engine::KEY_S) ) {
                cam_pos.z += 0.1f;
           }
 
-          if ( Engine::is_key_pressed(Engine::A_KEY) ) {
+          if ( Engine::is_key_pressed(Engine::KEY_A) ) {
                cam_rot.y += 1;
-          } else if ( Engine::is_key_pressed(Engine::D_KEY) ) {
+          } else if ( Engine::is_key_pressed(Engine::KEY_D) ) {
                cam_rot.y -= 1;
           }
 #if 0

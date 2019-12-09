@@ -87,9 +87,14 @@ void platform_window_update( struct platform_window_t* platform_window )
           } else if ( ev.type == DestroyNotify ) {
                platform_window->is_closed = true;
           } else if ( ev.type == KeyPress ) {
+               LOG("State %c:%d", ev.xkey.state, ev.xkey.state);
+               LOG("Keycode %c:%d", ev.xkey.keycode, ev.xkey.keycode);
                char c_key = (char)XLookupKeysym(&ev.xkey, 0);
-               for ( size_t ii = 0; ii < platform_window->key_callbacks.size(); ii++ ) {
-                    platform_window->key_callbacks[ii](c_key, true);
+               LOG("KEY %" PRIu32 "", (uint32_t)XLookupKeysym(&ev.xkey, 0));
+               if ( c_key > 0 ) {
+                    for ( size_t ii = 0; ii < platform_window->key_callbacks.size(); ii++ ) {
+                         platform_window->key_callbacks[ii](c_key, true);
+                    }
                }
           } else if ( ev.type == KeyRelease ) {
                char c_key = (char)XLookupKeysym(&ev.xkey, 0);

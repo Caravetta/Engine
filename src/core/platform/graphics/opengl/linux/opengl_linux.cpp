@@ -56,6 +56,7 @@ glGetShaderInfoLogProc                glGetShaderInfoLog              = NULL;
 glDrawElementsProc                    glDrawElements                  = NULL;
 glGetAttribLocationProc               glGetAttribLocation             = NULL;
 glScissorProc                         glScissor                       = NULL;
+glDrawBuffersProc                     glDrawBuffers                   = NULL;
 
 Rc_t init_opengl( void )
 {
@@ -101,6 +102,7 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glDrawElements, glDrawElementsProc);
      OPENGL_LOAD(glGetAttribLocation, glGetAttribLocationProc);
      OPENGL_LOAD(glScissor, glScissorProc);
+     OPENGL_LOAD(glDrawBuffers, glDrawBuffersProc);
 
 
 

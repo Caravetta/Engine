@@ -52,6 +52,7 @@ typedef void (*glFramebufferTexture2DProc) ( GLenum target, GLenum attachment, G
 typedef void (*glDrawElementsProc) ( GLenum mode, GLsizei count, GLenum type, const GLvoid * indices );
 typedef GLint (*glGetAttribLocationProc) ( GLuint program, const GLchar *name );
 typedef void (*glScissorProc) ( GLint x, GLint y, GLsizei width, GLsizei height );
+typedef void (*glDrawBuffersProc) ( GLsizei n, const GLenum *bufs );
 
 extern glShaderSourceProc                    glShaderSource;
 extern glCreateShaderProc                    glCreateShader;
@@ -82,6 +83,7 @@ extern glUniform4fProc                       glUniform4f;
 extern glUniformMatrix4fvProc                glUniformMatrix4fv;
 extern glGetUniformLocationProc              glGetUniformLocation;
 
+
 extern glGenFramebuffersProc                 glGenFramebuffers;
 extern glBindFramebufferProc                 glBindFramebuffer;
 extern glCheckNamedFramebufferStatusProc     glCheckNamedFramebufferStatus;
@@ -94,6 +96,7 @@ extern glFramebufferTexture2DProc            glFramebufferTexture2D;
 extern glDrawElementsProc                    glDrawElements;
 extern glGetAttribLocationProc               glGetAttribLocation;
 extern glScissorProc                         glScissor;
+extern glDrawBuffersProc                     glDrawBuffers;
 
 Rc_t init_opengl( void );
 
