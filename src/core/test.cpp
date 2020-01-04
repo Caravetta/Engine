@@ -221,7 +221,7 @@ int main(int argc, char** argv) {
           Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
           render_context.bind();
-          render_context.set_color_texture(base);
+          render_context.set_color_texture(base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
 
           Engine::set_view_port(0, 0, window.width(), window.height());
 

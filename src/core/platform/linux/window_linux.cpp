@@ -23,7 +23,7 @@ struct platform_window_t {
      XVisualInfo* vis_info;
      Atom atom_delete_window;
      std::string title;
-     std::vector<key_event_cb> key_callbacks;
+     //std::vector<key_event_cb> key_callbacks;
      std::vector<mouse_position_cb> mouse_pos_callbacks;
      std::vector<mouse_button_cb> mouse_button_callbacks;
      std::vector<resize_cb> resize_callbacks;
@@ -87,20 +87,9 @@ void platform_window_update( struct platform_window_t* platform_window )
           } else if ( ev.type == DestroyNotify ) {
                platform_window->is_closed = true;
           } else if ( ev.type == KeyPress ) {
-               LOG("State %c:%d", ev.xkey.state, ev.xkey.state);
-               LOG("Keycode %c:%d", ev.xkey.keycode, ev.xkey.keycode);
-               char c_key = (char)XLookupKeysym(&ev.xkey, 0);
-               LOG("KEY %" PRIu32 "", (uint32_t)XLookupKeysym(&ev.xkey, 0));
-               if ( c_key > 0 ) {
-                    for ( size_t ii = 0; ii < platform_window->key_callbacks.size(); ii++ ) {
-                         platform_window->key_callbacks[ii](c_key, true);
-                    }
-               }
+               platform_key_event((uint32_t)XLookupKeysym(&ev.xkey, 0), true);
           } else if ( ev.type == KeyRelease ) {
-               char c_key = (char)XLookupKeysym(&ev.xkey, 0);
-               for ( size_t ii = 0; ii < platform_window->key_callbacks.size(); ii++ ) {
-                    platform_window->key_callbacks[ii](c_key, false);
-               }
+               platform_key_event((uint32_t)XLookupKeysym(&ev.xkey, 0), false);
           } else if ( ev.type == MotionNotify ) {
                int mx = ev.xmotion.x;
                int my = ev.xmotion.y;
@@ -146,13 +135,13 @@ int platform_window_get_height( struct platform_window_t* platform_window )
 {
      return platform_window->height;
 }
-
+#if 0
 int platform_window_add_key_event_cb( struct platform_window_t* platform_window, key_event_cb callback )
 {
      platform_window->key_callbacks.push_back(callback);
      return 0;
 }
-
+#endif
 int platform_window_add_mouse_pos_cb( struct platform_window_t* platform_window, mouse_position_cb callback )
 {
      platform_window->mouse_pos_callbacks.push_back(callback);

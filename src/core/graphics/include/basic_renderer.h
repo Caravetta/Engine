@@ -11,6 +11,8 @@ public:
      void init( void );
      void update( float time_step );
      void shutdown( void );
+
+private:
 };
 
 } // end namespace Engine

@@ -31,12 +31,12 @@ int Window::height( void )
 {
      return platform_window_get_height(__window);
 }
-
+#if 0
 void Window::add_key_callback( key_event_cb callback )
 {
      platform_window_add_key_event_cb( __window, callback );
 }
-
+#endif
 void Window::add_mouse_position_callback( mouse_position_cb callback )
 {
      platform_window_add_mouse_pos_cb( __window, callback );

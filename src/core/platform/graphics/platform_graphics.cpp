@@ -1,7 +1,7 @@
 #include "platform_graphics.h"
 
 namespace Engine {
-
+#if 0
 #define EXTEN_PASTE( a, b ) a # b
 
 #ifdef LINUX
@@ -52,6 +52,7 @@ namespace Engine {
 #else
      #error
 #endif
+#endif
 
 init_graphics_platform_proc init_graphics_platform     = NULL;
 create_render_context_proc  create_render_context      = NULL;
@@ -91,6 +92,7 @@ create_texture_proc         create_texture             = NULL;
 draw_elements_data_proc     draw_elements_data         = NULL;
 scissor_box_proc            scissor_box                = NULL;
 delete_texture_proc         delete_texture             = NULL;
+set_draw_buffers_proc       set_draw_buffers           = NULL;
 
 
 Rc_t load_graphics_api( Graphics_API graphics_api )
@@ -140,6 +142,7 @@ Rc_t load_graphics_api( Graphics_API graphics_api )
      LOAD_LIB_FUNC(draw_elements_data);
      LOAD_LIB_FUNC(scissor_box);
      LOAD_LIB_FUNC(delete_texture);
+     LOAD_LIB_FUNC(set_draw_buffers);
 
      init_graphics_platform();
 

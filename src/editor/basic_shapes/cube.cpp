@@ -3,6 +3,7 @@
 void load_cube_mesh( Editor_Context& context )
 {
      float cube_verts[] = {
+     #if 0
           // front
           -1.0, -1.0,  1.0,
           1.0, -1.0,  1.0,
@@ -13,9 +14,29 @@ void load_cube_mesh( Editor_Context& context )
           1.0, -1.0, -1.0,
           1.0,  1.0, -1.0,
           -1.0,  1.0, -1.0
+     #endif
+          -1.0, -1.0,  -1.0,
+          1.0, -1.0,  -1.0,
+          1.0, 1.0,  -1.0,
+          -1.0, 1.0,  -1.0,
+          -1.0, -1.0,  1.0,
+          1.0, -1.0,  1.0,
+          1.0, 1.0,  1.0,
+          -1.0, 1.0,  1.0,
+     };
+
+     float cube_norms[] = {
+          0, -1.0, 0,
+          0, 1.0, 0,
+          1.0, 0, 0,
+          0, 0, 1.0,
+          -1.0, 0, 0,
+          0, 0, -1.0,
+          1.0, 0, 0,
      };
 
      int32_t cube_indices[] = {
+          #if 0
           // front
 		0, 1, 2,
 		2, 3, 0,
@@ -34,6 +55,13 @@ void load_cube_mesh( Editor_Context& context )
 		// top
 		3, 2, 6,
 		6, 7, 3
+          #endif
+          0, 1, 3, 3, 1, 2,
+          1, 5, 2, 2, 5, 6,
+          5, 4, 6, 6, 4, 7,
+          4, 0, 7, 7, 0, 3,
+          3, 2, 7, 7, 2, 6,
+          4, 5, 0, 0, 5, 1
      };
 
      Engine::Mesh_Data mesh_data;

@@ -7,7 +7,7 @@ namespace Engine {
 
 class Logger {
 public:
-     static char tmp_log_buf[1000];
+     static char tmp_log_buf[2000];
 
      void log( char* string, int length );
      static Logger* get_instance( void );

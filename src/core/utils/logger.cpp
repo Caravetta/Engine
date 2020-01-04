@@ -4,7 +4,7 @@
 namespace Engine {
 
 Logger* Logger::instance = NULL;
-char Logger::tmp_log_buf[1000] = {0};
+char Logger::tmp_log_buf[2000] = {0};
 
 Logger::Logger( void )
 {

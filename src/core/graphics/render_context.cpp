@@ -72,10 +72,11 @@ void Render_Context::init( void )
 	}
 }
 
-void Render_Context::set_color_texture( Render_Texture& texture )
+void Render_Context::set_color_texture( Render_Texture& texture, Attachment_Type attach_type )
 {
      __color_texture = &texture;
-     set_fbo_color_texture(texture.texture(), Attachment_Type::COLOR_ATTACHMENT_0);
+     //set_fbo_color_texture(texture.texture(), Attachment_Type::COLOR_ATTACHMENT_0);
+     set_fbo_color_texture(texture.texture(), attach_type);
 }
 
 Render_Texture& Render_Context::cur_color_texture( void )

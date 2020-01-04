@@ -4,6 +4,7 @@
 #include "entity_manager.h"
 #include "panels.h"
 #include "cube.h"
+#include "assimp_mesh_loader.h"
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -17,19 +18,26 @@ char vert[] = "                                                                 
                layout(location = 0) in vec3 vertexPosition_modelspace;\n             \
                                                                                      \
                uniform mat4 mvp;\n                                                   \
+               out vec3 FragPos;\n                                                   \
                                                                                      \
                void main(){\n                                                        \
                     vec4 pos = mvp * vec4(vertexPosition_modelspace, 1);\n           \
+                    FragPos = pos.xyz;\n                                             \
                     gl_Position = pos;\n                                             \
                }\n                                                                   \
               ";
 
 char frag[] = "                                        \
                #version 330 core\n                     \
-                out vec3 color_out;\n                  \
+                layout (location = 0) out vec3 color_out;\n \
+                layout (location = 1) out vec3 gPosition;\n \
+                                                       \
+                                                       \
+                in vec3 FragPos;\n                                       \
                                                        \
                void main()\n                           \
                {\n                                     \
+                   gPosition = FragPos;\n              \
                    color_out = vec3(0.6, 0.6, 0.6);\n  \
                }\n                                     \
               ";
@@ -59,6 +67,8 @@ int main( void )
 
      Editor_Context& editor_context = *Editor_Context::get_instance();
 
+     editor_context.mesh_loader = new Assimp_Mesh_Loader;
+
      editor_context.window = new (std::nothrow) Engine::Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Editor");
      if ( editor_context.window == NULL ) {
           LOG_ERROR("Failed to create window");
@@ -70,6 +80,10 @@ int main( void )
           LOG_ERROR("init_gui failed rc=%d", (int)rc);
           return -1;
      }
+
+     //init mesh loader
+     editor_context.mesh_loader->init();
+     editor_context.mesh_loader->load("./cube.obj");
 
      std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
@@ -113,6 +127,11 @@ int main( void )
 
      Engine::init_systems();
 
+     Engine::Render_Texture_Info position_format(800, 600, Engine::Texture_Format::RGB_16F_FORMAT, Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::FLOAT_DATA);
+
+     Engine::Render_Texture rend_text(position_format);
+     render_textures.push_back(&rend_text);
+
      while ( editor_context.window->is_closed() == false ) {
           editor_context.window->update();
 
@@ -121,7 +140,12 @@ int main( void )
           Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
           render_context.bind();
-          render_context.set_color_texture(base);
+          render_context.set_color_texture(rend_text, Engine::Attachment_Type::COLOR_ATTACHMENT_1);
+          render_context.set_color_texture(base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
+
+          Engine::Attachment_Type attachs[2] = {Engine::Attachment_Type::COLOR_ATTACHMENT_0, Engine::Attachment_Type::COLOR_ATTACHMENT_1};
+
+          Engine::set_draw_buffers(attachs, 2);
 
           //Engine::set_view_port(0, 0, window.width(), window.height());
 
@@ -133,7 +157,11 @@ int main( void )
           Engine::Render_Texture& end_texure = render_context.cur_color_texture();
 
           editor_context.scene_texture = end_texure.texture();
-          render_context.set_color_texture(gui_base);
+          render_context.set_color_texture(gui_base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
+          Engine::Attachment_Type attachsa[1] = {Engine::Attachment_Type::COLOR_ATTACHMENT_0};
+
+          Engine::set_draw_buffers(attachsa, 1);
+
           update_panels(editor_context);
           render_gui();
           render_context.bit_to_screen();

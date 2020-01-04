@@ -48,7 +48,7 @@ struct Gui_Info {
 
 Gui_Info* gui_info = NULL;
 
-void gui_key_event_callback( char key, bool is_pressed );
+void gui_key_event_callback( Engine::Key key, bool is_pressed );
 void gui_mouse_pos_callback( int x_pos, int y_pos );
 void gui_mouse_button_callback( int button, bool is_pressed );
 void gui_resize_callback( int32_t width, int32_t height );
@@ -81,6 +81,9 @@ Engine::Rc_t init_gui( Engine::Window& window )
 #endif
 
           io.DisplaySize = ImVec2((float)fb_width, (float)fb_height);
+
+          io.KeyMap[ImGuiKey_Enter] = Engine::KEY_ENTER;
+
           gui_info->fb_width = fb_width;
           gui_info->fb_height = fb_height;
 
@@ -145,7 +148,7 @@ Engine::Rc_t init_gui( Engine::Window& window )
           ImGui::GetStyle().Alpha = 1;
 
           //setup callbacks
-          window.add_key_callback(gui_key_event_callback);
+          Engine::add_key_callback(gui_key_event_callback);
           window.add_mouse_position_callback(gui_mouse_pos_callback);
           window.add_mouse_button_callback(gui_mouse_button_callback);
           window.add_resize_callback(gui_resize_callback);
@@ -252,21 +255,19 @@ Engine::Rc_t render_gui( void )
      return Engine::SUCCESS;
 }
 
-void gui_key_event_callback( char key, bool is_pressed )
+void gui_key_event_callback( Engine::Key key, bool is_pressed )
 {
      ImGuiIO& io = ImGui::GetIO();
 
      if ( is_pressed == true ) {
+          char c_key = Engine::key_to_char(key);
+          if ( c_key != -1 ) {
+               io.AddInputCharacter(c_key);
+          }
 
-	  if ( key >= 65 && key <= 90 ) {
-	       char new_key = io.KeysDown[16] ? key : key + 32;
-               io.AddInputCharacter(new_key);
-	  } else {
-               io.AddInputCharacter(key);
-	  }
-	  io.KeysDown[key] = true;
+	     io.KeysDown[key] = true;
      } else {
-	  io.KeysDown[key] = false;
+	     io.KeysDown[key] = false;
      }
 
      io.KeyShift = io.KeysDown[16];

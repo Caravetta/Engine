@@ -56,6 +56,7 @@ void Basic_Renderer::update( float time_step )
 
      Engine::Camera camera = get_active_camera();
 
+
      for ( size_t ii = 0; ii < trans_infos.size(); ii++ ) {
           Engine::Transform trans = trans_infos[ii];
           Engine::Mesh_Info mesh_info = mesh_infos[ii];

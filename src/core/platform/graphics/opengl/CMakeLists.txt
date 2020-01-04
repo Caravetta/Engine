@@ -56,6 +56,9 @@ target_link_libraries(OpenGL ${LIBS})
 
 target_include_directories(OpenGL PUBLIC
                            win32/include)
-
 endif()
+
+add_custom_command(TARGET OpenGL
+                   POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:OpenGL> ../../../../../.)
 

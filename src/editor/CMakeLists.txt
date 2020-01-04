@@ -60,6 +60,8 @@ set(editor_src
     basic_shapes/cube.cpp
     editor_context.cpp
     entity_manager.cpp
+    loader/mesh_loader.cpp
+    loader/assimp_mesh_loader.cpp
     ../core/reflection/meta_base.cpp
     ../core/reflection/meta_struct.cpp
     ../core/reflection/meta_field.cpp
@@ -96,6 +98,7 @@ target_include_directories(Editor PUBLIC
                            gui/include
                            panels/include
                            basic_shapes/include
+                           loader/include
                            ../core/
                            ../core/include
                            ../core/data_structures/include
@@ -127,4 +130,12 @@ get_property(includes
              TARGET Editor
              PROPERTY INTERFACE_INCLUDE_DIRECTORIES
             )
+
+add_custom_command(TARGET Editor
+                   POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Editor> ../../.)
+
+add_custom_command(TARGET Editor
+                   POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/src/editor/libs/assimp/libassimp.so" ../../.)
 

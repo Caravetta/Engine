@@ -21,7 +21,7 @@ public:
      Render_Context( void );
      ~Render_Context( void );
      void init( void );
-     void set_color_texture( Render_Texture& texture );
+     void set_color_texture( Render_Texture& texture, Attachment_Type attach_type );
      Render_Texture& cur_color_texture( void );
      void set_depth_texture( Render_Texture& texture );
      Render_Texture& cur_depth_texture( void );

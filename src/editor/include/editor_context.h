@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "engine_core.h"
 #include "entity_manager.h"
+#include "mesh_loader.h"
 
 struct Panel_Settings {
      float width;
@@ -34,6 +35,7 @@ public:
      Engine::Texture_Handle                                 scene_texture;
      std::unordered_map<std::string, Engine::Mesh_Handle>   mesh_map;
      std::unordered_map<std::string, int32_t>               shader_map;
+     Mesh_Loader*                                           mesh_loader;
 
      static Editor_Context* get_instance( void );
 
