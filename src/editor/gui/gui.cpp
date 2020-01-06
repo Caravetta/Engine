@@ -83,6 +83,7 @@ Engine::Rc_t init_gui( Engine::Window& window )
           io.DisplaySize = ImVec2((float)fb_width, (float)fb_height);
 
           io.KeyMap[ImGuiKey_Enter] = Engine::KEY_ENTER;
+	     io.KeyMap[ImGuiKey_Backspace] = Engine::KEY_BACKSPACE;
 
           gui_info->fb_width = fb_width;
           gui_info->fb_height = fb_height;

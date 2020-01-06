@@ -119,6 +119,12 @@ namespace Engine {
                LOG_ERROR("Failed to load " #var );          \
           }
 
+     #define LOAD_LIB_FUNC_STRING( var, func_name )                   \
+          var = (var ## _proc)GetProcAddress(handle, func_name);      \
+          if ( var == NULL ) {                                        \
+               LOG_ERROR("Failed to load " func_name );               \
+          }
+
 #else
      #error
 #endif

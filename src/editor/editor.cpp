@@ -147,7 +147,7 @@ int main( void )
 
           Engine::set_draw_buffers(attachs, 2);
 
-          //Engine::set_view_port(0, 0, window.width(), window.height());
+          Engine::set_view_port(0, 0, editor_context.window->width(), editor_context.window->height());
 
           Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 

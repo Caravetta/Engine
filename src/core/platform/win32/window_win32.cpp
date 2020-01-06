@@ -3,6 +3,7 @@
 #include <windowsx.h>
 #include "window_win32.h"
 #include "platform_graphics.h"
+#include "input_win32.h"
 
 namespace Engine {
 
@@ -14,7 +15,7 @@ struct platform_window_t {
      HINSTANCE instance;
      HDC       hDC;
      HGLRC     hglrc;
-     std::vector<key_event_cb> key_callbacks;
+     //std::vector<key_event_cb> key_callbacks;
      std::vector<mouse_position_cb> mouse_pos_callbacks;
      std::vector<mouse_button_cb> mouse_button_callbacks;
      std::vector<resize_cb> resize_callbacks;
@@ -32,14 +33,20 @@ LRESULT CALLBACK _WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                is_closed = true;
           break;
           case WM_KEYDOWN:
+               #if 0
                for ( size_t ii = 0; ii < cur_window->key_callbacks.size(); ii++ ) {
                     cur_window->key_callbacks[ii]((char)wParam, true);
                }
+               #endif
+               platform_key_event(wParam, true);
           break;
           case WM_KEYUP:
+               #if 0
                for ( size_t ii = 0; ii < cur_window->key_callbacks.size(); ii++ ) {
                     cur_window->key_callbacks[ii]((char)wParam, false);
                }
+               #endif
+               platform_key_event(wParam, false);
           break;
           case WM_MOUSEMOVE: {
                int mx = GET_X_LPARAM(lParam);
@@ -206,11 +213,13 @@ int platform_window_get_height( struct platform_window_t* platform_window )
      return platform_window->height;
 }
 
+#if 0
 int platform_window_add_key_event_cb( struct platform_window_t* platform_window, key_event_cb callback )
 {
      platform_window->key_callbacks.push_back(callback);
      return 0;
 }
+#endif
 
 int platform_window_add_mouse_pos_cb( struct platform_window_t* platform_window, mouse_position_cb callback )
 {
