@@ -238,7 +238,7 @@ Engine::Rc_t render_gui( void )
                                         (int)(clip_rect.z - clip_rect.x), (int)(clip_rect.w - clip_rect.y));
                }
 
-               Engine::bind_texture((int)(intptr_t)pcmd->TextureId);
+               Engine::bind_texture(Engine::Texture_Unit::TEXTURE_UNIT_0, (int)(intptr_t)pcmd->TextureId);
 
                Engine::draw_elements_data(Engine::TRIANGLE_MODE, pcmd->ElemCount,
                                           (sizeof(ImDrawIdx) == 2 ? Engine::UNSIGNED_SHORT : Engine::UNSIGNED_INT),

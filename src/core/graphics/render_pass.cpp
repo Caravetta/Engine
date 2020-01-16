@@ -10,9 +10,8 @@ Render_Pass::Render_Pass( void )
 void Render_Pass::blit( Render_Context& context, Render_Texture& source,
                         Render_Texture& dest, Material& material )
 {
-     context.set_color_texture(dest, Attachment_Type::COLOR_ATTACHMENT_0);
-     bind_texture(source.texture());
-
+     context.set_color_texture(&dest, Attachment_Type::COLOR_ATTACHMENT_0);
+     bind_texture(Texture_Unit::TEXTURE_UNIT_0, source.texture());
      Shader shader = get_shader(material.shader_id);
 
      use_program(shader.id());

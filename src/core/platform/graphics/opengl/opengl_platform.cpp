@@ -19,6 +19,7 @@ GLenum type_array[] = {
      GL_UNSIGNED_BYTE,
      GL_UNSIGNED_SHORT,
      GL_UNSIGNED_INT,
+     GL_UNSIGNED_INT_24_8,
 };
 
 GLenum usage_type[] = {
@@ -50,12 +51,22 @@ GLenum texture_format[] = {
      GL_RGB,
      GL_RGBA,
      GL_RGB16F,
+     GL_DEPTH24_STENCIL8,
+     GL_DEPTH_STENCIL,
 };
 
 GLenum attachments_type[] = {
      GL_COLOR_ATTACHMENT0,
      GL_COLOR_ATTACHMENT1,
      GL_COLOR_ATTACHMENT2,
+     GL_DEPTH_STENCIL_ATTACHMENT,
+};
+
+GLenum texture_unit_array[] = {
+     GL_TEXTURE0,
+     GL_TEXTURE1,
+     GL_TEXTURE2,
+     GL_TEXTURE3,
 };
 
 extern "C" Rc_t init_graphics_platform( void )
@@ -307,6 +318,7 @@ extern "C" Texture_Handle create_texture( int width, int height, uint8_t* data, 
      return handle;
 }
 
+Engine::OpenGL::GLuint rbo;
 extern "C" Fbo_Handle create_fbo( void )
 {
      Fbo_Handle handle;
@@ -339,6 +351,19 @@ extern "C" Fbo_Handle create_fbo( void )
 
      OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
+#if 0
+          OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, handle);
+          OpenGL::glGenTextures(1, &rbo);
+          OpenGL::glBindTexture(GL_TEXTURE_2D, rbo);
+          OpenGL::glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 800, 600,
+                               0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+          OpenGL::glBindTexture(GL_TEXTURE_2D, 0);
+          OpenGL::glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                         GL_TEXTURE_2D, rbo, 0);
+     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
      return handle;
 }
 
@@ -363,9 +388,9 @@ extern "C" void unbind_fbo( void )
      OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-extern "C" void bind_texture( int texture_id )
+extern "C" void bind_texture( Texture_Unit unit, int texture_id )
 {
-     //glActiveTexture(GL_TEXTURE0);
+     glActiveTexture(texture_unit_array[unit]);
      glBindTexture(GL_TEXTURE_2D, texture_id);
 }
 

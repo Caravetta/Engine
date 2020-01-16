@@ -114,7 +114,7 @@ Rc_t init_platform_input_system( void )
 
 void platform_key_event( uint32_t key, bool is_pressed )
 {
-     LOG("Key: %d is_pressed: %d", key, is_pressed);
+     //LOG("Key: %d is_pressed: %d", key, is_pressed);
 
      if ( key > LINUX_KEY_COUNT ) {
           LOG_ERROR("Key %" PRIu32 " is larger than the key mapping", key);
@@ -122,7 +122,7 @@ void platform_key_event( uint32_t key, bool is_pressed )
      }
 
      for ( size_t ii = 0; ii < platform_key_callbacks.size(); ii++ ) {
-          LOG("MAP %d", linux_key_map[key]);
+          //LOG("MAP %d", linux_key_map[key]);
           platform_key_callbacks[ii](linux_key_map[key], is_pressed);
      }
 }

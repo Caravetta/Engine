@@ -48,7 +48,7 @@ extern "C" GRAPHICS_API void delete_fbo( Fbo_Handle fbo );
 extern "C" GRAPHICS_API void bind_fbo( Fbo_Handle fbo );
 extern "C" GRAPHICS_API void unbind_fbo( void );
 
-extern "C" GRAPHICS_API void bind_texture( int texture_id );
+extern "C" GRAPHICS_API void bind_texture( Texture_Unit unit, int texture_id );
 
 extern "C" GRAPHICS_API void draw_data( Draw_Mode mode, int first, size_t count );
 extern "C" GRAPHICS_API void draw_elements_data( Draw_Mode mode, size_t count, Data_Type type, void* offset );

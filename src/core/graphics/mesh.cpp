@@ -60,6 +60,7 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
      mesh.handle = handle;
      mesh.indices_offset = 0;
      mesh.indices_count = mesh.data->indices.size();
+     mesh.mesh_name = mesh_name;
 
      // load data into graphics card
      if ( type == Mesh_Type::STATIC_MESH ) {
@@ -67,6 +68,7 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
           bind_vertex_array(mesh.vertex_array_id);
 
           size_t num_indices = mesh.data->indices.size();
+          LOG("JOSH num_indices %zu", num_indices);
           if ( num_indices != 0 ) {
                mesh.indice_buffer_id = create_vertex_buffer();
                bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, mesh.indice_buffer_id);
@@ -75,6 +77,7 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
           }
 
           size_t num_positions = mesh.data->positions.size();
+          LOG("JOSH num_positions %zu", num_positions);
           if ( num_positions != 0 ) {
                mesh.vertex_buffer_id = create_vertex_buffer();
                bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, mesh.vertex_buffer_id);
@@ -86,6 +89,18 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
                LOG_ERROR("There is no postion data");
                //TODO(JOSH): need to clean up vertex array
                return ENGINE_ERROR;
+          }
+
+          //load normals
+          size_t num_normals = mesh.data->normals.size();
+          if ( num_normals != 0 ) {
+               LOG("JOSH HERE");
+               mesh.vertex_buffer_id = create_vertex_buffer();
+               bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, mesh.vertex_buffer_id);
+               buffer_vertex_data(Buffer_Type::ARRAY_BUFFER, (uint8_t*)mesh.data->normals.data(), sizeof(float) * num_normals, STATIC_DRAW);
+               enable_vertex_attrib(NORMAL_ID);
+               define_vertex_attrib(NORMAL_ID, 3, false, Engine::FLOAT_DATA, 3 * sizeof(float), 0);
+               bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, 0);
           }
 
           bind_vertex_array(0);
@@ -150,7 +165,7 @@ Rc_t  bind_mesh( const Mesh_Handle& mesh_handle, size_t& ind )
      if ( mesh_manager->handle_manager.valid_handle(mesh_handle) ) {
           uint32_t idx = handle_index(mesh_handle);
           Mesh& mesh = mesh_manager->meshes[idx];
-          size_t num_indices = mesh.data->indices.size();
+          size_t num_indices = mesh.indices_count;
 
           if ( num_indices > 0 ) {
                ind = num_indices;

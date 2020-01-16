@@ -84,32 +84,38 @@ void Assimp_Mesh_Loader::load( std::string file_path )
      }
 
      Editor_Context& context = *Editor_Context::get_instance();
-
      for ( uint64_t ii = 0; ii < (uint64_t)scene->mNumMeshes; ii++ ) {
-          Engine::Mesh_Data mesh_data;
+          Engine::Mesh_Data* mesh_data = new Engine::Mesh_Data;
 
           mesh = scene->mMeshes[ii];
 
-          mesh_data.positions.resize((uint64_t)(mesh->mNumVertices * 3));
-          mesh_data.indices.resize((uint64_t)(mesh->mNumFaces * 3));
+          mesh_data->positions.resize((uint64_t)(mesh->mNumVertices * 3));
+          mesh_data->normals.resize((uint64_t)(mesh->mNumVertices * 3));
+          mesh_data->indices.resize((uint64_t)(mesh->mNumFaces * 3));
 
           uint64_t vert_idx = 0;
+          uint64_t norm_idx = 0;
+
           //grab vert data
           for ( uint64_t ii = 0; ii < (uint64_t)mesh->mNumVertices; ii++ ) {
-               mesh_data.positions[vert_idx++] = mesh->mVertices[ii].x;
-               mesh_data.positions[vert_idx++] = mesh->mVertices[ii].y;
-               mesh_data.positions[vert_idx++] = mesh->mVertices[ii].z;
+               mesh_data->positions[vert_idx++] = mesh->mVertices[ii].x;
+               mesh_data->positions[vert_idx++] = mesh->mVertices[ii].y;
+               mesh_data->positions[vert_idx++] = mesh->mVertices[ii].z;
+
+               mesh_data->normals[norm_idx++] = mesh->mNormals[ii].x;
+               mesh_data->normals[norm_idx++] = mesh->mNormals[ii].y;
+               mesh_data->normals[norm_idx++] = mesh->mNormals[ii].z;
           }
 
           uint64_t indice_idx = 0;
           //grab indices
           for ( uint64_t ii = 0; ii < (uint64_t)mesh->mNumFaces; ii++ ) {
-               mesh_data.indices[indice_idx++] = mesh->mFaces[ii].mIndices[0];
-               mesh_data.indices[indice_idx++] = mesh->mFaces[ii].mIndices[1];
-               mesh_data.indices[indice_idx++] = mesh->mFaces[ii].mIndices[2];
+               mesh_data->indices[indice_idx++] = mesh->mFaces[ii].mIndices[0];
+               mesh_data->indices[indice_idx++] = mesh->mFaces[ii].mIndices[1];
+               mesh_data->indices[indice_idx++] = mesh->mFaces[ii].mIndices[2];
           }
 
-          Engine::load_mesh(Engine::STATIC_MESH, mesh->mName.data, mesh_data);
+          Engine::load_mesh(Engine::STATIC_MESH, mesh->mName.data, *mesh_data);
           Engine::Mesh_Handle mesh_handle = Engine::mesh_handle(mesh->mName.data);
           context.mesh_map.insert({mesh->mName.data, mesh_handle});
           LOG("Loaded Mesh: %s Handle: %" PRIu64 "", mesh->mName.data, mesh_handle);

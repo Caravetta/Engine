@@ -986,6 +986,12 @@ enum aiComponent
  */
 #define AI_CONFIG_EXPORT_POINT_CLOUDS "EXPORT_POINT_CLOUDS"
 
+#define AI_CONFIG_APP_SCALE_KEY "APP_SCALE_FACTOR"
+
+#if (!defined AI_CONFIG_APP_SCALE_KEY)
+#   define AI_CONFIG_APP_SCALE_KEY 1.0
+#endif // AI_CONFIG_APP_SCALE_KEY
+
 /**
  *  @brief  Specifies a gobal key factor for scale, float value
  */

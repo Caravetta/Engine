@@ -1,47 +1,158 @@
 #include "basic_renderer.h"
 #include "ecs.h"
-#include "graphics.h"
 
 namespace Engine {
 
-char g_buf_vert[] = "                                            \
-                      #version 330 core\n                        \
-                      layout(location = 0) in vec3 Position;\n   \
-                                                                 \
-                      out vec3 FragPos;\n                        \
-                                                                 \
-                      uniform mat4 model;\n                      \
-                      uniform mat4 view;\n                       \
-                      uniform mat4 projection\n                  \
-                                                                           \
-                      void main()\n                                        \
-                      {\n                                                  \
-                         vec4 worldPos = model * vec4(Position, 1.0);\n    \
-                         FragPos = worldPos.xyz;\n                         \
-                         gl_Position = projection * view * worldPos;\n     \
-                      }\n                                                  \
-                    ";
+char light_pass_vert[] = "                                                                      \
+               		 #version 330 core\n                                                   \
+                                                                                     		 \
+					 layout(location = 0) in vec3 vertexPosition_modelspace;\n             \
+                                                                                     		 \
+					 out vec2 uv;\n                                                        \
+                                                                                     		 \
+               		 void main(){\n                                                        \
+					 	gl_Position = vec4(vertexPosition_modelspace, 1);\n               \
+						uv = (vertexPosition_modelspace.xy+vec2(1,1))/2.0;\n              \
+               		 }\n                                                                   \
+              			";
 
-char g_buf_frag[] = "                                                      \
-                      #version 330 core\n                                  \
-                      layout (location = 0) out vec3 gPosition;\n          \
-                                                                           \
-                      in vec3 FragPos;\n                                   \
-                                                                           \
-                      void main()\n                                        \
-                      {\n                                                  \
-                         gPosition = FragPos;\n                            \
-                      }\n                                                  \
-                    ";
+char light_pass_frag[] = "\
+					 #version 330 core\n \
+										\
+					 out vec4 FragColor;\n \
+										\
+					 in vec2 uv;\n \
+									\
+					 uniform sampler2D gPosition;\n \
+				      uniform sampler2D gNormal;\n \
+					 uniform sampler2D gAlbedoSpec;\n \
+												\
+					 struct Light {\n \
+    				      	vec3 Position;\n \
+    					 	vec3 Color;\n \
+    					 	float Linear;\n \
+    						float Quadratic;\n \
+					 };\n \
+							\
+					 void main()\n \
+					 {\n \
+						vec3 viewPos = vec3(0, 0, 0);\n \
+							\
+						Light light;\n \
+						light.Position = vec3(0.5, 0.1, 2);\n \
+						light.Color = vec3(1, 1, 1);\n \
+						light.Linear = 0.7;\n \
+						light.Quadratic = 1.8;\n \
+												\
+    					 	// retrieve data from gbuffer\n \
+    					 	vec3 FragPos = texture(gPosition, uv).rgb;\n \
+    					  	vec3 Normal = texture(gNormal, uv).rgb;\n \
+    						vec3 Diffuse = texture(gAlbedoSpec, uv).rgb;\n \
+																\
+    						// then calculate lighting as usual\n \
+    						vec3 lighting  = Diffuse * 0.1; // hard-coded ambient component\n \
+    						vec3 viewDir  = normalize(viewPos - FragPos);\n \
+																		\
+        					// diffuse\n \
+        					vec3 lightDir = normalize(light.Position - FragPos);\n \
+        					vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * light.Color;\n \
+        					// attenuation\n \
+        					float distance = length(light.Position - FragPos);\n \
+        					float attenuation = 1.0 / (1.0 + light.Linear * distance + light.Quadratic * distance * distance);\n \
+        					diffuse *= attenuation;\n \
+        					lighting += diffuse;\n \
+   	 					FragColor = vec4(lighting, 1.0);\n \
+					 }\n \
+					";
 
+char pass_frag1[] = "                                        \
+               #version 330 core\n                          \
+                out vec4 color;\n                       \
+                in vec2 uv;\n                               \
+                                                            \
+               uniform sampler2D text;\n                     \
+               mat3 sx = mat3( 1.0, 2.0, 1.0, 0.0, 0.0, 0.0, -1.0, -2.0, -1.0 );\n\
+               mat3 sy = mat3( 1.0, 0.0, -1.0, 2.0, 0.0, -2.0, 1.0, 0.0, -1.0 );\n\
+               void main()\n                                \
+               {\n                                          \
+                 vec3 diffuse = texture(text, uv.st).rgb;\n\
+                 mat3 I;\n\
+                 for (int i=0; i<3; i++) {\n\
+                    for (int j=0; j<3; j++) {\n\
+                         vec3 sample  = texelFetch(text, ivec2(gl_FragCoord) + ivec2(i-1,j-1), 0 ).rgb;\n\
+                         I[i][j] = length(sample);\n\
+                    }\n\
+                 }\n\
+                 float gx = dot(sx[0], I[0]) + dot(sx[1], I[1]) + dot(sx[2], I[2]);\n\
+                 float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);\n\
+                 float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));\n\
+                 color = vec4(diffuse - vec3(g), 1.0);\n\
+               }\n                                          \
+              ";
 
-Render_Texture* position_texture = NULL;
+Engine::Render_Texture* _outline;
+struct Outline_Pass : public Engine::Render_Pass {
+     Engine::Material* _material;
+
+     Outline_Pass( Engine::Material& material )
+     {
+          _material = &material;
+     };
+
+     void configure( void )
+     {
+		Engine::Camera camera = get_active_camera();
+          Engine::Render_Texture_Info texture_info(camera.window->width(), camera.window->height(),
+										 Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
+          _outline = new (std::nothrow) Engine::Render_Texture(texture_info);
+     };
+
+     void execute( Engine::Render_Context& context )
+     {
+          blit(context, *context.get_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_0), *_outline, *_material);
+     };
+
+     void cleanup( void )
+     {
+     };
+};
+
+Outline_Pass* outline_pass;
+int width = 0;
+int height = 0;
 
 void Basic_Renderer::init( void )
 {
-     Render_Texture_Info position_format(800, 600, Engine::Texture_Format::RGB_16F_FORMAT,
-                                         Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::FLOAT_DATA);
-     position_texture = new (std::nothrow) Render_Texture(position_format);
+     // Setup G Buffer
+     Engine::Render_Texture_Info format(800, 600, Engine::Texture_Format::RGB_16F_FORMAT,
+                                        Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::FLOAT_DATA);
+
+     position_texture = new Engine::Render_Texture(format);
+     normal_texture = new Engine::Render_Texture(format);
+
+     Engine::Render_Texture_Info albformat(800, 600, Engine::Texture_Format::RGB_FORMAT,
+                                           Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
+
+     albedo_texture = new Engine::Render_Texture(albformat);
+     lighting_texture = new Engine::Render_Texture(albformat);
+
+     Engine::Render_Texture_Info depthformat(800, 600, Engine::Texture_Format::DEPTH24_STENCIL8_FORMAT,
+                                             Engine::Texture_Format::GL_DEPTH_STENCIL, Engine::Data_Type::UNSIGNED_INT_24_8);
+     depth_texture = new Engine::Render_Texture(depthformat);
+
+	std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, light_pass_vert, sizeof(light_pass_vert)},
+											   {Engine::FRAGMENT_SHADER, pass_frag1, sizeof(pass_frag1)}};
+	lighting_shader = new Engine::Shader(shader_strings);
+
+     Engine::add_shader(lighting_shader->id(), *lighting_shader);
+	outline_material.shader_id = lighting_shader->id();
+	outline_pass = new Outline_Pass(outline_material);
+	outline_pass->configure();
+#if 1
+	std::vector<Engine::Shader_String> shader_strings1 = {{Engine::VERTEX_SHADER, light_pass_vert, sizeof(light_pass_vert)},
+											    {Engine::FRAGMENT_SHADER, light_pass_frag, sizeof(light_pass_frag)}};
+	lighting_shader1 = new Engine::Shader(shader_strings1);
+#endif
 }
 
 void Basic_Renderer::update( float time_step )
@@ -56,8 +167,46 @@ void Basic_Renderer::update( float time_step )
 
      Engine::Camera camera = get_active_camera();
 
+     // Check to see if we need to regen textures since window changed size //REMOVE
+     if ( width != camera.window->width() ||
+          height != camera.window->height() ) {
 
-     for ( size_t ii = 0; ii < trans_infos.size(); ii++ ) {
+          width = camera.window->width();
+          height = camera.window->height();
+
+          position_texture->reload(width, height);
+          normal_texture->reload(width, height);
+          albedo_texture->reload(width, height);
+          lighting_texture->reload(width, height);
+          depth_texture->reload(width, height);
+          _outline->reload(width, height);
+     }
+
+     Engine::Render_Context* render_context = Engine::Render_Context::instance();
+
+     size_t num_entites = trans_infos.size();
+
+     // Attach the G Buffer
+     render_context->bind();
+
+     render_context->set_color_texture(albedo_texture, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
+     render_context->set_color_texture(position_texture, Engine::Attachment_Type::COLOR_ATTACHMENT_1);
+     render_context->set_color_texture(normal_texture, Engine::Attachment_Type::COLOR_ATTACHMENT_2);
+     render_context->set_depth_texture(depth_texture);
+
+     Engine::Attachment_Type attachments[3] = { Engine::Attachment_Type::COLOR_ATTACHMENT_0,
+                                                Engine::Attachment_Type::COLOR_ATTACHMENT_1,
+                                                Engine::Attachment_Type::COLOR_ATTACHMENT_2 };
+
+     Engine::set_draw_buffers(attachments, 3);
+
+     Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
+
+     Engine::enable_graphics_option(Engine::DEPTH_TEST_OPTION);
+     Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
+
+     // G Buffer Pass
+     for ( size_t ii = 0; ii < num_entites; ii++ ) {
           Engine::Transform trans = trans_infos[ii];
           Engine::Mesh_Info mesh_info = mesh_infos[ii];
           Engine::Material material = material_infos[ii];
@@ -77,9 +226,55 @@ void Basic_Renderer::update( float time_step )
 
           int32_t mvp_location = shader.uniform_id("mvp");
           shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
-
           Engine::draw_elements_data(Engine::TRIANGLE_MODE, indc, Engine::UNSIGNED_INT, 0);
      }
+
+
+     Engine::disable_graphics_option(Engine::DEPTH_TEST_OPTION);
+     // Lighting Pass
+     if ( num_entites > 0 ) {
+
+     }
+
+     render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_1);
+     render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_2);
+
+     // render passes go here
+	outline_pass->execute(*render_context);
+
+     Engine::Render_Texture* end_texure = render_context->get_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_0);
+
+     Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_0, position_texture->texture());
+     Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_1, normal_texture->texture());
+     Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_2, end_texure->texture());
+
+#if 1
+	render_context->set_color_texture(lighting_texture, Attachment_Type::COLOR_ATTACHMENT_0);
+	use_program(lighting_shader1->id());
+
+	int32_t texture_pos = lighting_shader1->uniform_id("gPosition");
+	int32_t texture_norm = lighting_shader1->uniform_id("gNormal");
+	int32_t texture_alb = lighting_shader1->uniform_id("gAlbedoSpec");
+
+	lighting_shader1->set_uniform_int1(texture_pos, 0);
+	lighting_shader1->set_uniform_int1(texture_norm, 1);
+	lighting_shader1->set_uniform_int1(texture_alb, 2);
+
+	uint32_t buff_id = render_context->quad_id();
+	bind_vertex_array(buff_id);
+	draw_data(Engine::TRIANGLE_MODE, 0, 6);
+	bind_vertex_array(0);
+#endif
+
+     Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_0, 0);
+     Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_1, 0);
+     Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_2, 0);
+
+     //render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_1);
+     //render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_2);
+
+
+	//outline_pass->execute(*render_context);
 }
 
 void Basic_Renderer::shutdown( void )

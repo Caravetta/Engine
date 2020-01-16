@@ -38,10 +38,23 @@ static const float g_quad_vertex_buffer_data[] = {
            1.0f,  1.0f, 0.0f,
 };
 
+Render_Context* Render_Context::__instance = NULL;
+
+Render_Context* Render_Context::instance( void )
+{
+     if ( __instance == NULL ) {
+          __instance = new (std::nothrow) Render_Context;
+          if ( __instance != NULL ) {
+               __instance->init();
+          }
+     }
+
+     return __instance;
+}
+
 Render_Context::Render_Context( void )
 {
      __fbo = INVALID_FBO_HANDLE;
-     __color_texture = NULL;
      __depth_texture = NULL;
 	__blit_shader = NULL;
 }
@@ -72,26 +85,41 @@ void Render_Context::init( void )
 	}
 }
 
-void Render_Context::set_color_texture( Render_Texture& texture, Attachment_Type attach_type )
+void Render_Context::set_color_texture( Render_Texture* texture, Attachment_Type attach_type )
 {
-     __color_texture = &texture;
-     //set_fbo_color_texture(texture.texture(), Attachment_Type::COLOR_ATTACHMENT_0);
-     set_fbo_color_texture(texture.texture(), attach_type);
+     if ( attach_type > MAX_COLOR_TEXTURES ) {
+          LOG_ERROR("%s: Exceeds max color textures", __FUNCTION__);
+          return;
+     }
+     __color_textures[attach_type] = texture;
+     set_fbo_color_texture(texture->texture(), attach_type);
 }
 
-Render_Texture& Render_Context::cur_color_texture( void )
+Render_Texture* Render_Context::get_color_texture( Attachment_Type attach_type )
 {
-     return *__color_texture;
+     Render_Texture* tmp = __color_textures[attach_type];
+     return __color_textures[attach_type];
 }
 
-void Render_Context::set_depth_texture( Render_Texture& texture )
+void Render_Context::clear_color_texture( Attachment_Type attach_type )
 {
-     __depth_texture = &texture;
+     if ( attach_type > MAX_COLOR_TEXTURES ) {
+          LOG_ERROR("%s: Exceeds max color textures", __FUNCTION__);
+          return;
+     }
+
+     set_fbo_color_texture(0, attach_type);
 }
 
-Render_Texture& Render_Context::cur_depth_texture( void )
+void Render_Context::set_depth_texture( Render_Texture* texture )
 {
-     return *__color_texture;
+     __depth_texture = texture;
+     set_fbo_color_texture(texture->texture(), Attachment_Type::GL_DEPTH_STENCIL_ATTACHMENT);
+}
+
+Render_Texture* Render_Context::cur_depth_texture( void )
+{
+     return __depth_texture;
 }
 
 uint32_t Render_Context::quad_id( void )
@@ -116,7 +144,8 @@ void Render_Context::bit_to_screen( void )
      unbind_fbo();
 	graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 	use_program(__blit_shader->id());
-	bind_texture(__color_texture->texture());
+     //TODO(JOSH): make this take in the color buffer
+	bind_texture(Texture_Unit::TEXTURE_UNIT_0, __color_textures[0]->texture());
 	int32_t texture_location = __blit_shader->uniform_id("text");
 	__blit_shader->set_uniform_int1(texture_location, 0);
      bind_vertex_array(__fbo_vertex_array_id);

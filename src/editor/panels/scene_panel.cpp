@@ -18,7 +18,9 @@ void update_scene_panel( Editor_Context& context )
      ImGui::Begin("Scene", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
      ImGui::BeginTabBar("Tabs");
      if ( ImGui::BeginTabItem("Scene") == true ) {
-          ImGui::Image((ImTextureID)(intptr_t)context.scene_texture, ImVec2(context.panels.scene.width - 17, context.panels.scene.height - 40));
+          if ( context.scene_texture != NULL ) {
+               ImGui::Image((ImTextureID)(intptr_t)context.scene_texture, ImVec2(context.panels.scene.width - 17, context.panels.scene.height - 40));
+          }
           ImGui::EndTabItem();
      }
      if ( ImGui::BeginTabItem("Game") == true ) {

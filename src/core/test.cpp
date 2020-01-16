@@ -101,7 +101,7 @@ struct Outline_Pass : public Engine::Render_Pass {
 
      void execute( Engine::Render_Context& context )
      {
-          blit(context, context.cur_color_texture(), *_outline, *_material);
+          blit(context, *context.get_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_0), *_outline, *_material);
      };
 
      void cleanup( void )
@@ -201,8 +201,7 @@ int main(int argc, char** argv) {
 
      Engine::Render_Texture base(texture_info);
 
-     Engine::Render_Context render_context;
-     render_context.init();
+     Engine::Render_Context& render_context = *Engine::Render_Context::instance();
 
      Engine::Material outline_material = { pass1_shader.id() };
      Outline_Pass outline_pass(outline_material);
@@ -221,7 +220,7 @@ int main(int argc, char** argv) {
           Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
           render_context.bind();
-          render_context.set_color_texture(base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
+          render_context.set_color_texture(&base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
 
           Engine::set_view_port(0, 0, window.width(), window.height());
 

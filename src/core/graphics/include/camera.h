@@ -4,6 +4,7 @@
 #include "core_common.h"
 #include "engine_math.h"
 #include "ecs.h"
+#include "window.h"
 
 namespace Engine {
 
@@ -15,6 +16,7 @@ struct Camera {
      Matrix4f  perspective;
      Matrix4f  view;
      Transform transform;
+     Window*   window; //TODO(JOSH): Once event system is in place this should be removed //REMOVE
 };
 
 void set_active_camera( Camera& camera );

@@ -24,6 +24,7 @@ enum Data_Type {
      UNSIGNED_BYTE,
      UNSIGNED_SHORT,
      UNSIGNED_INT,
+     UNSIGNED_INT_24_8,
 };
 
 enum Usage_Type {
@@ -50,10 +51,8 @@ enum Texture_Format {
      RGB_FORMAT,
      RGBA_FORMAT,
      RGB_16F_FORMAT,
-     RED_FORMAT,
-     RG_FORMAT,
-     DEPTH_COMPONENT_FORMAT,
-     BGR_FORMAT,
+     DEPTH24_STENCIL8_FORMAT,
+     GL_DEPTH_STENCIL,
 };
 
 enum Buffer_Type {
@@ -65,6 +64,14 @@ enum Attachment_Type {
      COLOR_ATTACHMENT_0 = 0,
      COLOR_ATTACHMENT_1,
      COLOR_ATTACHMENT_2,
+     GL_DEPTH_STENCIL_ATTACHMENT,
+};
+
+enum Texture_Unit {
+     TEXTURE_UNIT_0 = 0,
+     TEXTURE_UNIT_1,
+     TEXTURE_UNIT_2,
+     TEXTURE_UNIT_3,
 };
 
 #define INVALID_FBO_HANDLE 0

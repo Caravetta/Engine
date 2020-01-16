@@ -10,6 +10,7 @@
 namespace Engine {
 
 #define POSITION_ID 0
+#define NORMAL_ID 1
 #define INVALID_MESH_HANDLE 0
 
 typedef uint64_t Mesh_Handle;
@@ -27,6 +28,7 @@ struct Mesh_Data {
 };
 
 struct Mesh {
+     std::string    mesh_name;
      Mesh_Data*     data;
      Mesh_Handle    handle;
      size_t         indices_offset;

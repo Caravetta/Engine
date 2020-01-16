@@ -9,37 +9,43 @@
 #include <windows.h>
 #endif
 
-#define WINDOW_WIDTH     1600
-#define WINDOW_HEIGHT    1000
+#define WINDOW_WIDTH     800
+#define WINDOW_HEIGHT    600
 
 char vert[] = "                                                                      \
                #version 330 core\n                                                   \
                                                                                      \
                layout(location = 0) in vec3 vertexPosition_modelspace;\n             \
+               layout(location = 1) in vec3 normals;\n                               \
                                                                                      \
                uniform mat4 mvp;\n                                                   \
                out vec3 FragPos;\n                                                   \
+               out vec3 Norm;\n                                                      \
                                                                                      \
                void main(){\n                                                        \
                     vec4 pos = mvp * vec4(vertexPosition_modelspace, 1);\n           \
                     FragPos = pos.xyz;\n                                             \
+                    Norm = normalize(normals);\n                                     \
                     gl_Position = pos;\n                                             \
                }\n                                                                   \
               ";
 
-char frag[] = "                                        \
-               #version 330 core\n                     \
+char frag[] = "                                             \
+               #version 330 core\n                          \
                 layout (location = 0) out vec3 color_out;\n \
                 layout (location = 1) out vec3 gPosition;\n \
-                                                       \
-                                                       \
-                in vec3 FragPos;\n                                       \
-                                                       \
-               void main()\n                           \
-               {\n                                     \
-                   gPosition = FragPos;\n              \
-                   color_out = vec3(0.6, 0.6, 0.6);\n  \
-               }\n                                     \
+                layout (location = 2) out vec3 gNorm;\n     \
+                                                            \
+                                                            \
+                in vec3 FragPos;\n                          \
+                in vec3 Norm;\n                             \
+                                                            \
+               void main()\n                                \
+               {\n                                          \
+                   gPosition = FragPos;\n                   \
+                   gNorm = Norm;\n                          \
+                   color_out = vec3(0.6, 0.6, 0.6);\n       \
+               }\n                                          \
               ";
 
 std::vector<Engine::Render_Texture*> render_textures;
@@ -84,6 +90,7 @@ int main( void )
      //init mesh loader
      editor_context.mesh_loader->init();
      editor_context.mesh_loader->load("./cube.obj");
+     editor_context.mesh_loader->load("./dragon.obj");
 
      std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
@@ -99,21 +106,16 @@ int main( void )
      editor_context.window->add_resize_callback(fb_resize_callback);
      editor_context.component_list = Engine::get_component_list();
 
-     // TODO(JOSH): need to move this
-     Engine::Render_Texture_Info texture_info(editor_context.window->width(), editor_context.window->height(),
-                                              Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
-     Engine::Render_Texture base(texture_info);
      Engine::Render_Texture_Info gui_texture_info(editor_context.window->width(), editor_context.window->height(),
                                                   Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::UNSIGNED_BYTE);
      Engine::Render_Texture gui_base(gui_texture_info);
-     Engine::Render_Context render_context;
-     render_textures.push_back(&base);
+     Engine::Render_Context& render_context = *Engine::Render_Context::instance();
      render_textures.push_back(&gui_base);
-     render_context.init();
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
      Engine::Camera camera;
+     camera.window = editor_context.window;
      camera.perspective = Engine::perspective_projection(Engine::radians(45),
                                                          (float)editor_context.window->width()/(float)editor_context.window->height(),
                                                          1.0f,
@@ -127,11 +129,6 @@ int main( void )
 
      Engine::init_systems();
 
-     Engine::Render_Texture_Info position_format(800, 600, Engine::Texture_Format::RGB_16F_FORMAT, Engine::Texture_Format::RGB_FORMAT, Engine::Data_Type::FLOAT_DATA);
-
-     Engine::Render_Texture rend_text(position_format);
-     render_textures.push_back(&rend_text);
-
      while ( editor_context.window->is_closed() == false ) {
           editor_context.window->update();
 
@@ -139,31 +136,21 @@ int main( void )
           Engine::enable_graphics_option(Engine::DEPTH_TEST_OPTION);
           Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
-          render_context.bind();
-          render_context.set_color_texture(rend_text, Engine::Attachment_Type::COLOR_ATTACHMENT_1);
-          render_context.set_color_texture(base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
-
-          Engine::Attachment_Type attachs[2] = {Engine::Attachment_Type::COLOR_ATTACHMENT_0, Engine::Attachment_Type::COLOR_ATTACHMENT_1};
-
-          Engine::set_draw_buffers(attachs, 2);
-
           Engine::set_view_port(0, 0, editor_context.window->width(), editor_context.window->height());
-
-          Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
           // start render here
           Engine::update_systems(0.0f);
 
-          Engine::Render_Texture& end_texure = render_context.cur_color_texture();
-
-          editor_context.scene_texture = end_texure.texture();
-          render_context.set_color_texture(gui_base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
+          Engine::Render_Texture* end_texure = render_context.get_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_0);
+          editor_context.scene_texture = end_texure->texture();
+          render_context.set_color_texture(&gui_base, Engine::Attachment_Type::COLOR_ATTACHMENT_0);
           Engine::Attachment_Type attachsa[1] = {Engine::Attachment_Type::COLOR_ATTACHMENT_0};
 
           Engine::set_draw_buffers(attachsa, 1);
 
           update_panels(editor_context);
           render_gui();
+
           render_context.bit_to_screen();
           editor_context.window->swap_buffers();
      }
