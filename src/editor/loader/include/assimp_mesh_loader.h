@@ -1,6 +1,7 @@
 #ifndef __ASSIMP_MESH_LOADER_H__
 #define __ASSIMP_MESH_LOADER_H__
 
+#include <string>
 #include "mesh_loader.h"
 #include "engine_core.h"
 

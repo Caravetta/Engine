@@ -59,6 +59,8 @@ typedef void (APIENTRY * PFNGLSCISSORPROC) ( GLint x, GLint y, GLsizei width, GL
 typedef void (APIENTRY * PFNGLBLENDEQUATIONPROC) ( GLenum mode );
 typedef void (APIENTRY * PFNGLDRAWBUFFERSPROC) ( GLsizei n, const GLenum *bufs );
 
+typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC) ( GLenum texture );
+
 
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC     wglCreateContextAttribsARB;
 extern PFNWGLCHOOSEPIXELFORMATARBPROC        wglChoosePixelFormatARB;
@@ -104,6 +106,7 @@ extern PFNGLGETATTRIBLOCATIONPROC            glGetAttribLocation;
 extern PFNGLSCISSORPROC                      glScissor;
 extern PFNGLBLENDEQUATIONPROC                glBlendEquation;
 extern PFNGLDRAWBUFFERSPROC                  glDrawBuffers;
+extern PFNGLACTIVETEXTUREPROC                glActiveTexture;
 
 Rc_t init_opengl( void );
 

@@ -135,7 +135,13 @@ add_custom_command(TARGET Editor
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Editor> ../../.)
 
+if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 add_custom_command(TARGET Editor
                    POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/src/editor/libs/assimp/libassimp.so" ../../.)
 
+elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
+add_custom_command(TARGET Editor
+                   POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/src/editor/libs/assimp/assimp.dll" ../../.)
+endif()

@@ -325,6 +325,8 @@ typedef int GLsizei;
 #define GL_RGB16F                                       0x881B
 #define GL_READ_FRAMEBUFFER                             0x8CA8
 #define GL_DRAW_FRAMEBUFFER                             0x8CA9
+#define GL_UNSIGNED_INT_24_8                            0x84FA
+#define GL_DEPTH24_STENCIL8                             0x88F0
 
 } // namespace OpenGL
 } // namespace Engine

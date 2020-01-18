@@ -63,7 +63,7 @@ namespace Engine {
 #define NEAR_ZERO 1e-15f
 
 } // end namespace Engine
-
+#if 0
 #define EXTEN_PASTE( a, b ) a # b
 
 #ifdef LINUX
@@ -128,7 +128,7 @@ namespace Engine {
 #else
      #error
 #endif
-
+#endif
 typedef float float32_t;
 typedef void (*mouse_position_cb)( int x_pos, int y_pos );
 typedef void (*mouse_button_cb)( int button, bool is_pressed );

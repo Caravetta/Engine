@@ -65,6 +65,8 @@ enum Win32_Key {
      WIN32_KEY_X         = 0x58,
      WIN32_KEY_Y         = 0x59,
      WIN32_KEY_Z         = 0x5A,
+     WIN32_KEY_MINUS     = 0xBD,
+     WIN32_KEY_PERIOD    = 0xBE,
      WIN32_KEY_COUNT, //Note: This must be at the end
 };
 
@@ -73,13 +75,10 @@ std::vector<platform_key_event_cb> platform_key_callbacks;
 
 Rc_t init_platform_input_system( void )
 {
-     win32_key_map[WIN32_KEY_BACK]      = KEY_BACKSPACE;
-     win32_key_map[WIN32_KEY_TAB]       = KEY_TAB;
-     win32_key_map[WIN32_KEY_ENTER]     = KEY_ENTER;
-     win32_key_map[WIN32_KEY_SHIFT]     = KEY_LEFT_SHIFT;
-
-
-
+     win32_key_map[WIN32_KEY_BACK]           = KEY_BACKSPACE;
+     win32_key_map[WIN32_KEY_TAB]            = KEY_TAB;
+     win32_key_map[WIN32_KEY_ENTER]          = KEY_ENTER;
+     win32_key_map[WIN32_KEY_SHIFT]          = KEY_LEFT_SHIFT;
      win32_key_map[WIN32_KEY_CTRL]           = KEY_LEFT_CONTROL;
      win32_key_map[WIN32_KEY_ALT]            = KEY_LEFT_ALT;
      win32_key_map[WIN32_KEY_PAUSE]          = KEY_PAUSE;
@@ -94,58 +93,53 @@ Rc_t init_platform_input_system( void )
      win32_key_map[WIN32_KEY_UP]             = KEY_UP;
      win32_key_map[WIN32_KEY_RIGHT]          = KEY_RIGHT;
      win32_key_map[WIN32_KEY_DOWN]           = KEY_DOWN;
-     //win32_key_map[WIN32_KEY_SELECT]         = ;
-     //win32_key_map[WIN32_KEY_PRINT]          = ;
-     //win32_key_map[WIN32_KEY_EXECUTE]        = ;
      win32_key_map[WIN32_KEY_PRINT_SC]       = KEY_PRINT_SCREEN;
      win32_key_map[WIN32_KEY_INSERT]         = KEY_INSERT;
      win32_key_map[WIN32_KEY_DELETE]         = KEY_DELETE;
-     //win32_key_map[WIN32_KEY_HELP]           = ;
-
-
-     win32_key_map[WIN32_KEY_0]         = KEY_0;
-     win32_key_map[WIN32_KEY_1]         = KEY_1;
-     win32_key_map[WIN32_KEY_2]         = KEY_2;
-     win32_key_map[WIN32_KEY_3]         = KEY_3;
-     win32_key_map[WIN32_KEY_4]         = KEY_4;
-     win32_key_map[WIN32_KEY_5]         = KEY_5;
-     win32_key_map[WIN32_KEY_6]         = KEY_6;
-     win32_key_map[WIN32_KEY_7]         = KEY_7;
-     win32_key_map[WIN32_KEY_8]         = KEY_8;
-     win32_key_map[WIN32_KEY_9]         = KEY_9;
-     win32_key_map[WIN32_KEY_A]         = KEY_A;
-     win32_key_map[WIN32_KEY_B]         = KEY_B;
-     win32_key_map[WIN32_KEY_C]         = KEY_C;
-     win32_key_map[WIN32_KEY_D]         = KEY_D;
-     win32_key_map[WIN32_KEY_E]         = KEY_E;
-     win32_key_map[WIN32_KEY_F]         = KEY_F;
-     win32_key_map[WIN32_KEY_G]         = KEY_G;
-     win32_key_map[WIN32_KEY_H]         = KEY_H;
-     win32_key_map[WIN32_KEY_I]         = KEY_I;
-     win32_key_map[WIN32_KEY_J]         = KEY_J;
-     win32_key_map[WIN32_KEY_K]         = KEY_K;
-     win32_key_map[WIN32_KEY_L]         = KEY_L;
-     win32_key_map[WIN32_KEY_M]         = KEY_M;
-     win32_key_map[WIN32_KEY_N]         = KEY_N;
-     win32_key_map[WIN32_KEY_O]         = KEY_O;
-     win32_key_map[WIN32_KEY_P]         = KEY_P;
-     win32_key_map[WIN32_KEY_Q]         = KEY_Q;
-     win32_key_map[WIN32_KEY_R]         = KEY_R;
-     win32_key_map[WIN32_KEY_S]         = KEY_S;
-     win32_key_map[WIN32_KEY_T]         = KEY_T;
-     win32_key_map[WIN32_KEY_U]         = KEY_U;
-     win32_key_map[WIN32_KEY_V]         = KEY_V;
-     win32_key_map[WIN32_KEY_W]         = KEY_W;
-     win32_key_map[WIN32_KEY_X]         = KEY_X;
-     win32_key_map[WIN32_KEY_Y]         = KEY_Y;
-     win32_key_map[WIN32_KEY_Z]         = KEY_Z;
-     win32_key_map[WIN32_KEY_SHIFT]     = KEY_LEFT_SHIFT;
+     win32_key_map[WIN32_KEY_0]              = KEY_0;
+     win32_key_map[WIN32_KEY_1]              = KEY_1;
+     win32_key_map[WIN32_KEY_2]              = KEY_2;
+     win32_key_map[WIN32_KEY_3]              = KEY_3;
+     win32_key_map[WIN32_KEY_4]              = KEY_4;
+     win32_key_map[WIN32_KEY_5]              = KEY_5;
+     win32_key_map[WIN32_KEY_6]              = KEY_6;
+     win32_key_map[WIN32_KEY_7]              = KEY_7;
+     win32_key_map[WIN32_KEY_8]              = KEY_8;
+     win32_key_map[WIN32_KEY_9]              = KEY_9;
+     win32_key_map[WIN32_KEY_A]              = KEY_A;
+     win32_key_map[WIN32_KEY_B]              = KEY_B;
+     win32_key_map[WIN32_KEY_C]              = KEY_C;
+     win32_key_map[WIN32_KEY_D]              = KEY_D;
+     win32_key_map[WIN32_KEY_E]              = KEY_E;
+     win32_key_map[WIN32_KEY_F]              = KEY_F;
+     win32_key_map[WIN32_KEY_G]              = KEY_G;
+     win32_key_map[WIN32_KEY_H]              = KEY_H;
+     win32_key_map[WIN32_KEY_I]              = KEY_I;
+     win32_key_map[WIN32_KEY_J]              = KEY_J;
+     win32_key_map[WIN32_KEY_K]              = KEY_K;
+     win32_key_map[WIN32_KEY_L]              = KEY_L;
+     win32_key_map[WIN32_KEY_M]              = KEY_M;
+     win32_key_map[WIN32_KEY_N]              = KEY_N;
+     win32_key_map[WIN32_KEY_O]              = KEY_O;
+     win32_key_map[WIN32_KEY_P]              = KEY_P;
+     win32_key_map[WIN32_KEY_Q]              = KEY_Q;
+     win32_key_map[WIN32_KEY_R]              = KEY_R;
+     win32_key_map[WIN32_KEY_S]              = KEY_S;
+     win32_key_map[WIN32_KEY_T]              = KEY_T;
+     win32_key_map[WIN32_KEY_U]              = KEY_U;
+     win32_key_map[WIN32_KEY_V]              = KEY_V;
+     win32_key_map[WIN32_KEY_W]              = KEY_W;
+     win32_key_map[WIN32_KEY_X]              = KEY_X;
+     win32_key_map[WIN32_KEY_Y]              = KEY_Y;
+     win32_key_map[WIN32_KEY_Z]              = KEY_Z;
+     win32_key_map[WIN32_KEY_SHIFT]          = KEY_LEFT_SHIFT;
+     win32_key_map[WIN32_KEY_MINUS]          = KEY_MINUS;
+     win32_key_map[WIN32_KEY_PERIOD]         = KEY_PERIOD;
      return SUCCESS;
 }
 
 void platform_key_event( uint32_t key, bool is_pressed )
 {
-     LOG("%x", key);
      if ( key > WIN32_KEY_COUNT ) {
           LOG_ERROR("Key %" PRIu32 " is larger than the key mapping", key);
           return;

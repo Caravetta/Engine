@@ -113,6 +113,7 @@ PFNGLGETATTRIBLOCATIONPROC            glGetAttribLocation        = NULL;
 PFNGLSCISSORPROC                      glScissor                  = NULL;
 PFNGLBLENDEQUATIONPROC                glBlendEquation            = NULL;
 PFNGLDRAWBUFFERSPROC                  glDrawBuffers              = NULL;
+PFNGLACTIVETEXTUREPROC                glActiveTexture            = NULL;
 
 LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
@@ -251,6 +252,7 @@ Rc_t init_opengl( void )
      //OPENGL_LOAD(glScissor, PFNGLSCISSORPROC);
      OPENGL_LOAD(glBlendEquation, PFNGLBLENDEQUATIONPROC);
      OPENGL_LOAD(glDrawBuffers, PFNGLDRAWBUFFERSPROC);
+     OPENGL_LOAD(glActiveTexture, PFNGLACTIVETEXTUREPROC);
 
      // Release the temporary rendering context now that the extensions have been loaded.
      wglMakeCurrent(NULL, NULL);

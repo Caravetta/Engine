@@ -91,6 +91,7 @@ int main( void )
      editor_context.mesh_loader->init();
      editor_context.mesh_loader->load("./cube.obj");
      editor_context.mesh_loader->load("./dragon.obj");
+     editor_context.mesh_loader->load("./nanosuit.obj");
 
      std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
@@ -121,7 +122,7 @@ int main( void )
                                                          1.0f,
                                                          100.0f);
 
-     camera.view = Engine::view_transform(Engine::Vector3f(0, 0, 0),
+     camera.view = Engine::view_transform(Engine::Vector3f(0, 0, 5),
                                           Engine::Vector3f(0, 0, 0),
                                           Engine::Vector3f(0, 0, 0));
 

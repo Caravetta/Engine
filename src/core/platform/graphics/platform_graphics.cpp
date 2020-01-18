@@ -1,7 +1,7 @@
 #include "platform_graphics.h"
 
 namespace Engine {
-#if 0
+#if 1
 #define EXTEN_PASTE( a, b ) a # b
 
 #ifdef LINUX

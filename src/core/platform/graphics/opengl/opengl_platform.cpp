@@ -390,7 +390,11 @@ extern "C" void unbind_fbo( void )
 
 extern "C" void bind_texture( Texture_Unit unit, int texture_id )
 {
+#ifdef LINUX
      glActiveTexture(texture_unit_array[unit]);
+#elif WINDOWS
+     OpenGL::glActiveTexture(texture_unit_array[unit]);
+#endif
      glBindTexture(GL_TEXTURE_2D, texture_id);
 }
 
