@@ -75,8 +75,8 @@ void Scene_Camera::update( float time_step )
      float delta_x = mouse_x - cur_mouse_x;
      float delta_y = mouse_y - cur_mouse_y;
 
-     delta_y *= 0.01 * -1;
-     delta_x *= 0.01 * -1;
+     delta_y *= 0.01f * -1.0f;
+     delta_x *= 0.01f * -1.0f;
 
 
      cur_mouse_x = mouse_x;

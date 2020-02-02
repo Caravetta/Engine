@@ -33,10 +33,10 @@ LRESULT CALLBACK _WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                is_closed = true;
           break;
           case WM_KEYDOWN:
-               platform_key_event(wParam, true);
+               platform_key_event((uint32_t)wParam, true);
           break;
           case WM_KEYUP:
-               platform_key_event(wParam, false);
+               platform_key_event((uint32_t)wParam, false);
           break;
           case WM_MOUSEMOVE: {
                int mx = GET_X_LPARAM(lParam);

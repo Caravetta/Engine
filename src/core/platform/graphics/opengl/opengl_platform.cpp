@@ -441,7 +441,7 @@ extern "C" void set_draw_buffers( Attachment_Type* attachments, size_t n_attachm
           attachments_list[ii] = attachments_type[attachments[ii]];
      }
 
-     OpenGL::glDrawBuffers(n_attachments, attachments_list);
+     OpenGL::glDrawBuffers((GLsizei)n_attachments, attachments_list);
 }
 
 } // end namespace Engine

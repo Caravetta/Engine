@@ -22,7 +22,7 @@ void _layout_resize_callback( int32_t width, int32_t height )
      context.panels.instector.y_position = 19.0f;
 
      context.panels.console.width = window_width - context.panels.instector.width;
-     context.panels.console.height = window_height * 0.3;
+     context.panels.console.height = window_height * 0.3f;
      context.panels.console.x_position = 0.0f;
      context.panels.console.y_position = window_height - context.panels.console.height;
 
