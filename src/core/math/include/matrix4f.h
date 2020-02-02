@@ -45,6 +45,9 @@ public:
      const Vector4f& operator[] (const uint32_t i) const;
      float32_t& operator()(const uint32_t i, const uint32_t j);
      const float32_t& operator()(const uint32_t i, const uint32_t j) const;
+
+     Matrix4f inverse( void );
+     void log( void );
 };
 
 } // end namespace Engine

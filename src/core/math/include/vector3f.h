@@ -2,16 +2,12 @@
 #define __VECTOR3F_H__
 
 #include "core_common.h"
+#include "glm.hpp"
 
 namespace Engine {
 
 struct Vector3f {
 public:
-     //META_STRUCT_DECLARE( Vector3f );
-     //META_INFO_DECLARE( Vector3f );
-     //static void populate_meta_struct_func( Engine::Meta_Struct& meta_struct );
-     //static void populate_meta_info_func( Engine::Meta_Info& meta_info );
-
      const static Vector3f BASIS_X;
      const static Vector3f BASIS_Y;
      const static Vector3f BASIS_Z;
@@ -21,6 +17,8 @@ public:
      float x;
      float y;
      float z;
+
+     glm::vec3 glm_vec;
 
      Vector3f( void );
      explicit Vector3f( float32_t x, float32_t y, float32_t z );

@@ -1,5 +1,6 @@
 #include "basic_renderer.h"
 #include "ecs.h"
+#include "gtx/string_cast.hpp"
 
 namespace Engine {
 
@@ -16,78 +17,78 @@ char light_pass_vert[] = "                                                      
                		 }\n                                                                   \
               			";
 
-char light_pass_frag[] = "\
-					 #version 330 core\n \
-										\
-					 out vec4 FragColor;\n \
-										\
-					 in vec2 uv;\n \
-									\
-					 uniform sampler2D gPosition;\n \
-				      uniform sampler2D gNormal;\n \
-					 uniform sampler2D gAlbedoSpec;\n \
-												\
-					 struct Light {\n \
-    				      	vec3 Position;\n \
-    					 	vec3 Color;\n \
-    					 	float Linear;\n \
-    						float Quadratic;\n \
-					 };\n \
-							\
-					 void main()\n \
-					 {\n \
-						vec3 viewPos = vec3(0, 0, 0);\n \
-							\
-						Light light;\n \
-						light.Position = vec3(0.5, 0.1, 2);\n \
-						light.Color = vec3(1, 1, 1);\n \
-						light.Linear = 0.7;\n \
-						light.Quadratic = 1.8;\n \
-												\
-    					 	// retrieve data from gbuffer\n \
-    					 	vec3 FragPos = texture(gPosition, uv).rgb;\n \
-    					  	vec3 Normal = texture(gNormal, uv).rgb;\n \
-    						vec3 Diffuse = texture(gAlbedoSpec, uv).rgb;\n \
-																\
-    						// then calculate lighting as usual\n \
-    						vec3 lighting  = Diffuse * 0.1; // hard-coded ambient component\n \
-    						vec3 viewDir  = normalize(viewPos - FragPos);\n \
-																		\
-        					// diffuse\n \
-        					vec3 lightDir = normalize(light.Position - FragPos);\n \
-        					vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * light.Color;\n \
-        					// attenuation\n \
-        					float distance = length(light.Position - FragPos);\n \
-        					float attenuation = 1.0 / (1.0 + light.Linear * distance + light.Quadratic * distance * distance);\n \
-        					diffuse *= attenuation;\n \
-        					lighting += diffuse;\n \
-   	 					FragColor = vec4(lighting, 1.0);\n \
-					 }\n \
+char light_pass_frag[] = "                                                                                                             \
+					 #version 330 core\n                                                                                          \
+										                                                                                     \
+					 out vec4 FragColor;\n                                                                                        \
+										                                                                                     \
+					 in vec2 uv;\n                                                                                                \
+									                                                                                          \
+					 uniform sampler2D gPosition;\n                                                                               \
+				      uniform sampler2D gNormal;\n                                                                                 \
+					 uniform sampler2D gAlbedoSpec;\n                                                                             \
+												                                                                           \
+					 struct Light {\n                                                                                             \
+    				      	vec3 Position;\n                                                                                         \
+    					 	vec3 Color;\n                                                                                            \
+    					 	float Linear;\n                                                                                          \
+    						float Quadratic;\n                                                                                       \
+					 };\n                                                                                                         \
+							                                                                                                    \
+					 void main()\n                                                                                                \
+					 {\n                                                                                                          \
+						vec3 viewPos = vec3(0, 0, 0);\n                                                                          \
+							                                                                                                    \
+						Light light;\n                                                                                           \
+						light.Position = vec3(0.5, 0.1, -7);\n                                                                   \
+						light.Color = vec3(1, 1, 0);\n                                                                           \
+						light.Linear = 0.7;\n                                                                                    \
+						light.Quadratic = 1.8;\n                                                                                 \
+												                                                                           \
+    					 	// retrieve data from gbuffer\n                                                                          \
+    					 	vec3 FragPos = texture(gPosition, uv).rgb;\n                                                             \
+    					  	vec3 Normal = texture(gNormal, uv).rgb;\n                                                                \
+    						vec3 Diffuse = texture(gAlbedoSpec, uv).rgb;\n                                                           \
+																                                                       \
+    						// then calculate lighting as usual\n                                                                    \
+    						vec3 lighting  = Diffuse * 0.9; // hard-coded ambient component\n                                        \
+    						vec3 viewDir  = normalize(viewPos - FragPos);\n                                                          \
+																		                                             \
+        					// diffuse\n                                                                                             \
+        					vec3 lightDir = normalize(light.Position - FragPos);\n                                                   \
+        					vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * light.Color;\n                                \
+        					// attenuation\n                                                                                         \
+        					float distance = length(light.Position - FragPos);\n                                                     \
+        					float attenuation = 1.0 / (1.0 + light.Linear * distance + light.Quadratic * distance * distance);\n     \
+        					diffuse *= attenuation;\n                                                                                \
+        					lighting += diffuse;\n                                                                                   \
+   	 					FragColor = vec4(lighting, 1.0);\n                                                                       \
+					 }\n                                                                                                          \
 					";
 
-char pass_frag1[] = "                                        \
-               #version 330 core\n                          \
-                out vec4 color;\n                       \
-                in vec2 uv;\n                               \
-                                                            \
-               uniform sampler2D text;\n                     \
-               mat3 sx = mat3( 1.0, 2.0, 1.0, 0.0, 0.0, 0.0, -1.0, -2.0, -1.0 );\n\
-               mat3 sy = mat3( 1.0, 0.0, -1.0, 2.0, 0.0, -2.0, 1.0, 0.0, -1.0 );\n\
-               void main()\n                                \
-               {\n                                          \
-                 vec3 diffuse = texture(text, uv.st).rgb;\n\
-                 mat3 I;\n\
-                 for (int i=0; i<3; i++) {\n\
-                    for (int j=0; j<3; j++) {\n\
-                         vec3 sample  = texelFetch(text, ivec2(gl_FragCoord) + ivec2(i-1,j-1), 0 ).rgb;\n\
-                         I[i][j] = length(sample);\n\
-                    }\n\
-                 }\n\
-                 float gx = dot(sx[0], I[0]) + dot(sx[1], I[1]) + dot(sx[2], I[2]);\n\
-                 float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);\n\
-                 float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));\n\
-                 color = vec4(diffuse - vec3(g), 1.0);\n\
-               }\n                                          \
+char pass_frag1[] = "                                                                                         \
+               #version 330 core\n                                                                            \
+                out vec4 color;\n                                                                             \
+                in vec2 uv;\n                                                                                 \
+                                                                                                              \
+               uniform sampler2D text;\n                                                                      \
+               mat3 sx = mat3( 1.0, 2.0, 1.0, 0.0, 0.0, 0.0, -1.0, -2.0, -1.0 );\n                            \
+               mat3 sy = mat3( 1.0, 0.0, -1.0, 2.0, 0.0, -2.0, 1.0, 0.0, -1.0 );\n                            \
+               void main()\n                                                                                  \
+               {\n                                                                                            \
+                 vec3 diffuse = texture(text, uv.st).rgb;\n                                                   \
+                 mat3 I;\n                                                                                    \
+                 for (int i=0; i<3; i++) {\n                                                                  \
+                    for (int j=0; j<3; j++) {\n                                                               \
+                         vec3 sample  = texelFetch(text, ivec2(gl_FragCoord) + ivec2(i-1,j-1), 0 ).rgb;\n     \
+                         I[i][j] = length(sample);\n                                                          \
+                    }\n                                                                                       \
+                 }\n                                                                                          \
+                 float gx = dot(sx[0], I[0]) + dot(sx[1], I[1]) + dot(sx[2], I[2]);\n                         \
+                 float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);\n                         \
+                 float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));\n                                                 \
+                 color = vec4(diffuse - vec3(g), 1.0);\n                                                      \
+               }\n                                                                                            \
               ";
 
 Engine::Render_Texture* _outline;
@@ -137,7 +138,7 @@ void Basic_Renderer::init( void )
      lighting_texture = new Engine::Render_Texture(albformat);
 
      Engine::Render_Texture_Info depthformat(800, 600, Engine::Texture_Format::DEPTH24_STENCIL8_FORMAT,
-                                             Engine::Texture_Format::GL_DEPTH_STENCIL, Engine::Data_Type::UNSIGNED_INT_24_8);
+                                             Engine::Texture_Format::DEPTH_STENCIL, Engine::Data_Type::UNSIGNED_INT_24_8);
      depth_texture = new Engine::Render_Texture(depthformat);
 
 	std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, light_pass_vert, sizeof(light_pass_vert)},
@@ -154,6 +155,9 @@ void Basic_Renderer::init( void )
 	lighting_shader1 = new Engine::Shader(shader_strings1);
 #endif
 }
+
+int l_width = 800;
+int l_height = 600;
 
 void Basic_Renderer::update( float time_step )
 {
@@ -180,6 +184,8 @@ void Basic_Renderer::update( float time_step )
           lighting_texture->reload(width, height);
           depth_texture->reload(width, height);
           _outline->reload(width, height);
+          l_width = width;
+          l_height = height;
      }
 
      Engine::Render_Context* render_context = Engine::Render_Context::instance();
@@ -194,16 +200,18 @@ void Basic_Renderer::update( float time_step )
      render_context->set_color_texture(normal_texture, Engine::Attachment_Type::COLOR_ATTACHMENT_2);
      render_context->set_depth_texture(depth_texture);
 
+     Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
+
      Engine::Attachment_Type attachments[3] = { Engine::Attachment_Type::COLOR_ATTACHMENT_0,
                                                 Engine::Attachment_Type::COLOR_ATTACHMENT_1,
                                                 Engine::Attachment_Type::COLOR_ATTACHMENT_2 };
 
      Engine::set_draw_buffers(attachments, 3);
+     Engine::enable_graphics_option(Engine::DEPTH_TEST_OPTION);
+     Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
      Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
-     Engine::enable_graphics_option(Engine::DEPTH_TEST_OPTION);
-     Engine::set_depth_func(Engine::DEPTH_LESS_FUNC);
 
      // G Buffer Pass
      for ( size_t ii = 0; ii < num_entites; ii++ ) {
@@ -222,10 +230,18 @@ void Basic_Renderer::update( float time_step )
                                                                      trans.scale,
                                                                      trans.rotation);
 
-          Engine::Matrix4f mvp = camera.perspective * camera.view * model_transform;
-
           int32_t mvp_location = shader.uniform_id("mvp");
-          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&mvp);
+          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&model_transform);
+
+          mvp_location = shader.uniform_id("per");
+          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&camera.perspective);
+
+          mvp_location = shader.uniform_id("view");
+          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&camera.view);
+
+          mvp_location = shader.uniform_id("model");
+          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&model_transform);
+
           Engine::draw_elements_data(Engine::TRIANGLE_MODE, indc, Engine::UNSIGNED_INT, 0);
      }
 
@@ -238,6 +254,7 @@ void Basic_Renderer::update( float time_step )
 
      render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_1);
      render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_2);
+     //render_context->clear_color_texture(Engine::Attachment_Type::GL_DEPTH_STENCIL_ATTACHMENT);
 
      // render passes go here
 	outline_pass->execute(*render_context);
@@ -272,6 +289,8 @@ void Basic_Renderer::update( float time_step )
 
      //render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_1);
      //render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_2);
+     render_context->clear_color_texture(Engine::Attachment_Type::DEPTH_STENCIL_ATTACHMENT);
+
 
 
 	//outline_pass->execute(*render_context);

@@ -34,6 +34,7 @@ set(engine_core_src
     math/vector4f.cpp
     math/matrix4f.cpp
     input/key_input.cpp
+    input/mouse.cpp
     graphics/window.cpp
     graphics/mesh.cpp
     graphics/shader.cpp

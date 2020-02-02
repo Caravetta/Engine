@@ -72,6 +72,7 @@ enum Win32_Key {
 
 static Key win32_key_map[WIN32_KEY_COUNT] = { KEY_UNKNOWN };
 std::vector<platform_key_event_cb> platform_key_callbacks;
+std::vector<platform_mouse_move_event_cb> platform_mouse_move_callbacks;
 
 Rc_t init_platform_input_system( void )
 {
@@ -153,6 +154,23 @@ void platform_key_event( uint32_t key, bool is_pressed )
 void platform_add_key_callback( platform_key_event_cb callback )
 {
      platform_key_callbacks.push_back(callback);
+}
+
+void platform_mouse_move_event( float mx, float my )
+{
+     for ( size_t ii = 0; ii < platform_mouse_move_callbacks.size(); ii++ ) {
+          platform_mouse_move_callbacks[ii](mx, my);
+     }
+}
+
+void platform_mouse_key_event( uint32_t key, bool is_pressed )
+{
+
+}
+
+void platform_add_mouse_move_callback( platform_mouse_move_event_cb callback )
+{
+     platform_mouse_move_callbacks.push_back(callback);
 }
 
 } // end namespace Engine

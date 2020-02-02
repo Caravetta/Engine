@@ -115,6 +115,11 @@ PFNGLBLENDEQUATIONPROC                glBlendEquation            = NULL;
 PFNGLDRAWBUFFERSPROC                  glDrawBuffers              = NULL;
 PFNGLACTIVETEXTUREPROC                glActiveTexture            = NULL;
 
+PFNGLGENRENDERBUFFERSPROC             glGenRenderbuffers         = NULL;
+PFNGLBINDRENDERBUFFERPROC             glBindRenderbuffer         = NULL;
+PFNGLRENDERBUFFERSTORAGEPROC          glRenderbufferStorage      = NULL;
+PFNGLFRAMEBUFFERRENDERBUFFER          glFramebufferRenderbuffer  = NULL;
+
 LRESULT CALLBACK _TempWndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
      switch( msg )
@@ -253,6 +258,11 @@ Rc_t init_opengl( void )
      OPENGL_LOAD(glBlendEquation, PFNGLBLENDEQUATIONPROC);
      OPENGL_LOAD(glDrawBuffers, PFNGLDRAWBUFFERSPROC);
      OPENGL_LOAD(glActiveTexture, PFNGLACTIVETEXTUREPROC);
+
+     OPENGL_LOAD(glGenRenderbuffers, PFNGLGENRENDERBUFFERSPROC);
+     OPENGL_LOAD(glBindRenderbuffer, PFNGLBINDRENDERBUFFERPROC);
+     OPENGL_LOAD(glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEPROC);
+     OPENGL_LOAD(glFramebufferRenderbuffer, PFNGLFRAMEBUFFERRENDERBUFFER);
 
      // Release the temporary rendering context now that the extensions have been loaded.
      wglMakeCurrent(NULL, NULL);

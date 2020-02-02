@@ -147,17 +147,17 @@ void Assimp_Mesh_Loader::load( std::string file_path )
           return;
      }
 
-     LOG("Num Meshes %" PRIu64 "", (uint64_t)scene->mNumMeshes);
+     //LOG("Num Meshes %" PRIu64 "", (uint64_t)scene->mNumMeshes);
 	for ( uint64_t ii = 0; ii < (uint64_t)scene->mNumMeshes; ii++ ) {
      	mesh = scene->mMeshes[ii];
-          LOG("Mesh %s", mesh->mName.data);
-          LOG("Num Verts %" PRIu64 "", (uint64_t)mesh->mNumVertices);
-          LOG("Num Index %" PRIu64 "", (uint64_t)(mesh->mNumFaces * 3));
+          //LOG("Mesh %s", mesh->mName.data);
+          //LOG("Num Verts %" PRIu64 "", (uint64_t)mesh->mNumVertices);
+          //LOG("Num Index %" PRIu64 "", (uint64_t)(mesh->mNumFaces * 3));
           if ( mesh->mNormals != NULL ) {
-               LOG("Has Normals");
+               //LOG("Has Normals");
           }
           if ( mesh->mTextureCoords != NULL ) {
-               LOG("Has TextCords");
+               //LOG("Has TextCords");
           }
      }
 

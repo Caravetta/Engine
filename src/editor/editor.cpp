@@ -8,6 +8,8 @@
 #ifdef WINDOWS
 #include <windows.h>
 #endif
+#include "gtx/string_cast.hpp"
+#include "scene_camera.h"
 
 #define WINDOW_WIDTH     800
 #define WINDOW_HEIGHT    600
@@ -18,15 +20,17 @@ char vert[] = "                                                                 
                layout(location = 0) in vec3 vertexPosition_modelspace;\n             \
                layout(location = 1) in vec3 normals;\n                               \
                                                                                      \
-               uniform mat4 mvp;\n                                                   \
+               uniform mat4 per;\n                                                   \
+               uniform mat4 view;\n                                                  \
+               uniform mat4 model;\n                                                 \
                out vec3 FragPos;\n                                                   \
                out vec3 Norm;\n                                                      \
                                                                                      \
                void main(){\n                                                        \
-                    vec4 pos = mvp * vec4(vertexPosition_modelspace, 1);\n           \
+                    vec4 pos = model * vec4(vertexPosition_modelspace, 1);\n         \
                     FragPos = pos.xyz;\n                                             \
                     Norm = normalize(normals);\n                                     \
-                    gl_Position = pos;\n                                             \
+                    gl_Position = per * view * pos;\n                                \
                }\n                                                                   \
               ";
 
@@ -69,17 +73,20 @@ int main( void )
           return -1;
      }
 
+     Engine::register_system<Scene_Camera>();
      Engine::register_system<Engine::Basic_Renderer>();
 
      Editor_Context& editor_context = *Editor_Context::get_instance();
-
-     editor_context.mesh_loader = new Assimp_Mesh_Loader;
 
      editor_context.window = new (std::nothrow) Engine::Window(WINDOW_WIDTH, WINDOW_HEIGHT, "Editor");
      if ( editor_context.window == NULL ) {
           LOG_ERROR("Failed to create window");
           return -1;
      }
+
+     Engine::init_systems();
+
+     editor_context.mesh_loader = new Assimp_Mesh_Loader;
 
      rc = init_gui(*editor_context.window);
      if ( rc != Engine::SUCCESS ) {
@@ -91,7 +98,7 @@ int main( void )
      editor_context.mesh_loader->init();
      editor_context.mesh_loader->load("./cube.obj");
      editor_context.mesh_loader->load("./dragon.obj");
-     editor_context.mesh_loader->load("./nanosuit.obj");
+     //editor_context.mesh_loader->load("./nanosuit.obj");
 
      std::vector<Engine::Shader_String> shader_strings = {{Engine::VERTEX_SHADER, vert, sizeof(vert)},
                                                           {Engine::FRAGMENT_SHADER, frag, sizeof(frag)}};
@@ -114,21 +121,6 @@ int main( void )
      render_textures.push_back(&gui_base);
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
-
-     Engine::Camera camera;
-     camera.window = editor_context.window;
-     camera.perspective = Engine::perspective_projection(Engine::radians(45),
-                                                         (float)editor_context.window->width()/(float)editor_context.window->height(),
-                                                         1.0f,
-                                                         100.0f);
-
-     camera.view = Engine::view_transform(Engine::Vector3f(0, 0, 5),
-                                          Engine::Vector3f(0, 0, 0),
-                                          Engine::Vector3f(0, 0, 0));
-
-     Engine::set_active_camera(camera);
-
-     Engine::init_systems();
 
      while ( editor_context.window->is_closed() == false ) {
           editor_context.window->update();

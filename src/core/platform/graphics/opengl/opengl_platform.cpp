@@ -14,6 +14,9 @@
 
 namespace Engine {
 
+#define GL_DEPTH_STENCIL 0x84F9
+#define GL_DEPTH_STENCIL_ATTACHMENT 0x821A
+
 GLenum type_array[] = {
      GL_FLOAT,
      GL_UNSIGNED_BYTE,
@@ -91,6 +94,9 @@ extern "C" void set_clear_color( float r, float g, float b, float a )
 
 extern "C" void graphics_clear( uint64_t clear_mask )
 {
+     glEnable(GL_CULL_FACE);
+     glCullFace(GL_BACK);
+     glFrontFace(GL_CCW);
      GLbitfield mask = 0;
 
      mask |= (clear_mask & COLOR_BUFFER_CLEAR) ? GL_COLOR_BUFFER_BIT : 0;
@@ -108,6 +114,7 @@ extern "C" void set_view_port( int x, int y, size_t width, size_t height )
 extern "C" void enable_graphics_option( Graphics_Option option )
 {
      glEnable(options_array[option]);
+
      if ( option == BLEND_OPTION ) {
 #ifdef LINUX
           glBlendEquation(GL_FUNC_ADD);
@@ -364,6 +371,7 @@ extern "C" Fbo_Handle create_fbo( void )
                                          GL_TEXTURE_2D, rbo, 0);
      OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #endif
+     OpenGL::glBindFramebuffer(GL_FRAMEBUFFER, 0);
      return handle;
 }
 

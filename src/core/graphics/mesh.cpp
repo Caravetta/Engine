@@ -68,7 +68,6 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
           bind_vertex_array(mesh.vertex_array_id);
 
           size_t num_indices = mesh.data->indices.size();
-          LOG("JOSH num_indices %zu", num_indices);
           if ( num_indices != 0 ) {
                mesh.indice_buffer_id = create_vertex_buffer();
                bind_vertex_buffer(Buffer_Type::ELEMENT_ARRAY_BUFFER, mesh.indice_buffer_id);
@@ -77,7 +76,6 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
           }
 
           size_t num_positions = mesh.data->positions.size();
-          LOG("JOSH num_positions %zu", num_positions);
           if ( num_positions != 0 ) {
                mesh.vertex_buffer_id = create_vertex_buffer();
                bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, mesh.vertex_buffer_id);
@@ -94,7 +92,6 @@ Rc_t load_mesh( Mesh_Type type, std::string mesh_name, Mesh_Data& mesh_data )
           //load normals
           size_t num_normals = mesh.data->normals.size();
           if ( num_normals != 0 ) {
-               LOG("JOSH HERE");
                mesh.vertex_buffer_id = create_vertex_buffer();
                bind_vertex_buffer(Buffer_Type::ARRAY_BUFFER, mesh.vertex_buffer_id);
                buffer_vertex_data(Buffer_Type::ARRAY_BUFFER, (uint8_t*)mesh.data->normals.data(), sizeof(float) * num_normals, STATIC_DRAW);

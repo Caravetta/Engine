@@ -23,6 +23,11 @@ Rc_t engine_init( void )
           LOG_ERROR("Failed to setup input system rc=%d", rc);
      }
 
+     rc = init_mouse_system();
+     if ( rc != SUCCESS ) {
+          LOG_ERROR("Failed to setup mouse system rc=%d", rc);
+     }
+
      rc = init_ecs();
      if ( rc != SUCCESS ) {
           LOG_ERROR("Failed to setup ECS system rc=%d", rc);

@@ -36,6 +36,7 @@ public:
      std::unordered_map<std::string, Engine::Mesh_Handle>   mesh_map;
      std::unordered_map<std::string, int32_t>               shader_map;
      Mesh_Loader*                                           mesh_loader;
+     Engine::Camera*                                        scene_camera;
 
      static Editor_Context* get_instance( void );
 

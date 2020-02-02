@@ -114,7 +114,7 @@ void Render_Context::clear_color_texture( Attachment_Type attach_type )
 void Render_Context::set_depth_texture( Render_Texture* texture )
 {
      __depth_texture = texture;
-     set_fbo_color_texture(texture->texture(), Attachment_Type::GL_DEPTH_STENCIL_ATTACHMENT);
+     set_fbo_color_texture(texture->texture(), Attachment_Type::DEPTH_STENCIL_ATTACHMENT);
 }
 
 Render_Texture* Render_Context::cur_depth_texture( void )

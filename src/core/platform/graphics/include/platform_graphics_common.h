@@ -25,6 +25,7 @@ enum Data_Type {
      UNSIGNED_SHORT,
      UNSIGNED_INT,
      UNSIGNED_INT_24_8,
+     DEPTH_COMPONENT32F,
 };
 
 enum Usage_Type {
@@ -52,7 +53,7 @@ enum Texture_Format {
      RGBA_FORMAT,
      RGB_16F_FORMAT,
      DEPTH24_STENCIL8_FORMAT,
-     GL_DEPTH_STENCIL,
+     DEPTH_STENCIL,
 };
 
 enum Buffer_Type {
@@ -64,7 +65,8 @@ enum Attachment_Type {
      COLOR_ATTACHMENT_0 = 0,
      COLOR_ATTACHMENT_1,
      COLOR_ATTACHMENT_2,
-     GL_DEPTH_STENCIL_ATTACHMENT,
+     DEPTH_STENCIL_ATTACHMENT,
+     DEPTH_COMPONENT,
 };
 
 enum Texture_Unit {

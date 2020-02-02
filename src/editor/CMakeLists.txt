@@ -34,6 +34,7 @@ set(editor_src
     ../core/math/vector4f.cpp
     ../core/math/matrix4f.cpp
     ../core/input/key_input.cpp
+    ../core/input/mouse.cpp
     ../core/graphics/window.cpp
     ../core/graphics/mesh.cpp
     ../core/graphics/shader.cpp
@@ -62,6 +63,7 @@ set(editor_src
     entity_manager.cpp
     loader/mesh_loader.cpp
     loader/assimp_mesh_loader.cpp
+    systems/scene_camera.cpp
     ../core/reflection/meta_base.cpp
     ../core/reflection/meta_struct.cpp
     ../core/reflection/meta_field.cpp
@@ -99,6 +101,7 @@ target_include_directories(Editor PUBLIC
                            panels/include
                            basic_shapes/include
                            loader/include
+                           systems/include
                            ../core/
                            ../core/include
                            ../core/data_structures/include
@@ -113,6 +116,12 @@ target_include_directories(Editor PUBLIC
                            ../core/platform/graphics/include
                            ../core/input/include
                            ../core/graphics/include
+                           ../libs/glm/glm
+                           ../libs/glm/glm/detail
+                           ../libs/glm/glm/ext
+                           ../libs/glm/glm/gtc
+                           ../libs/glm/glm/gtx
+                           ../libs/glm/glm/simd
                            libs/assimp/include)
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )

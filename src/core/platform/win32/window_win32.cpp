@@ -33,24 +33,16 @@ LRESULT CALLBACK _WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                is_closed = true;
           break;
           case WM_KEYDOWN:
-               #if 0
-               for ( size_t ii = 0; ii < cur_window->key_callbacks.size(); ii++ ) {
-                    cur_window->key_callbacks[ii]((char)wParam, true);
-               }
-               #endif
                platform_key_event(wParam, true);
           break;
           case WM_KEYUP:
-               #if 0
-               for ( size_t ii = 0; ii < cur_window->key_callbacks.size(); ii++ ) {
-                    cur_window->key_callbacks[ii]((char)wParam, false);
-               }
-               #endif
                platform_key_event(wParam, false);
           break;
           case WM_MOUSEMOVE: {
                int mx = GET_X_LPARAM(lParam);
                int my = GET_Y_LPARAM(lParam);
+
+               platform_mouse_move_event((float)mx, (float)my);
 
                for ( size_t ii = 0; ii < cur_window->mouse_pos_callbacks.size(); ii++) {
                     cur_window->mouse_pos_callbacks[ii](mx, my);

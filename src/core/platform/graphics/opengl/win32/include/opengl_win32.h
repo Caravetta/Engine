@@ -61,6 +61,13 @@ typedef void (APIENTRY * PFNGLDRAWBUFFERSPROC) ( GLsizei n, const GLenum *bufs )
 
 typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC) ( GLenum texture );
 
+typedef void (APIENTRY * PFNGLGENRENDERBUFFERSPROC) ( GLsizei n, GLuint* renderbuffers );
+typedef void (APIENTRY * PFNGLBINDRENDERBUFFERPROC) ( GLenum target, GLuint renderbuffer );
+typedef void (APIENTRY * PFNGLRENDERBUFFERSTORAGEPROC) ( GLenum target, GLenum internalformat, GLsizei width, GLsizei height );
+typedef void (APIENTRY * PFNGLFRAMEBUFFERRENDERBUFFER) ( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer );
+
+
+
 
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC     wglCreateContextAttribsARB;
 extern PFNWGLCHOOSEPIXELFORMATARBPROC        wglChoosePixelFormatARB;
@@ -107,6 +114,11 @@ extern PFNGLSCISSORPROC                      glScissor;
 extern PFNGLBLENDEQUATIONPROC                glBlendEquation;
 extern PFNGLDRAWBUFFERSPROC                  glDrawBuffers;
 extern PFNGLACTIVETEXTUREPROC                glActiveTexture;
+
+extern PFNGLGENRENDERBUFFERSPROC             glGenRenderbuffers;
+extern PFNGLBINDRENDERBUFFERPROC             glBindRenderbuffer;
+extern PFNGLRENDERBUFFERSTORAGEPROC          glRenderbufferStorage;
+extern PFNGLFRAMEBUFFERRENDERBUFFER          glFramebufferRenderbuffer;
 
 Rc_t init_opengl( void );
 
