@@ -93,6 +93,7 @@ void platform_window_update( struct platform_window_t* platform_window )
           } else if ( ev.type == MotionNotify ) {
                int mx = ev.xmotion.x;
                int my = ev.xmotion.y;
+               platform_mouse_move_event(mx, my);
                for ( size_t ii = 0; ii < platform_window->mouse_pos_callbacks.size(); ii++) {
                     platform_window->mouse_pos_callbacks[ii](mx, my);
                }

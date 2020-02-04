@@ -46,6 +46,7 @@ void update_inspector_panel( Editor_Context& context )
 
                ImGui::Separator();
 			std::string* entity_name = context.entity_manager.entity_name(context.selected_entity);
+               memset(_ent_buffer, 0, sizeof(_ent_buffer));
                memcpy(_ent_buffer, entity_name->c_str(), entity_name->size());
                if ( ImGui::InputText( "Entity Name", _ent_buffer, 50, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue ) ) {
                     context.entity_manager.update_entity_name(context.selected_entity, _ent_buffer);

@@ -292,12 +292,12 @@
 #else
 #	define GLM_CONSTEXPR
 #endif
-
+#if 0
 //
 #if GLM_HAS_CONSTEXPR
 # if (GLM_COMPILER & GLM_COMPILER_CLANG)
 #	define GLM_HAS_IF_CONSTEXPR __has_feature(cxx_if_constexpr)
-# elif (GLM_COMPILER & GLM_COMPILER_GCC) 
+# elif (GLM_COMPILER & GLM_COMPILER_GCC)
 #	define GLM_HAS_IF_CONSTEXPR GLM_COMPILER >= GLM_COMPILER_GCC7
 # elif (GLM_LANG & GLM_LANG_CXX17_FLAG)
 # 	define GLM_HAS_IF_CONSTEXPR 1
@@ -306,6 +306,7 @@
 # endif
 #else
 #	define GLM_HAS_IF_CONSTEXPR 0
+#endif
 #endif
 
 #if GLM_HAS_IF_CONSTEXPR
