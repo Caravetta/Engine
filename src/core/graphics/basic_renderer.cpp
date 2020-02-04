@@ -213,7 +213,7 @@ void Basic_Renderer::update( float time_step )
      Engine::graphics_clear(Engine::COLOR_BUFFER_CLEAR | Engine::DEPTH_BUFFER_CLEAR);
 
 
-     // G Buffer Pass
+     /** Start G Buffer Pass **/
      for ( size_t ii = 0; ii < num_entites; ii++ ) {
           Engine::Transform trans = trans_infos[ii];
           Engine::Mesh_Info mesh_info = mesh_infos[ii];
@@ -230,42 +230,41 @@ void Basic_Renderer::update( float time_step )
                                                                      trans.scale,
                                                                      trans.rotation);
 
-          int32_t mvp_location = shader.uniform_id("mvp");
-          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&model_transform);
-
-          mvp_location = shader.uniform_id("per");
-          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&camera.perspective);
+          int mvp_location = shader.uniform_id("per");
+          if ( mvp_location != -1 ) {
+               shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&camera.perspective);
+          }
 
           mvp_location = shader.uniform_id("view");
-          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&camera.view);
+          if ( mvp_location != -1 ) {
+               shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&camera.view);
+          }
 
           mvp_location = shader.uniform_id("model");
-          shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&model_transform);
+          if ( mvp_location != -1 ) {
+               shader.set_uniform_mat4(mvp_location, (Engine::Matrix4f*)&model_transform);
+          }
 
           Engine::draw_elements_data(Engine::TRIANGLE_MODE, indc, Engine::UNSIGNED_INT, 0);
      }
 
 
      Engine::disable_graphics_option(Engine::DEPTH_TEST_OPTION);
-     // Lighting Pass
-     if ( num_entites > 0 ) {
-
-     }
 
      render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_1);
      render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_2);
-     //render_context->clear_color_texture(Engine::Attachment_Type::GL_DEPTH_STENCIL_ATTACHMENT);
+     /** End G Buffer Pass **/
 
      // render passes go here
 	outline_pass->execute(*render_context);
 
+     /** Start Lighting Pass **/
      Engine::Render_Texture* end_texure = render_context->get_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_0);
 
      Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_0, position_texture->texture());
      Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_1, normal_texture->texture());
      Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_2, end_texure->texture());
 
-#if 1
 	render_context->set_color_texture(lighting_texture, Attachment_Type::COLOR_ATTACHMENT_0);
 	use_program(lighting_shader1->id());
 
@@ -281,19 +280,13 @@ void Basic_Renderer::update( float time_step )
 	bind_vertex_array(buff_id);
 	draw_data(Engine::TRIANGLE_MODE, 0, 6);
 	bind_vertex_array(0);
-#endif
 
      Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_0, 0);
      Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_1, 0);
      Engine::bind_texture(Texture_Unit::TEXTURE_UNIT_2, 0);
+     /** End Lighting Pass **/
 
-     //render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_1);
-     //render_context->clear_color_texture(Engine::Attachment_Type::COLOR_ATTACHMENT_2);
-     render_context->clear_color_texture(Engine::Attachment_Type::DEPTH_STENCIL_ATTACHMENT);
-
-
-
-	//outline_pass->execute(*render_context);
+     //render_context->clear_color_texture(Engine::Attachment_Type::DEPTH_STENCIL_ATTACHMENT);
 }
 
 void Basic_Renderer::shutdown( void )

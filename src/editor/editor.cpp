@@ -23,6 +23,7 @@ char vert[] = "                                                                 
                uniform mat4 per;\n                                                   \
                uniform mat4 view;\n                                                  \
                uniform mat4 model;\n                                                 \
+                                                                                     \
                out vec3 FragPos;\n                                                   \
                out vec3 Norm;\n                                                      \
                                                                                      \

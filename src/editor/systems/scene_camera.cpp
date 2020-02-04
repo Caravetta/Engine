@@ -44,13 +44,6 @@ void Scene_Camera::init( void )
 
 void Scene_Camera::update( float time_step )
 {
-#if 0
-     LOG("JOSH focal_point(%f, %f, %f) position(%f, %f, %f) distance %f forward_direction(%f, %f, %f)",
-          focal_point.x, focal_point.y, focal_point.z,
-          position.x, position.y, position.z,
-          distance,
-          forward_direction().x, forward_direction().y, forward_direction().z);
-#endif
      Editor_Context* editor_context = Editor_Context::get_instance();
 
      if ( width != (float)scene_camera.window->width() ||
@@ -84,13 +77,13 @@ void Scene_Camera::update( float time_step )
 
      if ( Engine::is_key_pressed(Engine::KEY_W) ) {
           zoom(delta_y);
-     } else if ( Engine::is_key_pressed(Engine::KEY_S) ) {
-          zoom(-0.05f);
      }
 
      if ( Engine::is_key_pressed(Engine::KEY_A) ) {
           pan(-delta_x, delta_y);
-     } else if ( Engine::is_key_pressed(Engine::KEY_D) ) {
+     }
+
+     if ( Engine::is_key_pressed(Engine::KEY_D) ) {
           rotate(-delta_x, delta_y);
      }
 
@@ -112,7 +105,7 @@ void Scene_Camera::update( float time_step )
 
 void Scene_Camera::shutdown( void )
 {
-
+     // nothing to do
 }
 
 void Scene_Camera::pan( float x_delta, float y_delta )
