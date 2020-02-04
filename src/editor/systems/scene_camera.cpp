@@ -2,6 +2,31 @@
 #include "scene_camera.h"
 #include "editor_context.h"
 
+static void glm_mat_to_engine_mat( Engine::Matrix4f& engine_mat, glm::mat4& glm_mat )
+{
+     const float *pSource1 = (const float*)glm::value_ptr(glm_mat);
+
+     engine_mat.x.x = pSource1[0];
+     engine_mat.x.y = pSource1[1];
+     engine_mat.x.z = pSource1[2];
+     engine_mat.x.w = pSource1[3];
+
+     engine_mat.y.x = pSource1[4];
+     engine_mat.y.y = pSource1[5];
+     engine_mat.y.z = pSource1[6];
+     engine_mat.y.w = pSource1[7];
+
+     engine_mat.z.x = pSource1[8];
+     engine_mat.z.y = pSource1[9];
+     engine_mat.z.z = pSource1[10];
+     engine_mat.z.w = pSource1[11];
+
+     engine_mat.t.x = pSource1[12];
+     engine_mat.t.y = pSource1[13];
+     engine_mat.t.z = pSource1[14];
+     engine_mat.t.w = pSource1[15];
+}
+
 void Scene_Camera::init( void )
 {
      Editor_Context* editor_context = Editor_Context::get_instance();
@@ -19,22 +44,14 @@ void Scene_Camera::init( void )
      distance = glm::distance(position, focal_point);
 
      glm::mat4 per_test = glm::perspectiveFov(glm::radians(45.0f), width, height, 0.1f, 1000.0f);
-
-     const float *pSource = (const float*)glm::value_ptr(per_test);
-
-     float* per_array = (float*)&scene_camera.perspective;
-     for ( size_t ii = 0; ii < 16; ii++ ) {
-          per_array[ii] = pSource[ii];
-     }
+     glm_mat_to_engine_mat(scene_camera.perspective, per_test);
 
      glm::mat4 view_test = glm::inverse(glm::translate(glm::mat4(1.0f), position));
+     LOG("%s", glm::to_string(view_test).c_str());
 
-     const float *pSource1 = (const float*)glm::value_ptr(view_test);
+     glm_mat_to_engine_mat(scene_camera.view, view_test);
 
-     float* view_array = (float*)&scene_camera.view;
-     for ( size_t ii = 0; ii < 16; ii++ ) {
-          view_array[ii] = pSource1[ii];
-     }
+     scene_camera.view.log();
 
      editor_context->scene_camera = &scene_camera;
 
@@ -61,12 +78,7 @@ void Scene_Camera::update( float time_step )
 
           glm::mat4 per_test = glm::perspectiveFov(glm::radians(45.0f), width, height, 0.1f, 1000.0f);
 
-          const float *pSource = (const float*)glm::value_ptr(per_test);
-
-          float* per_array = (float*)&scene_camera.perspective;
-          for ( size_t ii = 0; ii < 16; ii++ ) {
-               per_array[ii] = pSource[ii];
-          }
+          glm_mat_to_engine_mat(scene_camera.perspective, per_test);
      }
 
      float mouse_x = Engine::mouse_x_position();
@@ -85,13 +97,36 @@ void Scene_Camera::update( float time_step )
      if ( Engine::is_key_pressed(Engine::KEY_W) ) {
           zoom(delta_y);
      } else if ( Engine::is_key_pressed(Engine::KEY_S) ) {
-          zoom(-0.05f);
+          //zoom(-0.05f);
      }
 
      if ( Engine::is_key_pressed(Engine::KEY_A) ) {
           pan(-delta_x, delta_y);
      } else if ( Engine::is_key_pressed(Engine::KEY_D) ) {
           rotate(-delta_x, delta_y);
+     }
+
+     if ( Engine::is_key_pressed(Engine::KEY_F) ) {
+          if ( editor_context->entity_selected ) {
+               Engine::Entity selected_ent = editor_context->entity_manager.get_entity(editor_context->selected_entity);
+               Engine::Transform* entity_transform = Engine::get_component<Engine::Transform>(selected_ent);
+               if ( entity_transform != NULL ) {
+                    position.x = entity_transform->position.x;
+                    position.y = entity_transform->position.y;
+                    position.z = entity_transform->position.z;
+
+                    position.z += 2;
+
+
+                    focal_point = position;
+                    focal_point.z -= 1.0f;
+
+                    distance = glm::distance(position, focal_point);
+
+                    yaw = 0;
+                    pitch = 0;
+               }
+          }
      }
 
      position = calc_position();
@@ -101,13 +136,7 @@ void Scene_Camera::update( float time_step )
 
      view_test = glm::inverse(view_test);
 
-     const float *pSource1 = (const float*)glm::value_ptr(view_test);
-
-     float* view_array = (float*)&scene_camera.view;
-     for ( size_t ii = 0; ii < 16; ii++ ) {
-          view_array[ii] = pSource1[ii];
-     }
-
+     glm_mat_to_engine_mat(scene_camera.view, view_test);
 }
 
 void Scene_Camera::shutdown( void )

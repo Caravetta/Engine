@@ -24,14 +24,14 @@ assimp_release_import_proc         assimp_release_import = NULL;
      #include <dlfcn.h>
 
      #define LIB_HANDLE void*
-     #define LIB_EXTENSION .so
+     //#define LIB_EXTENSION .so
 
      #define LIB_NAME( lib, exten ) EXTEN_PASTE(lib, exten)
 
      #define LOAD_LIB( lib )                                               \
-          handle = dlopen(LIB_NAME(lib, LIB_EXTENSION), RTLD_LAZY);        \
+          handle = dlopen(lib, RTLD_LAZY);        \
           if ( handle == NULL ) {                                          \
-               LOG("Failed to load lib %s", LIB_NAME(lib, LIB_EXTENSION)); \
+               LOG("Failed to load lib %s", lib); \
                return Engine::ENGINE_ERROR;                                        \
           }                                                                \
           const char *dlsym_error = NULL;
@@ -90,7 +90,7 @@ static Engine::Rc_t _load_assimp_lib( void )
 	LIB_HANDLE handle;
 #ifdef LINUX
      LOG("JOSH LIN");
-	LOAD_LIB("./libassimp");
+	LOAD_LIB("./libassimp.so");
 #elif WINDOWS
 	//LOAD_LIB("./Assimp");
      handle = LoadLibrary("C:\\Users\\Josh\\Documents\\Engine\\build\\assimp.dll");
@@ -102,7 +102,7 @@ static Engine::Rc_t _load_assimp_lib( void )
 
 	if ( assimp_import_from_file == NULL ) {
 		LOAD_LIB_FUNC_STRING(assimp_import_from_file, "aiImportFile");
-          assimp_import_from_file = (assimp_import_from_file_proc)GetProcAddress(handle, "aiImportFile");
+          //assimp_import_from_file = (assimp_import_from_file_proc)GetProcAddress(handle, "aiImportFile");
 	}
 
 	if ( assimp_import_from_memory == NULL ) {

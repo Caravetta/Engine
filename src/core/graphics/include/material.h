@@ -9,18 +9,6 @@
 
 namespace Engine {
 
-#if 0
-class Material {
-private:
-     Shader* __shader;
-
-public:
-     Material( Shader& shader );
-     ~Material( void );
-     Shader& shader( void );
-};
-#endif
-
 struct Material {
      COMPONENT_DECLARE( Material );
      META_INFO_DECLARE( Material );
