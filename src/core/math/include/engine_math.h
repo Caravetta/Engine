@@ -5,5 +5,6 @@
 #include "vector3f.h"
 #include "vector4f.h"
 #include "matrix4f.h"
+#include "color.h"
 
 #endif //__MATH_H__

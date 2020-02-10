@@ -1,0 +1,4 @@
+struct test {
+     int a = -10;
+     std::string a = "test string";
+};

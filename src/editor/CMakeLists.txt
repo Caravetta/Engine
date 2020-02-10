@@ -38,6 +38,7 @@ set(editor_src
     ../core/graphics/window.cpp
     ../core/graphics/mesh.cpp
     ../core/graphics/shader.cpp
+    ../core/graphics/light.cpp
     ../core/graphics/render_texture_info.cpp
     ../core/graphics/render_texture.cpp
     ../core/graphics/render_pass.cpp

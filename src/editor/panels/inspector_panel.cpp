@@ -80,6 +80,9 @@ void update_inspector_panel( Editor_Context& context )
                                    case Engine::META_TYPE_U32: {
                                         ImGui::InputScalar(meta_info->__fields[ll].__name, ImGuiDataType_U32, (void*)comp_data);
                                    } break;
+                                   case Engine::META_TYPE_COLOR: {
+                                        ImGui::ColorEdit4(meta_info->__fields[ll].__name, (float*)comp_data);
+                                   } break;
                                    default: {
                                    } break;
                                    }

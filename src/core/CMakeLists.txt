@@ -38,6 +38,7 @@ set(engine_core_src
     graphics/window.cpp
     graphics/mesh.cpp
     graphics/shader.cpp
+    graphics/light.cpp
     graphics/render_texture_info.cpp
     graphics/render_texture.cpp
     graphics/render_pass.cpp

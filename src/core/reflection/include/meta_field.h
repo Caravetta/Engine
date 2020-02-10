@@ -3,6 +3,7 @@
 
 #include "core_common.h"
 #include "vector3f.h"
+#include "color.h"
 
 namespace Engine {
 
@@ -15,6 +16,7 @@ enum Meta_Field_Type {
      META_TYPE_FLOAT,
      META_TYPE_U64,
      META_TYPE_U32,
+     META_TYPE_COLOR,
      META_TYPE_NON_BASE,
 };
 
@@ -33,6 +35,7 @@ struct Meta_Field {
 
 // built in types for the engine
 template<> Meta_Field_Type Meta_Field::get_field_type<Engine::Vector3f>( void );
+template<> Meta_Field_Type Meta_Field::get_field_type<Engine::Color>( void );
 template<> Meta_Field_Type Meta_Field::get_field_type<float>( void );
 template<> Meta_Field_Type Meta_Field::get_field_type<uint64_t>( void );
 template<> Meta_Field_Type Meta_Field::get_field_type<uint32_t>( void );

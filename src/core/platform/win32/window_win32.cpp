@@ -172,13 +172,16 @@ struct platform_window_t* platform_window_create( int width, int height, std::st
 void platform_window_update( struct platform_window_t* platform_window )
 {
      MSG msg;
-     if ( PeekMessage(&msg, platform_window->hWnd, 0, 0, PM_REMOVE) ) {
-          if ( msg.message == WM_QUIT ) {
-               return;
-          }
-          else {
-               TranslateMessage(&msg);             // Translate The Message
-               DispatchMessage(&msg);              // Dispatch The Message
+     while ( 1 ) {
+          if ( PeekMessage(&msg, platform_window->hWnd, 0, 0, PM_REMOVE) ) {
+               if ( msg.message == WM_QUIT ) {
+                    return;
+               } else {
+                    TranslateMessage(&msg);             // Translate The Message
+                    DispatchMessage(&msg);              // Dispatch The Message
+               }
+          } else {
+               break;
           }
      }
 

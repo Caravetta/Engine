@@ -22,6 +22,12 @@ Meta_Field_Type Meta_Field::get_field_type<Engine::Vector3f>( void )
 }
 
 template<>
+Meta_Field_Type Meta_Field::get_field_type<Engine::Color>( void )
+{
+     return META_TYPE_COLOR;
+}
+
+template<>
 Meta_Field_Type Meta_Field::get_field_type<uint64_t>( void )
 {
      return META_TYPE_U64;
