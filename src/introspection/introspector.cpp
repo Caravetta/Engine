@@ -28,5 +28,7 @@ int main( void )
           }
      }
 
+     intro.generate();
+
      return 0;
 }

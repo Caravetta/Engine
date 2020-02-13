@@ -77,6 +77,16 @@ public:
      virtual void component_register( Component_ID id );
 };
 
+namespace COMP_SYS {
+struct comp_test {
+     const static uint32_t id = 10;
+};
+
+}
+struct comp_test {
+     const static uint32_t id = 11;
+};
+
 } // end namespace Engine
 
 #include "component.inl"

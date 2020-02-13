@@ -120,8 +120,7 @@ Token Lexer::next_token( bool advance )
 
 Token Lexer::peek_at_next_token( void )
 {
-     Token token;
-     return token;
+     return next_token(false);
 }
 
 bool Lexer::require_token( Token_Type type, bool advance )
@@ -151,6 +150,18 @@ bool Lexer::continue_to_any_identifier( const std::vector< std::string >& identi
      }
 
      return !token.is_type(TOKEN_TYPE_END_OF_STREAM);
+}
+
+void Lexer::consume_all_namespace_qualifiers( void )
+{
+     Token cur_token = __current_token;
+     Token peek_token = peek_at_next_token();
+
+     while ( cur_token.is_type(TOKEN_TYPE_IDENTIFIER) && peek_token.is_type(TOKEN_TYPE_DOUBLE_COLON) ) {
+          cur_token = next_token(true);
+          cur_token = next_token(true);
+          peek_token = peek_at_next_token();
+     }
 }
 
 void Lexer::delete_all_white_space( void )

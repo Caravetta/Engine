@@ -15,6 +15,7 @@ public:
      bool require_token( Token_Type type, bool advance );
      bool continue_to( Token_Type type );
      bool continue_to_any_identifier( const std::vector< std::string >& identifiers );
+     void consume_all_namespace_qualifiers( void );
 
 private:
      void delete_all_white_space( void );
