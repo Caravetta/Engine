@@ -15,61 +15,105 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 endif()
 
-file(GLOB_RECURSE INC_ECS
-     "ecs/include/*.h"
-     "ecs/include/*.inl")
+set(INC_ECS
+    "ecs/include/")
 
-file(GLOB_RECURSE SRC_ECS
+file(GLOB SRC_ECS
      "ecs/*.cpp"
      "ecs/*.c")
 
-file(GLOB_RECURSE INC_DATA_STRUCT
-     "data_structures/include/*.h"
-     "data_structures/include/*.inl")
+set(INC_DATA_STRUCT
+    "data_structures/include/")
 
-file(GLOB_RECURSE SRC_DATA_STRUCT
+file(GLOB SRC_DATA_STRUCT
      "data_structures/*.cpp"
      "data_structures/*.c")
 
-file(GLOB_RECURSE INC_UTILS
-     "utils/include/*.h"
-     "utils/include/*.inl")
+set(INC_UTILS
+    "utils/include/")
 
-file(GLOB_RECURSE SRC_UTILS
+file(GLOB SRC_UTILS
      "utils/*.cpp"
      "utils/*.c")
 
-file(GLOB_RECURSE INC_MATH
-     "math/include/*.h"
-     "math/include/*.inl")
+set(INC_MATH
+    "math/include/")
 
-file(GLOB_RECURSE SRC_MATH
+file(GLOB SRC_MATH
      "math/*.cpp"
      "math/*.c")
 
-file(GLOB_RECURSE INC_INPUT
-     "input/include/*.h"
-     "input/include/*.inl")
+set(INC_INPUT
+    "input/include/")
 
-file(GLOB_RECURSE SRC_INPUT
+file(GLOB SRC_INPUT
      "input/*.cpp"
      "input/*.c")
 
-file(GLOB_RECURSE INC_GRAPHICS
-     "graphics/include/*.h"
-     "graphics/include/*.inl")
+set(INC_GRAPHICS
+    "graphics/include/")
 
-file(GLOB_RECURSE SRC_GRAPHICS
+file(GLOB SRC_GRAPHICS
      "graphics/*.cpp"
      "graphics/*.c")
 
-file(GLOB_RECURSE INC_MEM
-     "memory/include/*.h"
-     "memory/include/*.inl")
+set(INC_MEM
+    "memory/include/")
 
-file(GLOB_RECURSE SRC_MEM
+file(GLOB SRC_MEM
      "memory/*.cpp"
      "memory/*.c")
+
+set(INC_PLATFORM_GRAPHICS
+    "platform/graphics/include/")
+
+file(GLOB SRC_PLATFORM_GRAPHICS
+     "platform/graphics/*.cpp"
+     "platform/graphics/*.c")
+
+set(INC_REFLECTION
+    "reflection/include/")
+
+file(GLOB SRC_REFLECTION
+     "reflection/*.cpp"
+     "reflection/*.c")
+
+set(INC_GLOBAL
+    "include/")
+
+file(GLOB SRC_GLOBAL
+     "*.cpp"
+     "*.c")
+
+set(INC_GLM
+    "../libs/glm/glm"
+    "../libs/glm/glm/detail"
+    "../libs/glm/glm/ext"
+    "../libs/glm/glm/gtc"
+    "../libs/glm/glm/gtx"
+    "../libs/glm/glm/simd")
+
+if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
+
+     set(INC_PLATFORM
+         "platform/include/"
+         "platform/linux/include/")
+
+     file(GLOB SRC_PLATFORM
+          "platform/linux/*.cpp"
+          "platform/linux/*.c")
+
+elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
+
+     set(INC_PLATFORM
+         "platform/include/"
+         "platform/win32/include/")
+
+     file(GLOB SRC_PLATFORM
+          "platform/win32/*.cpp"
+          "platform/win32/*.c")
+
+endif()
 
 set(ALL_INC
     ${INC_ECS}
@@ -78,6 +122,11 @@ set(ALL_INC
     ${INC_INPUT}
     ${INC_GRAPHICS}
     ${INC_MEM}
+    ${INC_PLATFORM_GRAPHICS}
+    ${INC_REFLECTION}
+    ${INC_GLOBAL}
+    ${INC_PLATFORM}
+    ${INC_GLM}
     ${INC_DATA_STRUCT})
 
 set(ALL_SRC
@@ -87,136 +136,29 @@ set(ALL_SRC
     ${SRC_INPUT}
     ${SRC_GRAPHICS}
     ${SRC_MEM}
+    ${SRC_PLATFORM_GRAPHICS}
+    ${SRC_REFLECTION}
+    ${SRC_GLOBAL}
+    ${SRC_PLATFORM}
     ${SRC_DATA_STRUCT})
 
-set(engine_core_src
-    data_structures/bit_field.cpp
-    data_structures/handle.cpp
-    ecs/ecs.cpp
-    ecs/entity.cpp
-    ecs/entity_group.cpp
-    ecs/component.cpp
-    ecs/component_data.cpp
-    ecs/component_data_array.cpp
-    ecs/default_components.cpp
-    ecs/system.cpp
-    platform/graphics/platform_graphics.cpp
-    utils/crc32.cpp
-    utils/timer.cpp
-    utils/logger.cpp
-    math/vector3f.cpp
-    math/vector4f.cpp
-    math/matrix4f.cpp
-    input/key_input.cpp
-    input/mouse.cpp
-    graphics/window.cpp
-    graphics/mesh.cpp
-    graphics/shader.cpp
-    graphics/light.cpp
-    graphics/render_texture_info.cpp
-    graphics/render_texture.cpp
-    graphics/render_pass.cpp
-    graphics/render_context.cpp
-    graphics/material.cpp
-    graphics/basic_renderer.cpp
-    graphics/camera.cpp
-    memory/page_allocator.cpp
-    engine_core.cpp
-    reflection/meta_base.cpp
-    reflection/meta_struct.cpp
-    reflection/meta_field.cpp
-    reflection/meta_info.cpp
-    reflection/reflection_system.cpp
-    test.cpp)
+add_executable(Engine-Core ${ALL_SRC})
+target_include_directories(Engine-Core PUBLIC ${ALL_INC})
 
-if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-set(engine_core_linux_src
-    platform/linux/input_linux.cpp
-    platform/linux/timer_linux.cpp
-    platform/linux/window_linux.cpp)
+add_library(EngineCore MODULE ${ALL_SRC})
+target_include_directories(EngineCore PUBLIC ${ALL_INC})
 
-add_executable(Engine-Core ${engine_core_src} ${engine_core_linux_src})
-add_library(EngineCore MODULE ${engine_core_src} ${engine_core_linux_src})
+#target_link_libraries(Engine-Core user32 gdi32 opengl32 winmm)
 
-elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
-set(engine_core_win_src
-    platform/win32/input_win32.cpp
-    platform/win32/timer_win32.cpp
-    platform/win32/window_win32.cpp)
-
-add_executable(Engine-Core ${engine_core_src} ${engine_core_win_src})
-add_library(EngineCore MODULE ${engine_core_src} ${engine_core_win_src})
-
-endif()
-
-target_include_directories(Engine-Core PUBLIC
-                           include
-                           data_structures/include
-                           ecs/include
-                           utils/include
-                           reflection/include
-                           math/include
-                           memory/include
-                           platform/include
-                           platform/opengl/include
-                           platform/opengl/include
-                           platform/graphics/include
-                           input/include
-                           graphics/include
-                           ../libs/glm/glm
-                           ../libs/glm/glm/detail
-                           ../libs/glm/glm/ext
-                           ../libs/glm/glm/gtc
-                           ../libs/glm/glm/gtx
-                           ../libs/glm/glm/simd)
-
-target_include_directories(EngineCore PUBLIC
-                           include
-                           data_structures/include
-                           ecs/include
-                           utils/include
-                           reflection/include
-                           math/include
-                           memory/include
-                           platform/include
-                           platform/opengl/include
-                           platform/opengl/include
-                           platform/graphics/include
-                           input/include
-                           graphics/include
-                           ../libs/glm/glm
-                           ../libs/glm/glm/detail
-                           ../libs/glm/glm/ext
-                           ../libs/glm/glm/gtc
-                           ../libs/glm/glm/gtx
-                           ../libs/glm/glm/simd)
-
-if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-target_include_directories(Engine-Core PUBLIC
-                           platform/linux/include)
-
-target_include_directories(EngineCore PUBLIC
-                           platform/linux/include)
-
-elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
-target_include_directories(Engine-Core PUBLIC
-                           platform/win32/include)
-
-target_include_directories(EngineCore PUBLIC
-                           platform/win32/include)
-
-target_link_libraries(Engine-Core user32 gdi32 opengl32 winmm)
-endif()
-
-get_property(includes
-             TARGET Engine-Core
-             PROPERTY INTERFACE_INCLUDE_DIRECTORIES
-            )
+#get_property(includes
+#             TARGET Engine-Core
+#             PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+#            )
 
 #add_custom_target(base_comp_gen
 #                  COMMAND test
 #                  COMMENT "Generating Base Component Data"
 #                 )
 
-add_dependencies(Engine-Core base_comp_gen)
+#add_dependencies(Engine-Core base_comp_gen)
 

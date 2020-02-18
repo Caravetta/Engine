@@ -133,7 +133,7 @@ elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
 target_include_directories(Editor PUBLIC
                            ../core/platform/win32/include)
 
-target_link_libraries(Editor user32 gdi32 opengl32 winmm)
+#target_link_libraries(Editor user32 gdi32 opengl32 winmm)
 endif()
 
 get_property(includes
