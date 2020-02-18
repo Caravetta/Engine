@@ -142,23 +142,23 @@ set(ALL_SRC
     ${SRC_PLATFORM}
     ${SRC_DATA_STRUCT})
 
+foreach( inc ${ALL_INC})
+     file(GLOB INC_GLOB "${inc}*.inl" "${inc}*.h")
+     foreach( incfile ${INC_GLOB})
+          set(FUNC_INPUT "${FUNC_INPUT}-i;${incfile};")
+     endforeach()
+endforeach()
+
 add_executable(Engine-Core ${ALL_SRC})
 target_include_directories(Engine-Core PUBLIC ${ALL_INC})
 
 add_library(EngineCore MODULE ${ALL_SRC})
 target_include_directories(EngineCore PUBLIC ${ALL_INC})
 
-#target_link_libraries(Engine-Core user32 gdi32 opengl32 winmm)
-
-#get_property(includes
-#             TARGET Engine-Core
-#             PROPERTY INTERFACE_INCLUDE_DIRECTORIES
-#            )
-
-#add_custom_target(base_comp_gen
-#                  COMMAND test
-#                  COMMENT "Generating Base Component Data"
-#                 )
-
-#add_dependencies(Engine-Core base_comp_gen)
+message(${CMAKE_CURRENT_SOURCE_DIR})
+add_custom_target(base_comp_gen
+                  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../../build/src/introspection/Introspector.exe ${FUNC_INPUT}
+                  COMMENT "Generating Base Component Data"
+                 )
+add_dependencies(Engine-Core base_comp_gen)
 
