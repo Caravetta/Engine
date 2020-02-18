@@ -123,7 +123,8 @@ int main( void )
 
      Engine::set_clear_color(0.5f, 0.6f, 0.7f, 1.0f);
 
-     while ( editor_context.window->is_closed() == false ) {
+     while ( editor_context.window->is_closed() == false &&
+             editor_context.close_editor == false ) {
           editor_context.window->update();
 
           //render game here to texture

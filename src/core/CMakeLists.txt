@@ -15,6 +15,80 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 endif()
 
+file(GLOB_RECURSE INC_ECS
+     "ecs/include/*.h"
+     "ecs/include/*.inl")
+
+file(GLOB_RECURSE SRC_ECS
+     "ecs/*.cpp"
+     "ecs/*.c")
+
+file(GLOB_RECURSE INC_DATA_STRUCT
+     "data_structures/include/*.h"
+     "data_structures/include/*.inl")
+
+file(GLOB_RECURSE SRC_DATA_STRUCT
+     "data_structures/*.cpp"
+     "data_structures/*.c")
+
+file(GLOB_RECURSE INC_UTILS
+     "utils/include/*.h"
+     "utils/include/*.inl")
+
+file(GLOB_RECURSE SRC_UTILS
+     "utils/*.cpp"
+     "utils/*.c")
+
+file(GLOB_RECURSE INC_MATH
+     "math/include/*.h"
+     "math/include/*.inl")
+
+file(GLOB_RECURSE SRC_MATH
+     "math/*.cpp"
+     "math/*.c")
+
+file(GLOB_RECURSE INC_INPUT
+     "input/include/*.h"
+     "input/include/*.inl")
+
+file(GLOB_RECURSE SRC_INPUT
+     "input/*.cpp"
+     "input/*.c")
+
+file(GLOB_RECURSE INC_GRAPHICS
+     "graphics/include/*.h"
+     "graphics/include/*.inl")
+
+file(GLOB_RECURSE SRC_GRAPHICS
+     "graphics/*.cpp"
+     "graphics/*.c")
+
+file(GLOB_RECURSE INC_MEM
+     "memory/include/*.h"
+     "memory/include/*.inl")
+
+file(GLOB_RECURSE SRC_MEM
+     "memory/*.cpp"
+     "memory/*.c")
+
+set(ALL_INC
+    ${INC_ECS}
+    ${INC_UTILS}
+    ${INC_MATH}
+    ${INC_INPUT}
+    ${INC_GRAPHICS}
+    ${INC_MEM}
+    ${INC_DATA_STRUCT})
+
+set(ALL_SRC
+    ${SRC_ECS}
+    ${SRC_UTILS}
+    ${SRC_MATH}
+    ${SRC_INPUT}
+    ${SRC_GRAPHICS}
+    ${SRC_MEM}
+    ${SRC_DATA_STRUCT})
+
 set(engine_core_src
     data_structures/bit_field.cpp
     data_structures/handle.cpp

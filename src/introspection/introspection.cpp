@@ -78,7 +78,7 @@ void Introspection::parse( Lexer& lexer )
 void Introspection::generate( void )
 {
      size_t n_classes = __classes.size();
-     printf("Num Classes %zu\n", n_classes);
+     //printf("Num Classes %zu\n", n_classes);
 
      Class* cur_class = nullptr;
      FILE* comp_file = nullptr;
@@ -270,8 +270,6 @@ void Introspection::parse_property( Lexer& lexer, Class* cur_class )
      }
 
      Token token_type = lexer.current_token();
-     printf("%s\n", token_type.to_string().c_str());
-
      Token token_name = lexer.next_token(true);
 
      uint8_t num_pointers = 0;
@@ -304,8 +302,6 @@ void Introspection::parse_property( Lexer& lexer, Class* cur_class )
      } break;
      }
 
-     printf("%s\n", token_name.to_string().c_str());
-
      cur_class->add_property(property);
 }
 
@@ -328,11 +324,11 @@ void Introspection::remove_class( const std::string& class_name )
 
 void Introspection::generate_component( FILE* fp, Class* cur_class )
 {
-     //
-     fprintf(fp, "struct %s {\n\tconst uint32_t id = %" PRIu32 ";\nconst size_t size = sizeof(::%s);\n};\n",
-             cur_class->name().c_str(),
-             __starting_comp_id,
-             cur_class->name().c_str());
+     fprintf(fp, "struct %s {\n", cur_class->name().c_str());
+     fprintf(fp, "\tconst static uint32_t id = %" PRIu32 ";\n", __starting_comp_id);
+     fprintf(fp, "\tconst static size_t size = sizeof(::%s);\n", cur_class->name().c_str());
+     fprintf(fp, "\tstatic void mem_init( uint8_t* mem ) { new (mem) ::%s; }\n", cur_class->name().c_str());
+     fprintf(fp, "};\n");
 
      __starting_comp_id += 1;
 }

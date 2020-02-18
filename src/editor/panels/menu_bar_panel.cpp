@@ -36,6 +36,7 @@ void update_menu_bar_panel( Editor_Context& context )
           ImGui::Spacing();
           if ( ImGui::MenuItem("Exit") == true ) {
                //break;
+               context.close_editor = true;
           }
           ImGui::Spacing();
           ImGui::EndMenu();
