@@ -78,7 +78,7 @@ void Introspection::parse( Lexer& lexer )
 void Introspection::generate( void )
 {
      size_t n_classes = __classes.size();
-     //printf("Num Classes %zu\n", n_classes);
+     printf("Num Classes %zu\n", n_classes);
 
      Class* cur_class = nullptr;
      FILE* comp_file = nullptr;
@@ -91,7 +91,6 @@ void Introspection::generate( void )
      }
 
      fprintf(comp_file, "/* Generated File Do Not Modify */\n\n#ifndef __GEN_COMP_H__\n#define __GEN_COMP_H__\n\n#include <inttypes.h>\n\nnamespace __COMP_GEN_ {\n\n");
-
      for ( auto &element : __classes ) {
           cur_class = &element.second;
           Meta_Class_Type type = cur_class->class_traits().type;
@@ -272,9 +271,22 @@ void Introspection::parse_property( Lexer& lexer, Class* cur_class )
      Token token_type = lexer.current_token();
      Token token_name = lexer.next_token(true);
 
+     printf("type %s\n", token_type.data().c_str());
+
      uint8_t num_pointers = 0;
+     Property property;
+
+     property.flags_mask = PROPERTY_FLAGS_NONE;
 
      while ( !token_name.is_type(TOKEN_TYPE_IDENTIFIER) && !token_name.is_type(TOKEN_TYPE_END_OF_STREAM) ) {
+
+          if ( token_name.is_type(TOKEN_TYPE_LESS_THAN) ) {
+               token_name = lexer.next_token(true);
+               parse_template(lexer, &property.template_info);
+               token_name = lexer.current_token();
+
+               continue;
+          }
 
           if ( token_name.is_type(TOKEN_TYPE_ASTERISK) ) {
                num_pointers += 1;
@@ -283,10 +295,9 @@ void Introspection::parse_property( Lexer& lexer, Class* cur_class )
           token_name = lexer.next_token(true);
      }
 
-     Property property;
-
      property.name = token_name.data();
-     property.flags_mask = PROPERTY_FLAGS_NONE;
+
+     printf("name %s\n", property.name.c_str());
 
      switch( num_pointers ) {
      case 0: { /* do nothing */ } break;
@@ -331,5 +342,60 @@ void Introspection::generate_component( FILE* fp, Class* cur_class )
      fprintf(fp, "};\n");
 
      __starting_comp_id += 1;
+}
+
+void Introspection::parse_template( Lexer& lexer, Template_Info* temp_info )
+{
+     printf("%s\n", __FUNCTION__);
+
+     std::string template_type;
+     Token token_name = lexer.current_token();
+
+     uint8_t num_pointers = 0;
+
+     while ( 1 ) {
+          printf("%s\n", token_name.to_string().c_str());
+          if ( token_name.is_type(TOKEN_TYPE_END_OF_STREAM) ) {
+               printf("Error Failed to parse template\n");
+               return;
+          }
+
+          if ( token_name.is_type(TOKEN_TYPE_GREATER_THAN) ) {
+               token_name = lexer.next_token(true);
+               break;
+          }
+
+          if ( token_name.is_type(TOKEN_TYPE_ASTERISK) ) {
+               num_pointers += 1;
+          }
+
+          if ( token_name.is_type(TOKEN_TYPE_LESS_THAN) ) {
+               token_name = lexer.next_token(true);
+
+               temp_info->template_info = new (std::nothrow) Template_Info;
+               if ( temp_info->template_info == nullptr ) {
+                    printf("Error unable to allocate space for template info\n");
+                    return;
+               }
+
+               parse_template(lexer, temp_info->template_info);
+
+               token_name = lexer.current_token();
+          }
+
+          if ( token_name.is_type(TOKEN_TYPE_IDENTIFIER) ) {
+               template_type += token_name.data();
+          }
+
+          token_name = lexer.next_token(true);
+     }
+
+     temp_info->name = template_type;
+
+     if ( num_pointers > 0 ) {
+          printf("JOsh pointer\n");
+     }
+
+     printf("temp type %s\n", template_type.c_str());
 }
 

@@ -18,6 +18,19 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 endif()
 
+set(INC_UTILS
+    "../../../utils/include/")
+
+file(GLOB SRC_UTILS
+     "../../../utils/*.cpp"
+     "../../../utils/*.c")
+
+set(ALL_INC
+    ${INC_UTILS})
+
+set(ALL_SRC
+    ${SRC_UTILS})
+
 
 set(opengl_lib_src
     ../../../utils/logger.cpp

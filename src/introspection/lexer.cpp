@@ -183,7 +183,7 @@ void Lexer::delete_all_white_space( void )
                /* start of comment block */
                while ( __cur_char[0] &&
                        __cur_char[1] &&
-                       !( __cur_char[0] == '*' && __cur_char[0] == '/' ) ) {
+                       !( __cur_char[0] == '*' && __cur_char[1] == '/' ) ) {
                     __cur_char += 1;
                }
           } else {

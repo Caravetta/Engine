@@ -33,12 +33,21 @@ enum Property_Flags {
      PROPERTY_FLAGS_NONE = 0,
      PROPERTY_FLAGS_IS_POINTER = 1 << 0,
      PROPERTY_FLAGS_IS_DOUBLE_POINTER = 1 << 1,
+     PROPERTY_FLAGS_IS_TEMPLATE = 1 << 2,
+};
+
+struct Template_Info {
+     std::string name;
+     Property_Type type;
+     uint32_t flags_mask;
+     struct Template_Info* template_info;
 };
 
 struct Property {
      std::string name;
      Property_Type type;
      uint32_t flags_mask;
+     Template_Info template_info;
 };
 
 struct Class_Traits {
@@ -76,6 +85,7 @@ private:
      void parse_body( Lexer& lexer, Class* cur_class );
      void parse_members( Lexer& lexer, Class* cur_class );
      void parse_property( Lexer& lexer, Class* cur_class );
+     void parse_template( Lexer& lexer, Template_Info* temp_info );
      Class* add_class( const std::string& class_name );
      bool class_exists( const std::string& class_name );
      void remove_class( const std::string& class_name );

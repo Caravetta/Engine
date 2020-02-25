@@ -11,12 +11,6 @@ namespace Engine {
 
 typedef uint64_t Entity;
 
-template<class T>
-struct Component_Info{
-     Component_ID   id;
-     T              default_value;
-};
-
 Rc_t init_entity_system( void );
 
 Entity create_entity( void );

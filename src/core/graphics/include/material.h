@@ -9,9 +9,12 @@
 
 namespace Engine {
 
+ENGINE_STRUCT()
 struct Material {
      COMPONENT_DECLARE( Material );
      META_INFO_DECLARE( Material );
+
+     ENGINE_COMPONENT()
 
      static void populate_meta_info_func( Engine::Meta_Info& meta_info );
 

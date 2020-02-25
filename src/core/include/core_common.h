@@ -129,6 +129,12 @@ namespace Engine {
      #error
 #endif
 #endif
+
+#define ENGINE_STRUCT(...)
+#define ENGINE_COMPONENT(...)
+#define ENGINE_PROPERTY(...)
+#define ENGINE_CLASS_BODY(...)
+
 typedef float float32_t;
 typedef void (*mouse_position_cb)( int x_pos, int y_pos );
 typedef void (*mouse_button_cb)( int button, bool is_pressed );

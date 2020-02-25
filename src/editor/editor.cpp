@@ -68,7 +68,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 int main( void )
 #endif
 {
-     Engine::Rc_t rc = Engine::engine_init();
+     Engine::Rc_t rc = Engine::Engine_Core::instance()->init();
+     //Engine::Rc_t rc = Engine::engine_init();
      if ( rc != Engine::SUCCESS ) {
           LOG_ERROR("Failed to init engine rc=%d", rc);
           return -1;

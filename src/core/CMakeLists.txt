@@ -1,3 +1,5 @@
+project( EngineCore )
+
 add_subdirectory(platform/graphics/opengl)
 
 #Set Comp Flags
@@ -148,17 +150,18 @@ foreach( inc ${ALL_INC})
           set(FUNC_INPUT "${FUNC_INPUT}-i;${incfile};")
      endforeach()
 endforeach()
-
-add_executable(Engine-Core ${ALL_SRC})
-target_include_directories(Engine-Core PUBLIC ${ALL_INC})
+set(FUNC_INPUT "${FUNC_INPUT}-o;core_component_gen.h;")
 
 add_library(EngineCore MODULE ${ALL_SRC})
 target_include_directories(EngineCore PUBLIC ${ALL_INC})
 
-message(${CMAKE_CURRENT_SOURCE_DIR})
+add_dependencies( EngineCore Introspector )
+
 add_custom_target(base_comp_gen
                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../../build/src/introspection/Introspector.exe ${FUNC_INPUT}
-                  COMMENT "Generating Base Component Data"
+                  COMMENT "Generating Component/Meta Data"
+                  DEPENDS Introspector
                  )
-add_dependencies(Engine-Core base_comp_gen)
+
+add_dependencies(EngineCore base_comp_gen)
 

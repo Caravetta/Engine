@@ -4,11 +4,18 @@
 
 namespace Engine {
 
-Rc_t engine_init( void )
+Engine_Core* Engine_Core::__instance = NULL;
+
+Engine_Core::Engine_Core( void )
+{
+     // Do nothing
+}
+
+Rc_t Engine_Core::init( void )
 {
      load_graphics_api(OPENGL_GRAPHICS_API);
 
-     Rc_t rc = init_page_allocator( 16000, 50 );
+     Rc_t rc = init_page_allocator(16000, 50);
      if ( rc != SUCCESS ) {
           LOG_ERROR("Failed to setup Page Allocator rc=%d", rc);
      }
@@ -46,25 +53,53 @@ Rc_t engine_init( void )
      return rc;
 }
 
-Engine_Core* Engine_Core::instance = NULL;
-
-Engine_Core::Engine_Core( void )
+Engine_Core* Engine_Core::instance( void )
 {
-
-}
-
-Engine_Core* Engine_Core::get_instance( void )
-{
-     if ( instance == NULL ) {
-          instance = new (std::nothrow) Engine_Core;
+     if ( __instance == NULL ) {
+          __instance = new (std::nothrow) Engine_Core;
      }
 
-     return instance;;
+     return __instance;
+}
+
+Entity Engine_Core::create_entity( void )
+{
+     return ::Engine::create_entity();
+}
+
+Entity Engine_Core::create_entity( std::vector<Component_ID> components )
+{
+     return ::Engine::create_entity(components);
+}
+
+void Engine_Core::delete_entity( Entity entity )
+{
+     ::Engine::delete_entity(entity);
+}
+
+Rc_t Engine_Core::add_component( Entity entity, Component_ID id )
+{
+     return ::Engine::add_component(entity, id);
+}
+
+Rc_t Engine_Core::add_components( Entity entity, std::vector<Component_ID> components )
+{
+     return ::Engine::add_components(entity, components);
+}
+
+Rc_t Engine_Core::remove_component( Entity entity, Component_ID id )
+{
+     return ::Engine::remove_component(entity, id);
+}
+
+Rc_t Engine_Core::remove_components( Entity entity, std::vector<Component_ID> components )
+{
+     return ::Engine::remove_components(entity, components);
 }
 
 extern "C" Engine_Core* get_engine_core( void )
 {
-     return Engine_Core::get_instance();
+     return Engine_Core::instance();
 }
 
 } // end namespace Engine

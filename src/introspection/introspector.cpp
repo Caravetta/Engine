@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
+#include <vector>
 #include "lexer.h"
 #include "introspection.h"
 
@@ -46,6 +47,8 @@ static void print_help( void )
 
 int main( int argc, char** argv )
 {
+     std::vector<std::string> include_files;
+
      if ( argc == 1 ) {
           print_help();
           return -1;
@@ -55,7 +58,7 @@ int main( int argc, char** argv )
      while ( (opt = getopt(argc, argv, "i:o:")) != -1 ) {
           switch (opt) {
           case 'i': {
-               printf("got i %s\n", optarg);
+               include_files.push_back(optarg);
           } break;
           case 'o': {
                printf("got o %s\n", optarg);
@@ -67,28 +70,17 @@ int main( int argc, char** argv )
           }
      }
 
-     std::ifstream t("file.txt");
-     std::stringstream buffer;
-     buffer << t.rdbuf();
-
-     Lexer lexer(buffer.str());
      Introspection intro;
-     intro.parse(lexer);
 
-     std::ifstream tt("file.txt");
-     std::stringstream buffert;
-     buffert << tt.rdbuf();
-
-     Lexer lexert(buffert.str());
-#if 0
-     while (1) {
-          Token token = lexert.next_token(true);
-          printf("%s\n", token.to_string().c_str());
-          if ( token.type() == TOKEN_TYPE_END_OF_STREAM ) {
-               break;
-          }
+     for ( size_t ii = 0; ii < include_files.size(); ii++ ) {
+          printf("%s\n", include_files[ii].c_str());
+          std::ifstream t(include_files[ii]);
+          std::stringstream buffer;
+          buffer << t.rdbuf();
+          Lexer lexer(buffer.str());
+          intro.parse(lexer);
      }
-#endif
+
      intro.generate();
 
      return 0;

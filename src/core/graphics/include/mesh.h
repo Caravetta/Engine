@@ -20,14 +20,28 @@ enum Mesh_Type {
      DYNAMIC_MESH,
 };
 
+ENGINE_STRUCT()
 struct Mesh_Data {
+     ENGINE_CLASS_BODY()
+
+     ENGINE_PROPERTY()
      std::vector<unsigned int>     indices;
+
+     ENGINE_PROPERTY()
      std::vector<float>            positions;
+
+     ENGINE_PROPERTY()
      std::vector<float>            normals;
+
+     ENGINE_PROPERTY()
      std::vector<float>            text_cords;
 };
 
+ENGINE_STRUCT()
 struct Mesh {
+     ENGINE_CLASS_BODY()
+
+     ENGINE_PROPERTY()
      std::string    mesh_name;
      Mesh_Data*     data;
      Mesh_Handle    handle;
@@ -49,12 +63,16 @@ struct Mesh_Render_Info {
  *   Mesh Info Component
  */
 
+ENGINE_STRUCT()
 struct Mesh_Info {
      COMPONENT_DECLARE( Mesh_Info );
      META_INFO_DECLARE( Mesh_Info );
 
+     ENGINE_COMPONENT()
+
      static void populate_meta_info_func( Engine::Meta_Info& meta_info );
 
+     ENGINE_PROPERTY()
      Engine::Mesh_Handle handle;
 };
 

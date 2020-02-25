@@ -1,3 +1,4 @@
+project( Introspector )
 
 #Set Comp Flags
 set(CMAKE_CXX_FLAGS "${CXX_FLAGS_BASE}")
@@ -14,14 +15,19 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
 endif()
 
-set(introspector_src
-    token.cpp
-    lexer.cpp
-    introspection.cpp
-    introspector.cpp)
+set(INC_GLOBAL
+    "include/")
 
-add_executable(Introspector ${introspector_src})
+file(GLOB SRC_GLOBAL
+     "*.cpp"
+     "*.c")
 
-target_include_directories(Introspector PUBLIC
-                           include)
+set(ALL_INC
+    ${INC_GLOBAL})
+
+set(ALL_SRC
+    ${SRC_GLOBAL})
+
+add_executable(Introspector ${ALL_SRC})
+target_include_directories(Introspector PUBLIC ${ALL_INC})
 
