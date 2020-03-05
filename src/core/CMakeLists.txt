@@ -157,11 +157,19 @@ target_include_directories(EngineCore PUBLIC ${ALL_INC})
 
 add_dependencies( EngineCore Introspector )
 
-add_custom_target(base_comp_gen
-                  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../../build/src/introspection/Introspector.exe ${FUNC_INPUT}
-                  COMMENT "Generating Component/Meta Data"
-                  DEPENDS Introspector
-                 )
+if ( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
+     add_custom_target(base_comp_gen
+                       COMMAND ${CMAKE_CURRENT_BINARY_DIR}/../introspection/Introspector ${FUNC_INPUT}
+                       COMMENT "Generating Component/Meta Data"
+                       DEPENDS Introspector
+                      )
+elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
+     add_custom_target(base_comp_gen
+                       COMMAND ${CMAKE_CURRENT_BINARY_DIR}/../introspection/Introspector.exe ${FUNC_INPUT}
+                       COMMENT "Generating Component/Meta Data"
+                       DEPENDS Introspector
+                      )
+endif()
 
 add_dependencies(EngineCore base_comp_gen)
 
