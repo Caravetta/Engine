@@ -12,7 +12,7 @@ Entity_Manager::~Entity_Manager( void )
 
 Engine::Entity Entity_Manager::create_entity( void )
 {
-     Engine::Entity entity = Engine::create_entity();
+     Engine::Entity entity = Engine::create_entity(NULL, 0);
 
      entity_handle_list.push_back(entity);
      std::string name = "Entity_" + std::to_string(entity_handle_list.size());

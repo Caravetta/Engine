@@ -64,12 +64,12 @@ Engine_Core* Engine_Core::instance( void )
 
 Entity Engine_Core::create_entity( void )
 {
-     return ::Engine::create_entity();
+     return ::Engine::create_entity(NULL, 0);
 }
 
 Entity Engine_Core::create_entity( std::vector<Component_ID> components )
 {
-     return ::Engine::create_entity(components);
+     return ::Engine::create_entity(components.data(), components.size());
 }
 
 void Engine_Core::delete_entity( Entity entity )
@@ -79,22 +79,22 @@ void Engine_Core::delete_entity( Entity entity )
 
 Rc_t Engine_Core::add_component( Entity entity, Component_ID id )
 {
-     return ::Engine::add_component(entity, id);
+     return ::Engine::add_components(entity, &id, 1);
 }
 
 Rc_t Engine_Core::add_components( Entity entity, std::vector<Component_ID> components )
 {
-     return ::Engine::add_components(entity, components);
+     return ::Engine::add_components(entity, components.data(), components.size());
 }
 
 Rc_t Engine_Core::remove_component( Entity entity, Component_ID id )
 {
-     return ::Engine::remove_component(entity, id);
+     return ::Engine::remove_components(entity, &id, 1);
 }
 
 Rc_t Engine_Core::remove_components( Entity entity, std::vector<Component_ID> components )
 {
-     return ::Engine::remove_components(entity, components);
+     return ::Engine::remove_components(entity, components.data(), components.size());
 }
 
 extern "C" Engine_Core* get_engine_core( void )

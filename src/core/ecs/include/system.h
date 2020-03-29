@@ -5,6 +5,14 @@
 
 namespace Engine {
 
+struct System_c {
+     void (*init)( void );
+     void (*update)( float time_step );
+     void (*shutdown)( void );
+};
+
+System_c* create_new_system( void );
+
 struct System {
 public:
      virtual void init( void ) {};

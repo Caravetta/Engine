@@ -10,6 +10,7 @@
 #endif
 #include "gtx/string_cast.hpp"
 #include "scene_camera.h"
+#include "sort.h"
 
 #define WINDOW_WIDTH     800
 #define WINDOW_HEIGHT    600

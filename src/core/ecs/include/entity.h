@@ -13,19 +13,16 @@ typedef uint64_t Entity;
 
 Rc_t init_entity_system( void );
 
-Entity create_entity( void );
-Entity create_entity( std::vector<Component_ID> components );
+extern "C" Entity create_entity( Component_ID* ids, size_t n_ids );
 
 //Entity create_entity( Prefab prefab );
-void delete_entity( Entity entity );
+extern "C" void delete_entity( Entity entity );
 
-Rc_t add_component( Entity entity, Component_ID id );
-Rc_t add_components( Entity entity, std::vector<Component_ID> components );
+extern "C" Rc_t add_components( Entity entity, Component_ID* ids, size_t n_ids );
 
-Rc_t remove_component( Entity entity, Component_ID id );
-Rc_t remove_components( Entity entity, std::vector<Component_ID> components );
+extern "C" Rc_t remove_components( Entity entity, Component_ID* ids, size_t n_ids );
 
-std::vector<Component_ID> entity_components( Entity entity );
+std::vector<Component_ID> entity_components( Entity entity ); //TODO(JOSH): need to figure out a replacement for this
 
 template<class T> T* get_component( Entity entity );
 

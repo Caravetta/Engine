@@ -34,7 +34,7 @@ void update_inspector_panel( Editor_Context& context )
                     for ( size_t kk = 0; kk < context.component_list.size(); kk++ ) {
                          if ( ImGui::Selectable(Engine::get_component_name(context.component_list[kk]), false ) == true ) {
                               _add_component = false;
-                              Engine::add_component(selected_ent, context.component_list[kk]);
+                              Engine::add_components(selected_ent, &context.component_list[kk], 1);
                          }
                     }
                     if (  !ImGui::IsWindowFocused() ) {

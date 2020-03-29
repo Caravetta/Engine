@@ -30,14 +30,11 @@ size_t map_info_size( void );
 uint8_t* get_component_data( Handle handle, Component_ID id );
 std::vector<Component_ID> get_components( Handle handle );
 
-void add_handle( Handle handle );
-void add_handle( Handle handle, std::vector<Component_ID>& ids );
+void add_handle( Handle handle, Component_ID* ids, size_t n_ids );
 void remove_handle( Handle handle );
 
-Rc_t handle_add_component( Handle handle, Component_ID id );
-Rc_t handle_add_components( Handle handle, std::vector<Component_ID>& ids );
-Rc_t handle_remove_component( Handle handle, Component_ID id );
-Rc_t handle_remove_components( Handle handle, std::vector<Component_ID>& ids );
+Rc_t handle_add_components( Handle handle, Component_ID* ids, size_t n_ids );
+Rc_t handle_remove_components( Handle handle, Component_ID* ids, size_t n_ids );
 
 size_t get_data_chunks( std::vector<Data_Chunk>& data_chunks, std::vector<Component_ID>& components );
 

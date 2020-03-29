@@ -27,7 +27,7 @@ Rc_t init_entity_system( void )
      return rc;
 }
 
-Entity create_entity( void )
+extern "C" Entity create_entity( Component_ID* ids, size_t n_ids )
 {
      Handle handle = entity_system->handle_manager.get_handle();
      size_t n_ent_handles = entity_system->handle_manager.num_handles();
@@ -36,26 +36,12 @@ Entity create_entity( void )
           resize_map_info(n_ent_handles);
      }
 
-     add_handle( handle );
+     add_handle(handle, ids, n_ids);
 
      return (Entity)handle;
 }
 
-Entity create_entity( std::vector<Component_ID> components )
-{
-     Handle handle = entity_system->handle_manager.get_handle();
-     size_t n_ent_handles = entity_system->handle_manager.num_handles();
-
-     if ( n_ent_handles > map_info_size() ) {
-          resize_map_info(n_ent_handles);
-     }
-
-     add_handle(handle, components);
-
-     return (Entity)handle;
-}
-
-void delete_entity( Entity entity )
+extern "C" void delete_entity( Entity entity )
 {
      entity_system->handle_manager.free_handle((Handle)entity);
      size_t n_ent_handles = entity_system->handle_manager.num_handles();
@@ -67,24 +53,14 @@ void delete_entity( Entity entity )
      remove_handle(entity);
 }
 
-Rc_t add_component( Entity entity, Component_ID id )
+extern "C" Rc_t add_components( Entity entity, Component_ID* ids, size_t n_ids )
 {
-     return handle_add_component(entity, id);
+     return handle_add_components(entity, ids, n_ids);
 }
 
-Rc_t add_components( Entity entity, std::vector<Component_ID> components )
+extern "C" Rc_t remove_components( Entity entity, Component_ID* ids, size_t n_ids )
 {
-     return handle_add_components(entity, components);
-}
-
-Rc_t remove_component( Entity entity, Component_ID id )
-{
-     return handle_remove_component(entity, id);
-}
-
-Rc_t remove_components( Entity entity, std::vector<Component_ID> components )
-{
-     return handle_remove_components(entity, components);
+     return handle_remove_components(entity, ids, n_ids);
 }
 
 std::vector<Component_ID> entity_components( Entity entity )

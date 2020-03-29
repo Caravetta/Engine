@@ -63,9 +63,11 @@ void update_menu_bar_panel( Editor_Context& context )
                if ( ImGui::MenuItem("Cube") == true ) {
                     Engine::Entity entity = context.entity_manager.create_entity();
 
-                    Engine::add_components(entity, {Engine::component_id<Engine::Transform>(),
-                                                    Engine::component_id<Engine::Mesh_Info>(),
-                                                    Engine::component_id<Engine::Material>()});
+                    std::vector<Engine::Component_ID> ids = {Engine::component_id<Engine::Transform>(),
+                                                             Engine::component_id<Engine::Mesh_Info>(),
+                                                             Engine::component_id<Engine::Material>()};
+
+                    Engine::add_components(entity, ids.data(), ids.size());
 
                     Engine::Transform* transform = Engine::get_component<Engine::Transform>(entity);
                     transform->position = Engine::Vector3f(0, 0, 0);
